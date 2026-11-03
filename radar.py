@@ -345,9 +345,13 @@ def send_email(message):
     message["From"] = os.environ["MAIL_FROM"].strip()
     message["To"] = os.environ["MAIL_TO"].strip()
     port = int(os.environ.get("SMTP_PORT") or 587)
-    with smtplib.SMTP(os.environ["SMTP_HOST"].strip(), port, timeout=30) as server:
+    context = ssl.create_default_context()
+    host = os.environ["SMTP_HOST"].strip()
+    connection = smtplib.SMTP_SSL(host, port, timeout=30, context=context) if port == 465 else smtplib.SMTP(host, port, timeout=30)
+    with connection as server:
         print("E-mail : serveur joint.")
-        server.starttls(context=ssl.create_default_context())
+        if port != 465:
+            server.starttls(context=context)
         print("E-mail : connexion chiffrée.")
         server.login(os.environ["SMTP_USER"].strip(), os.environ["SMTP_PASSWORD"].replace(" ", "").strip())
         print("E-mail : identification acceptée.")
@@ -362,6 +366,9 @@ def describe_smtp_settings():
     print("Clé de type SMTP :", password.strip().startswith("xsmtpsib-"))
     print("Clé de type API :", password.strip().startswith("xkeysib-"))
     print("Espaces autour des accès :", user != user.strip() or password != password.strip())
+    code = password.replace(" ", "").strip()
+    print("Login au format Gmail :", user.strip().endswith("@gmail.com"))
+    print("Code de 16 lettres :", len(code) == 16 and code.isascii() and code.isalpha())
 
 
 def demo_offers():
