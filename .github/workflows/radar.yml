@@ -20,9 +20,9 @@ jobs:
       - name: Chercher les vols
         env:
           TRAVELPAYOUTS_TOKEN: ${{ secrets.TRAVELPAYOUTS_TOKEN }}
-          SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}
+          SERPAPI_KEY: ${{ secrets.SERPAPI_KEY || secrets.SERPAPY_KEY }}
           SMTP_HOST: ${{ secrets.SMTP_HOST }}
-          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_PORT: "587"
           SMTP_USER: ${{ secrets.SMTP_USER }}
           SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
           MAIL_FROM: ${{ secrets.MAIL_FROM }}
