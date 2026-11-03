@@ -1,0 +1,100 @@
+# Réglages du radar. Tu peux modifier toutes ces valeurs sans toucher au code.
+# Les prix sont des allers-retours, par personne, en euros.
+
+[search]
+origin_city = "PAR"              # code de ville utilisé par Travelpayouts
+origin_airports = "CDG,ORY"      # aéroports utilisés par Google Flights
+currency = "eur"
+market = "fr"
+months_ahead = 9                 # surveille les départs sur les 9 prochains mois
+min_days_ahead = 14              # ignore les départs trop proches
+adults = 1
+
+[alerts]
+deal_drop = 0.25                 # bonne affaire = 25 % sous le prix habituel
+min_history_days = 6             # jours d'historique requis avant de juger un prix « habituel »
+realert_days = 7                 # ne répète pas la même alerte pendant 7 jours...
+realert_drop = 0.05              # ...sauf si le prix baisse encore de 5 %
+max_per_email = 10
+
+[serpapi]
+monthly_limit = 240              # l'offre gratuite donne 250 recherches, on garde une marge
+per_run_limit = 4                # vérifications Google Flights maximum par passage
+
+# Chaque groupe a son budget maximum.
+# - countries : toutes les destinations de ces pays (codes pays à 2 lettres)
+# - cities    : villes vérifiées mois par mois (codes ville à 3 lettres)
+
+[[group]]
+name = "Argentine et Chili"
+countries = ["AR", "CL"]
+cities = ["BUE", "SCL"]
+max_price = 800
+min_days = 10
+max_days = 120
+
+[[group]]
+name = "Paraguay"
+countries = ["PY"]
+cities = ["ASU"]
+max_price = 800
+min_days = 10
+max_days = 120
+
+[[group]]
+name = "États-Unis"
+countries = ["US"]
+cities = ["NYC", "LAX", "MIA", "SFO"]
+max_price = 380
+min_days = 7
+max_days = 120
+
+[[group]]
+name = "Canada"
+countries = ["CA"]
+cities = ["YMQ", "YTO", "YVR"]
+max_price = 400
+min_days = 7
+max_days = 120
+
+# Mexique « à la limite » : budget volontairement plus strict.
+[[group]]
+name = "Mexique"
+countries = ["MX"]
+cities = ["MEX", "CUN"]
+max_price = 450
+min_days = 7
+max_days = 30
+
+[[group]]
+name = "Europe"
+countries = ["AL", "AT", "BA", "BE", "BG", "CH", "CY", "CZ", "DE", "DK", "EE", "ES", "FI", "GB", "GR", "HR", "HU", "IE", "IS", "IT", "LT", "LU", "LV", "ME", "MK", "MT", "NL", "NO", "PL", "PT", "RO", "RS", "SE", "SI", "SK"]
+cities = []
+max_price = 70
+min_days = 2
+max_days = 10
+
+[[group]]
+name = "Asie"
+countries = ["CN", "HK", "IN", "JP", "KH", "KR", "LA", "LK", "MY", "NP", "PH", "SG", "TH", "TW", "VN"]
+cities = ["BKK", "TYO"]
+max_price = 550
+min_days = 10
+max_days = 30
+
+# Pas de budget ici : alerte seulement si Google Flights juge le prix bas.
+[[group]]
+name = "Corée du Nord"
+countries = ["KP"]
+cities = ["FNJ"]
+market_low_only = true
+min_days = 10
+max_days = 30
+
+[[group]]
+name = "Océanie"
+countries = ["AU", "FJ", "NZ"]
+cities = ["SYD"]
+max_price = 900
+min_days = 14
+max_days = 35
