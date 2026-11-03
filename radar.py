@@ -342,13 +342,17 @@ def send_email(message):
     missing = [n for n in ("SMTP_HOST", "SMTP_USER", "SMTP_PASSWORD", "MAIL_FROM", "MAIL_TO") if not os.environ.get(n)]
     if missing:
         raise ConfigError("réglages e-mail manquants : " + ", ".join(missing))
-    message["From"] = os.environ["MAIL_FROM"]
-    message["To"] = os.environ["MAIL_TO"]
+    message["From"] = os.environ["MAIL_FROM"].strip()
+    message["To"] = os.environ["MAIL_TO"].strip()
     port = int(os.environ.get("SMTP_PORT") or 587)
-    with smtplib.SMTP(os.environ["SMTP_HOST"], port, timeout=30) as server:
+    with smtplib.SMTP(os.environ["SMTP_HOST"].strip(), port, timeout=30) as server:
+        print("E-mail : serveur joint.")
         server.starttls(context=ssl.create_default_context())
-        server.login(os.environ["SMTP_USER"].strip(), os.environ["SMTP_PASSWORD"].strip())
+        print("E-mail : connexion chiffrée.")
+        server.login(os.environ["SMTP_USER"].strip(), os.environ["SMTP_PASSWORD"].replace(" ", "").strip())
+        print("E-mail : identification acceptée.")
         server.send_message(message)
+        print("E-mail : message accepté par le serveur.")
 
 
 def describe_smtp_settings():
