@@ -285,7 +285,8 @@ def verify_best(candidates, key, state, config, today, places):
             except RuntimeError as error:
                 print(f"Vérification impossible pour {offer.destination} : {error}", file=sys.stderr)
             except ConfigError:
-                raise ConfigError("clé SerpApi refusée") from None
+                print("Clé SerpApi refusée : offres envoyées sans vérification.", file=sys.stderr)
+                key = None
         if offer.verified or not offer.group.get("market_low_only"):
             kept.append(offer)
     return kept
