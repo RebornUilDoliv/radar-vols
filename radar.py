@@ -419,11 +419,12 @@ def main():
             for offer in found:
                 print(f"{offer.city_name} {offer.price:.0f} € {offer.depart} → {offer.back} ({offer.reason})")
             return 0
+        save_state(args.state, state)
         if found:
             send_email(build_email(found, config["search"]))
             for offer in found:
                 state.setdefault("alerted", {})[offer.key] = {"price": offer.price, "date": today.isoformat()}
-        save_state(args.state, state)
+            save_state(args.state, state)
         return 0
     except ConfigError as error:
         print(f"À corriger : {error}", file=sys.stderr)
