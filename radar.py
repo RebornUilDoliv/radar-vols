@@ -106,6 +106,8 @@ class Travelpayouts:
             self.failures += 1
             print(f"Travelpayouts {path} : {error}", file=sys.stderr)
             return None
+        except ConfigError:
+            raise ConfigError("token Travelpayouts refusé") from None
         return payload.get("data") if isinstance(payload, dict) else None
 
     def discovery(self):
@@ -282,6 +284,8 @@ def verify_best(candidates, key, state, config, today, places):
                     continue
             except RuntimeError as error:
                 print(f"Vérification impossible pour {offer.destination} : {error}", file=sys.stderr)
+            except ConfigError:
+                raise ConfigError("clé SerpApi refusée") from None
         if offer.verified or not offer.group.get("market_low_only"):
             kept.append(offer)
     return kept
