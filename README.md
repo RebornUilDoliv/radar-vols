@@ -15,17 +15,15 @@ Si le quota SerpApi est épuisé ou si la vérification échoue, l'offre peut qu
 
 ## Mise en route
 
-### 1. Créer les trois comptes gratuits
+### 1. Préparer les comptes gratuits
 
 | Service | À récupérer |
 |---|---|
 | [Travelpayouts](https://www.travelpayouts.com/) | Ton token API, dans ton profil |
 | [SerpApi](https://serpapi.com/users/sign_up) | Ta clé API |
-| [Brevo](https://www.brevo.com/free-smtp-server/) | Ton identifiant SMTP et une clé SMTP, dans les réglages SMTP & API |
+| [Gmail](https://myaccount.google.com/apppasswords) | Un mot de passe d'application de 16 lettres, après avoir activé la validation en deux étapes |
 
-Dans Brevo, valide aussi une adresse d'expéditeur. C'est cette adresse qui servira pour `MAIL_FROM`.
-
-Brevo sert d'intermédiaire parce que certaines messageries personnelles, comme Outlook, ne laissent plus un script envoyer simplement des e-mails. Tu recevras quand même les alertes sur ton adresse habituelle.
+Gmail sert uniquement à envoyer les alertes. Tu peux les recevoir sur n'importe quelle adresse grâce à `MAIL_TO`.
 
 ### 2. Comprendre ce qui est public
 
@@ -39,11 +37,9 @@ Dans le dépôt, ouvre **Settings → Secrets and variables → Actions**, puis 
 |---|---|
 | `TRAVELPAYOUTS_TOKEN` | Ton token Travelpayouts |
 | `SERPAPI_KEY` | Ta clé SerpApi |
-| `SMTP_HOST` | `smtp-relay.brevo.com` |
-| `SMTP_PORT` | `587` |
-| `SMTP_USER` | Ton identifiant SMTP Brevo |
-| `SMTP_PASSWORD` | Ta clé SMTP Brevo |
-| `MAIL_FROM` | L'expéditeur validé dans Brevo |
+| `SMTP_USER` | Ton adresse Gmail |
+| `SMTP_PASSWORD` | Le mot de passe d'application Gmail |
+| `MAIL_FROM` | Ton adresse Gmail |
 | `MAIL_TO` | L'adresse qui reçoit les alertes |
 
 Ne mets jamais ces valeurs dans un fichier du dépôt.
@@ -51,6 +47,8 @@ Ne mets jamais ces valeurs dans un fichier du dépôt.
 ### 4. Lancer un premier passage
 
 Dans l'onglet **Actions**, ouvre **Radar de vols**, puis clique sur **Run workflow**. Ensuite, l'outil tournera tout seul vers 7 h 17 et 17 h 17 en hiver, et une heure plus tard en été. GitHub peut parfois lancer le passage avec du retard.
+
+Pour tester uniquement l'envoi, coche **Envoyer seulement un e-mail d'exemple** avant de lancer **Run workflow**. Ce test n'utilise aucune recherche SerpApi.
 
 Si un passage échoue, GitHub t'avertit et le journal du passage indique quoi corriger. Vérifie aussi tes courriers indésirables lors des premières alertes.
 
