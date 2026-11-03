@@ -4,6 +4,11 @@ on:
   schedule:
     - cron: "17 6,16 * * *"
   workflow_dispatch:
+    inputs:
+      test_email:
+        description: "Envoyer seulement un e-mail d'exemple"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -27,7 +32,7 @@ jobs:
           SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
           MAIL_FROM: ${{ secrets.MAIL_FROM }}
           MAIL_TO: ${{ secrets.MAIL_TO }}
-        run: python radar.py
+        run: python radar.py ${{ inputs.test_email && '--test-email' || '' }}
       - name: Sauvegarder l'historique des prix
         if: ${{ !cancelled() }}
         run: |
