@@ -347,8 +347,17 @@ def send_email(message):
     port = int(os.environ.get("SMTP_PORT") or 587)
     with smtplib.SMTP(os.environ["SMTP_HOST"], port, timeout=30) as server:
         server.starttls(context=ssl.create_default_context())
-        server.login(os.environ["SMTP_USER"], os.environ["SMTP_PASSWORD"])
+        server.login(os.environ["SMTP_USER"].strip(), os.environ["SMTP_PASSWORD"].strip())
         server.send_message(message)
+
+
+def describe_smtp_settings():
+    """Décrit le format des accès, sans jamais afficher leur valeur."""
+    user, password = os.environ.get("SMTP_USER", ""), os.environ.get("SMTP_PASSWORD", "")
+    print("Login au format Brevo :", user.strip().endswith("@smtp-brevo.com"))
+    print("Clé de type SMTP :", password.strip().startswith("xsmtpsib-"))
+    print("Clé de type API :", password.strip().startswith("xkeysib-"))
+    print("Espaces autour des accès :", user != user.strip() or password != password.strip())
 
 
 def demo_offers():
@@ -404,6 +413,7 @@ def main():
     config = tomllib.loads(args.config.read_text())
     try:
         if args.test_email:
+            describe_smtp_settings()
             send_email(build_email(demo_offers(), config["search"], demo=True))
             print("E-mail d'exemple envoyé.")
             return 0
