@@ -173,10 +173,12 @@ class VerificationTests(unittest.TestCase):
 
 
 class RejectedKeyTests(unittest.TestCase):
-    def test_serpapi_rejection_names_the_service(self):
-        with mock.patch.object(radar, "http_json", side_effect=radar.ConfigError("x")), \
-                self.assertRaisesRegex(radar.ConfigError, "SerpApi"):
-            run([row("BUE", 650)], key="k")
+    def test_serpapi_rejection_keeps_offers_unverified(self):
+        rows = [row("BUE", 640, TODAY + timedelta(days=60)), row("BUE", 650, TODAY + timedelta(days=95))]
+        with mock.patch.object(radar, "http_json", side_effect=radar.ConfigError("x")) as api:
+            found, _ = run(rows, key="k")
+        self.assertEqual(api.call_count, 1)
+        self.assertEqual([o.verified for o in found], [False, False])
 
     def test_travelpayouts_rejection_names_the_service(self):
         client = radar.Travelpayouts("t", CONFIG["search"])
