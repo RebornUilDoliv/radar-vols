@@ -172,6 +172,19 @@ class VerificationTests(unittest.TestCase):
         self.assertFalse(found[0].verified)
 
 
+class RejectedKeyTests(unittest.TestCase):
+    def test_serpapi_rejection_names_the_service(self):
+        with mock.patch.object(radar, "http_json", side_effect=radar.ConfigError("x")), \
+                self.assertRaisesRegex(radar.ConfigError, "SerpApi"):
+            run([row("BUE", 650)], key="k")
+
+    def test_travelpayouts_rejection_names_the_service(self):
+        client = radar.Travelpayouts("t", CONFIG["search"])
+        with mock.patch.object(radar, "http_json", side_effect=radar.ConfigError("x")), \
+                self.assertRaisesRegex(radar.ConfigError, "Travelpayouts"):
+            client.discovery()
+
+
 class MarketLowOnlyTests(unittest.TestCase):
     def test_low_market_price_alerts(self):
         with mock.patch.object(radar, "http_json", return_value=serp(2000, "low")):
