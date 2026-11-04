@@ -234,6 +234,29 @@ class EmailTests(unittest.TestCase):
         self.assertIn("SMTP_HOST", str(error.exception))
 
 
+class SiteTests(unittest.TestCase):
+    def test_publishes_cached_price_not_budget_or_google_price(self):
+        with tempfile.TemporaryDirectory() as folder, \
+                mock.patch.object(radar, "http_json", return_value=serp(630)), \
+                mock.patch.object(radar.time, "sleep"):
+            site = Path(folder) / "prices.json"
+            radar.run(CONFIG, {}, FakeClient([row("BUE", 650)]), PLACES, "k", TODAY, site)
+            data = radar.json.loads(site.read_text())
+        offer = data["offers"][0]
+        self.assertEqual((offer["city"], offer["price"], offer["region"]), ("Buenos Aires", 650, "Argentine"))
+        self.assertNotIn("max_price", offer)
+        self.assertEqual(offer["history"], [[str(TODAY), 650.0]])
+
+    def test_builds_search_link_when_api_gives_none(self):
+        offer = radar.to_offer(row("BUE", 650, date(2027, 1, 10), 15))
+        self.assertEqual(radar.aviasales_link(offer, CONFIG["search"]),
+                         "https://www.aviasales.com/search/PAR1001BUE25011")
+
+    def test_keeps_api_link(self):
+        offer = radar.to_offer(row("BUE", 650) | {"link": "/search/x"})
+        self.assertEqual(radar.aviasales_link(offer, CONFIG["search"]), "https://www.aviasales.com/search/x")
+
+
 class StateTests(unittest.TestCase):
     def test_history_ignores_today_and_prunes_old(self):
         offer = radar.demo_offers()[0]

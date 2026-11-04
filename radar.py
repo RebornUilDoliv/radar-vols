@@ -14,7 +14,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 from dataclasses import dataclass, field
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 from email.message import EmailMessage
 from pathlib import Path
 
@@ -133,7 +133,7 @@ class Travelpayouts:
 
 
 def load_places():
-    cities = http_json(f"{TP_BASE}/data/en/cities.json")
+    cities = http_json(f"{TP_BASE}/data/fr/cities.json")
     airports = http_json(f"{TP_BASE}/data/en/airports.json")
     by_city = {}
     for airport in airports:
@@ -147,6 +147,42 @@ def load_places():
         }
         for city in cities
     }
+
+
+def aviasales_link(offer, search):
+    return offer.link or (
+        f"https://www.aviasales.com/search/{search['origin_city']}{offer.depart:%d%m}"
+        f"{offer.destination}{offer.back:%d%m}1"
+    )
+
+
+def site_rows(offers, state, search):
+    """Prix Travelpayouts publiés sur le site, sans budget ni vérification Google."""
+    history = state.get("history", {})
+    rows = [
+        {
+            "city": offer.city_name,
+            "code": offer.destination,
+            "region": offer.group["name"],
+            "price": round(offer.price),
+            "usual": round(offer.median) if offer.median else None,
+            "depart": offer.depart.isoformat(),
+            "back": offer.back.isoformat(),
+            "stops": offer.stops,
+            "link": aviasales_link(offer, search),
+            "history": sorted(history.get(offer.key, {}).items()),
+        }
+        for offer in offers
+    ]
+    return sorted(rows, key=lambda row: row["price"])
+
+
+def write_site(path, offers, state, search):
+    data = {
+        "updated": datetime.now(timezone.utc).isoformat(timespec="minutes"),
+        "offers": site_rows(offers, state, search),
+    }
+    path.write_text(json.dumps(data, ensure_ascii=False, separators=(",", ":")) + "\n")
 
 
 def attach_group(offer, groups, places):
@@ -391,7 +427,7 @@ def save_state(path, state):
     path.write_text(json.dumps(state, indent=1, sort_keys=True) + "\n")
 
 
-def run(config, state, client, places, serpapi_key, today):
+def run(config, state, client, places, serpapi_key, today, site=None):
     """Renvoie les offres à annoncer et met l'historique à jour."""
     search, alerts, groups = config["search"], config["alerts"], config["group"]
     offers = client.discovery()
@@ -409,6 +445,8 @@ def run(config, state, client, places, serpapi_key, today):
         if qualify(o, state, alerts, today) and not already_alerted(o, state, alerts, today)
     ]
     update_history(state, offers, today)
+    if site:
+        write_site(site, offers, state, search)
     found = verify_best(candidates, serpapi_key, state, config, today, places)
     print(f"{len(offers)} prix analysés, {len(candidates)} candidats, {len(found)} à envoyer.")
     return found
@@ -418,6 +456,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--config", type=Path, default=ROOT / "config.toml")
     parser.add_argument("--state", type=Path, default=ROOT / "data" / "state.json")
+    parser.add_argument("--site", type=Path, default=ROOT / "docs" / "prices.json")
     parser.add_argument("--dry-run", action="store_true", help="affiche les offres sans e-mail, sans sauvegarde et sans utiliser SerpApi")
     parser.add_argument("--test-email", action="store_true", help="envoie un e-mail d'exemple")
     args = parser.parse_args()
@@ -435,7 +474,8 @@ def main():
         state = load_state(args.state)
         client = Travelpayouts(token, config["search"])
         serpapi_key = None if args.dry_run else os.environ.get("SERPAPI_KEY")
-        found = run(config, state, client, load_places(), serpapi_key, today)
+        site = None if args.dry_run else args.site
+        found = run(config, state, client, load_places(), serpapi_key, today, site)
         if args.dry_run:
             for offer in found:
                 print(f"{offer.city_name} {offer.price:.0f} € {offer.depart} → {offer.back} ({offer.reason})")

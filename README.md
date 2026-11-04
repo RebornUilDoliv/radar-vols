@@ -87,6 +87,12 @@ Pour vérifier les tests automatiques :
 python3 -m unittest test_radar
 ```
 
+## Le site public
+
+Après chaque passage, le radar écrit les prix Travelpayouts dans `docs/prices.json`, et GitHub Pages les affiche sur le site. Les budgets et les prix vérifiés via SerpApi ne sont jamais publiés.
+
+Le script partenaire de Travelpayouts se charge uniquement si le visiteur accepte les cookies.
+
 ## Limites
 
 - Les prix Travelpayouts viennent d'un cache alimenté par les recherches d'autres utilisateurs. Il peut donc rater des offres ou couvrir certaines destinations moins bien.
