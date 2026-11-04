@@ -22,6 +22,8 @@ ROOT = Path(__file__).parent
 TP_BASE = "https://api.travelpayouts.com"
 SERPAPI_URL = "https://serpapi.com/search"
 HISTORY_KEEP_DAYS = 90
+STALE_DAYS = 7
+STALE_MARGIN = 0.15
 
 
 class ConfigError(Exception):
@@ -47,6 +49,10 @@ class Offer:
     @property
     def key(self):
         return f"{self.destination}|{self.depart:%Y-%m}"
+
+    @property
+    def trip(self):
+        return f"{self.destination}|{self.depart}|{self.back}"
 
 
 def http_json(url, headers=None, retries=2):
@@ -178,10 +184,11 @@ def site_rows(offers, state, search):
     return sorted(rows, key=lambda row: row["price"])
 
 
-def write_site(path, offers, state, search):
+def write_site(path, rows, state):
+    stale = state.get("stale", {})
     data = {
         "updated": datetime.now(timezone.utc).isoformat(timespec="minutes"),
-        "offers": site_rows(offers, state, search),
+        "offers": [r for r in rows if f"{r['code']}|{r['depart']}|{r['back']}" not in stale],
     }
     path.write_text(json.dumps(data, ensure_ascii=False, separators=(",", ":")) + "\n")
 
@@ -306,6 +313,26 @@ def rank(offer):
     return offer.price / offer.group.get("max_price", offer.price)
 
 
+def is_stale(offer, state, today):
+    """Vrai si le contrôle a déjà démenti ce prix, sauf nouvelle baisse nette."""
+    last = state.get("stale", {}).get(offer.trip)
+    if not last:
+        return False
+    recent = today - date.fromisoformat(last["date"]) <= timedelta(days=STALE_DAYS)
+    return recent and offer.price >= last["price"] * (1 - STALE_MARGIN)
+
+
+def mark_stale(state, offer, cached, today):
+    state.setdefault("stale", {})[offer.trip] = {"price": cached, "date": today.isoformat()}
+
+
+def prune_stale(state, today):
+    limit = (today - timedelta(days=STALE_DAYS)).isoformat()
+    stale = state.get("stale", {})
+    for trip in [t for t, entry in stale.items() if entry["date"] < limit]:
+        del stale[trip]
+
+
 def verify_best(candidates, key, state, config, today, places):
     alerts, search = config["alerts"], config["search"]
     allowance = min(config["serpapi"]["per_run_limit"], serpapi_left(state, config["serpapi"], today))
@@ -316,8 +343,12 @@ def verify_best(candidates, key, state, config, today, places):
         if key and allowance > 0:
             allowance -= 1
             count_serpapi(state, today)
+            cached = offer.price
             try:
-                if not verify(offer, key, search, places) or not still_good(offer, alerts):
+                exists = verify(offer, key, search, places)
+                if not exists or offer.price > cached * (1 + STALE_MARGIN):
+                    mark_stale(state, offer, cached, today)
+                if not exists or not still_good(offer, alerts):
                     continue
             except RuntimeError as error:
                 print(f"Vérification impossible pour {offer.destination} : {error}", file=sys.stderr)
@@ -439,16 +470,21 @@ def run(config, state, client, places, serpapi_key, today, site=None):
                 time.sleep(0.2)
     if client.calls and client.failures == client.calls:
         raise RuntimeError("Travelpayouts ne répond plus")
-    offers = [o for o in offers if attach_group(o, groups, places) and in_window(o, search, today)]
+    prune_stale(state, today)
+    offers = [
+        o for o in offers
+        if attach_group(o, groups, places) and in_window(o, search, today) and not is_stale(o, state, today)
+    ]
     offers = cheapest_by_month(offers)
     candidates = [
         o for o in offers
         if qualify(o, state, alerts, today) and not already_alerted(o, state, alerts, today)
     ]
     update_history(state, offers, today)
-    if site:
-        write_site(site, offers, state, search)
+    rows = site_rows(offers, state, search)
     found = verify_best(candidates, serpapi_key, state, config, today, places)
+    if site:
+        write_site(site, rows, state)
     print(f"{len(offers)} prix analysés, {len(candidates)} candidats, {len(found)} à envoyer.")
     return found
 

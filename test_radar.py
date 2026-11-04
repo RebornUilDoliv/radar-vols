@@ -261,6 +261,50 @@ class SiteTests(unittest.TestCase):
         self.assertEqual(radar.aviasales_link(offer, CONFIG["search"]), "https://www.aviasales.com/search/x")
 
 
+class StaleTests(unittest.TestCase):
+    def site_after(self, rows, state, price):
+        with tempfile.TemporaryDirectory() as folder, \
+                mock.patch.object(radar, "http_json", return_value=price), \
+                mock.patch.object(radar.time, "sleep"):
+            site = Path(folder) / "prices.json"
+            found = radar.run(CONFIG, state, FakeClient(rows), PLACES, "k", TODAY, site)
+            return found, radar.json.loads(site.read_text())["offers"]
+
+    def test_refuted_price_leaves_site_and_is_not_rechecked(self):
+        state = {}
+        found, offers = self.site_after([row("LIS", 40, days=5)], state, serp(90))
+        self.assertEqual((found, offers), ([], []))
+        with mock.patch.object(radar, "http_json") as api:
+            found, _ = run([row("LIS", 41, days=5)], state, key="k")
+        api.assert_not_called()
+        self.assertEqual(found, [])
+
+    def test_vanished_flight_leaves_site(self):
+        found, offers = self.site_after([row("BUE", 650)], {}, {"best_flights": []})
+        self.assertEqual((found, offers), ([], []))
+
+    def test_large_rise_still_alerts_under_budget_but_leaves_site(self):
+        found, offers = self.site_after([row("BUE", 500)], {}, serp(650))
+        self.assertEqual([o.price for o in found], [650])
+        self.assertEqual(offers, [])
+
+    def test_confirmed_price_stays_on_site_with_cached_value(self):
+        _, offers = self.site_after([row("BUE", 650)], {}, serp(660))
+        self.assertEqual([o["price"] for o in offers], [650])
+
+    def test_new_drop_is_checked_again(self):
+        state = {"stale": {radar.to_offer(row("LIS", 40, days=5)).trip: {"price": 40, "date": str(TODAY)}}}
+        with mock.patch.object(radar, "http_json", return_value=serp(30)):
+            found, _ = run([row("LIS", 30, days=5)], state, key="k")
+        self.assertEqual(len(found), 1)
+
+    def test_old_entries_expire(self):
+        trip = radar.to_offer(row("LIS", 40, days=5)).trip
+        state = {"stale": {trip: {"price": 40, "date": str(TODAY - timedelta(days=8))}}}
+        radar.prune_stale(state, TODAY)
+        self.assertEqual(state["stale"], {})
+
+
 class StateTests(unittest.TestCase):
     def test_history_ignores_today_and_prunes_old(self):
         offer = radar.demo_offers()[0]
