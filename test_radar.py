@@ -70,6 +70,10 @@ class FormatTests(unittest.TestCase):
     def test_skips_one_way_rows(self):
         self.assertIsNone(radar.to_offer({"destination": "LIS", "price": 20, "departure_at": "2027-01-10"}))
 
+    def test_skips_expired_prices(self):
+        self.assertIsNone(radar.to_offer(row("LIS", 20) | {"expires_at": "2000-01-01T09:32:44Z"}))
+        self.assertIsNotNone(radar.to_offer(row("LIS", 20) | {"expires_at": "2999-01-01T09:32:44Z"}))
+
     def test_months_cross_new_year(self):
         self.assertEqual(list(radar.months_between(date(2026, 11, 3), 3)), ["2026-11", "2026-12", "2027-01"])
 
