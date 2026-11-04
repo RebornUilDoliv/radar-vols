@@ -187,26 +187,20 @@
     var clean = function (text) { return text.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase(); };
 
     function card(o) {
-      var item = el("li", "offer");
-      var info = el("div");
+      var item = el("li", "row");
+      item.appendChild(el("p", "row-price", euro(o.price)));
+      var info = el("div", "row-info");
       var title = el("h3");
       var link = el("a", "", o.city);
       link.href = ROOT + "destinations/" + o.slug + "/";
       title.appendChild(link);
       info.appendChild(title);
-      var meta = el("p", "meta", o.region + " · " + stops(o));
-      info.appendChild(meta);
-      info.appendChild(el("p", "meta", shortDate(o.depart) + " → " + shortDate(o.back) + " · " + days(o) + " jours"));
-      var end = el("div", "offer-end");
-      var price = el("p", "price");
-      price.appendChild(el("small", "", "dès "));
-      price.appendChild(document.createTextNode(euro(o.price)));
-      var cta = el("a", "btn", "Voir ce vol");
+      info.appendChild(el("p", "", fmt(o.depart, { day: "numeric", month: "short" }) + " → " + shortDate(o.back) + " · " + days(o) + " jours · " + stops(o)));
+      var cta = el("a", "go", "Voir le vol");
       cta.href = safeLink(o.link);
       cta.target = "_blank";
       cta.rel = "nofollow sponsored noopener";
-      end.appendChild(price); end.appendChild(cta);
-      item.appendChild(info); item.appendChild(end);
+      item.appendChild(info); item.appendChild(cta);
       return item;
     }
 

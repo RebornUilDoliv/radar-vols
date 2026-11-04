@@ -93,11 +93,11 @@ def layout(site, title, description, path, body, scripts=True):
 <body data-root="{root}">
 <a class="skip" href="#contenu">Aller au contenu</a>
 <header class="nav">
-  <a class="logo" href="{root}"><img src="{root}assets/icon.svg" alt="" width="30" height="30">{name}</a>
+  <a class="logo" href="{root}">{name}</a>
   <nav aria-label="Navigation principale">
-    <a href="{root}vols/">Tous les vols</a>
+    <a href="{root}vols/">Les vols</a>
     <a href="{root}destinations/">Destinations</a>
-    <a href="{root}a-propos/">Comment ça marche</a>
+    <a href="{root}a-propos/">Infos</a>
   </nav>
 </header>
 <main id="contenu">
@@ -106,9 +106,9 @@ def layout(site, title, description, path, body, scripts=True):
 <footer class="foot">
   <div class="wrap">
     <p class="foot-brand">{name}</p>
-    <p>Les prix affichés proviennent de recherches récentes et sont indicatifs. Le prix final, les bagages et les options se vérifient sur le site de réservation.</p>
-    <p>{name} ne vend pas de billets et n'est pas un site officiel d'une compagnie aérienne. Les liens vers les vols sont affiliés : une réservation peut rapporter une commission au site, sans frais pour toi.</p>
-    <p><a href="{root}a-propos/">Comment ça marche</a> · <a href="{root}destinations/">Destinations</a></p>
+    <p>Les prix viennent de recherches récentes et peuvent changer vite. Vérifie toujours le prix final, les bagages et les options avant de payer.</p>
+    <p>{name} ne vend pas de billets. Les liens vers les vols sont affiliés : si tu réserves, le site peut toucher une commission, sans frais pour toi.</p>
+    <p><a href="{root}a-propos/">Infos</a> · <a href="{root}destinations/">Destinations</a></p>
   </div>
 </footer>
 </body>
@@ -119,38 +119,47 @@ def layout(site, title, description, path, body, scripts=True):
 def flight_card(offer, root, city=None):
     label = e(offer["city"])
     title = f'<a href="{root}destinations/{city["slug"]}/">{label}</a>' if city else label
-    return f"""<li class="offer">
-  <div>
+    return f"""<li class="row">
+  <p class="row-price">{euro(offer['price'])}</p>
+  <div class="row-info">
     <h3>{title}</h3>
-    <p class="meta">{e(day(offer['depart'], False))} → {e(day(offer['back']))}<br>{nights(offer)} jours · {e(stops(offer))}</p>
+    <p>{e(day(offer['depart'], False))} → {e(day(offer['back']))} · {nights(offer)} jours · {e(stops(offer))}</p>
   </div>
-  <div class="offer-end">
-    <p class="price"><small>dès</small> {euro(offer['price'])}</p>
-    <a class="btn" href="{e(offer['link'])}" rel="nofollow sponsored noopener" target="_blank">Voir ce vol</a>
-  </div>
+  <a class="go" href="{e(offer['link'])}" rel="nofollow sponsored noopener" target="_blank">Voir le vol</a>
 </li>"""
 
 
-def radar_art():
-    sweep = "".join(f'<circle cx="300" cy="300" r="{r}"/>' for r in (70, 140, 210, 280))
-    return f"""<svg class="art" viewBox="0 0 600 600" aria-hidden="true">
-<g class="rings">{sweep}<path d="M300 20V580M20 300H580"/></g>
-<path class="sweep" d="M300 300 L300 20 A280 280 0 0 1 498 102 Z"/>
-<circle class="blip" cx="400" cy="170" r="7"/><circle class="blip b2" cx="190" cy="240" r="5"/><circle class="blip b3" cx="430" cy="380" r="5"/>
-</svg>"""
+def photo_url(site, code):
+    if (DOCS / "assets" / "photos" / f"{code}.jpg").exists():
+        return f"{site['root']}assets/photos/{code}.jpg"
+    return None
+
+
+def deal_tile(site, city, index):
+    best, root = city["best"], site["root"]
+    url = photo_url(site, city["code"])
+    picture = f'<img src="{e(url)}" alt="" loading="lazy">' if url else ""
+    tone = "" if url else f" tone-{index % 3}"
+    return f"""<li class="tile{tone}">
+  <a href="{root}destinations/{city['slug']}/">{picture}
+    <span class="sticker">{euro(best['price'])}</span>
+    <span class="tile-name">{e(city['city'])}</span>
+    <span class="tile-date">{e(day(best['depart'], False))} → {e(day(best['back'], False))}</span>
+  </a>
+</li>"""
 
 
 def search_form(root):
     return f"""<form class="search" id="search" data-target="https://www.aviasales.com/search/" autocomplete="off">
-  <div class="field grow"><label for="from">Départ</label><input id="from" value="Paris (PAR)" data-code="PAR" placeholder="Ville de départ" required>
+  <div class="field grow"><label for="from">D'où ?</label><input id="from" value="Paris (PAR)" data-code="PAR" placeholder="Ville ou aéroport" required>
     <ul class="suggest" hidden></ul></div>
   <button class="swap" id="swap" type="button" aria-label="Inverser départ et destination">⇄</button>
-  <div class="field grow"><label for="to">Destination</label><input id="to" placeholder="N'importe où dans le monde" required>
+  <div class="field grow"><label for="to">Où ?</label><input id="to" placeholder="Partout dans le monde" required>
     <ul class="suggest" hidden></ul></div>
   <div class="field"><label for="out">Aller</label><input id="out" type="date" required></div>
   <div class="field"><label for="back">Retour</label><input id="back" type="date"></div>
-  <div class="field small"><label for="pax">Voyageurs</label><select id="pax"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></div>
-  <button class="btn big" type="submit">Chercher</button>
+  <div class="field small"><label for="pax">Personnes</label><select id="pax"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></div>
+  <button class="search-go" type="submit">Chercher</button>
   <p class="form-error" id="search-error" role="alert" hidden></p>
 </form>"""
 
@@ -159,62 +168,68 @@ def home(site, cities, offers, updated):
     root = site["root"]
     today = date.today()
     by_code = {c["code"]: c for c in cities}
-    deals = "".join(flight_card(c["best"], root, c) for c in cities[:6])
+    top = cities[0]
+    best = top["best"]
+    tiles = "".join(deal_tile(site, c, i) for i, c in enumerate(cities[1:7]))
+    deals = "".join(flight_card(c["best"], root, c) for c in cities[7:13])
     soon_list = sorted((o for o in offers if (date.fromisoformat(o["depart"]) - today).days <= SOON_DAYS), key=lambda o: o["price"])
     ahead_list = sorted((o for o in offers if (date.fromisoformat(o["depart"]) - today).days >= AHEAD_DAYS), key=lambda o: o["price"])
+
     def unique(items):
         seen, out = set(), []
         for item in items:
             if item["code"] not in seen:
-                seen.add(item["code"]); out.append(item)
-        return out[:3]
+                seen.add(item["code"])
+                out.append(item)
+        return out[:4]
+
     soon = "".join(flight_card(o, root, by_code[o["code"]]) for o in unique(soon_list))
     ahead = "".join(flight_card(o, root, by_code[o["code"]]) for o in unique(ahead_list))
     regions = {}
     for offer in offers:
         regions[offer["region"]] = min(offer["price"], regions.get(offer["region"], 10**9))
-    region_cards = "".join(
-        f'<a class="tile" href="{root}vols/?region={e(name)}"><strong>{e(name)}</strong><span>dès {euro(price)}</span></a>'
+    region_links = "".join(
+        f'<li><a href="{root}vols/?region={e(name)}"><span>{e(name)}</span><b>dès {euro(price)}</b></a></li>'
         for name, price in sorted(regions.items(), key=lambda kv: kv[1])
     )
     budgets = "".join(
-        f'<a class="tile budget" href="{root}vols/?budget={value}"><strong>{euro(value)}</strong><span>{sum(1 for c in cities if c["best"]["price"] <= value)} destinations</span></a>'
-        for value in (100, 300, 600, 1000)
+        f'<a class="budget b{i}" href="{root}vols/?budget={value}"><small>Moins de</small><strong>{euro(value)}</strong><span>{sum(1 for c in cities if c["best"]["price"] <= value)} destinations</span></a>'
+        for i, value in enumerate((100, 300, 600, 1000))
     )
     body = f"""<section class="hero">
-  {radar_art()}
-  <div class="wrap">
-    <p class="kicker">Comparateur de vols</p>
-    <h1>Repère les vols pas chers avant qu'ils disparaissent.</h1>
-    <p class="lead">Cherche un vol partout dans le monde, ou laisse le radar te montrer les meilleures occasions au départ de Paris.</p>
-    {search_form(root)}
+  <div class="wrap hero-in">
+    <p class="flash">Le meilleur prix du moment</p>
+    <h1>Paris → {e(best['city'])}</h1>
+    <p class="hero-price">{euro(best['price'])}</p>
+    <p class="hero-note">aller-retour, {e(day(best['depart'], False))} → {e(day(best['back']))}. Vu le {e(updated)}, à confirmer.</p>
+    <a class="hero-go" href="{e(best['link'])}" rel="nofollow sponsored noopener" target="_blank">Voir ce vol</a>
   </div>
 </section>
-<section class="band wrap">
-  <div class="head"><h2>Les meilleures occasions du moment</h2><a href="{root}vols/">Tous les vols →</a></div>
-  <p class="sub">Au départ de Paris, aller-retour par personne. Dernier relevé : {e(updated)}. Prix indicatifs à confirmer.</p>
-  <ul class="grid">{deals}</ul>
+<section class="finder">
+  <div class="wrap"><h2>Tu pars d'où ? Tu vas où ?</h2>{search_form(root)}</div>
 </section>
 <section class="band wrap">
-  <div class="head"><h2>Où aller avec ton budget ?</h2></div>
-  <div class="tiles four">{budgets}</div>
+  <div class="head"><h2>Ça part à petit prix</h2><a href="{root}vols/">Tout voir</a></div>
+  <ul class="tiles">{tiles}</ul>
+  <ul class="rows">{deals}</ul>
 </section>
+<section class="budgets"><div class="wrap"><h2>T'as combien ?</h2><div class="budget-grid">{budgets}</div></div></section>
 <section class="band wrap two">
-  <div><h2>Partir bientôt</h2><p class="sub">Départ dans moins de {SOON_DAYS} jours. La dernière minute n'est pas toujours moins chère : voici ce qui reste intéressant.</p><ul class="stack">{soon or '<li class="empty">Rien d\'intéressant pour le moment.</li>'}</ul></div>
-  <div><h2>Réserver à l'avance</h2><p class="sub">Départ dans plus de 5 mois, pour les voyages qui se préparent.</p><ul class="stack">{ahead or '<li class="empty">Rien d\'intéressant pour le moment.</li>'}</ul></div>
+  <div><h2>Partir bientôt</h2><p class="sub">Moins de {SOON_DAYS} jours avant le départ. La dernière minute coûte souvent plus cher, alors on garde seulement ce qui vaut le coup.</p><ul class="rows">{soon or '<li class="empty">Rien de bon pour le moment.</li>'}</ul></div>
+  <div><h2>Réserver à l'avance</h2><p class="sub">Départ dans plus de 5 mois. Pour bloquer un prix et voir venir.</p><ul class="rows">{ahead or '<li class="empty">Rien de bon pour le moment.</li>'}</ul></div>
 </section>
 <section class="band wrap">
-  <div class="head"><h2>Explorer par région</h2></div>
-  <div class="tiles">{region_cards}</div>
+  <div class="head"><h2>Par coin du monde</h2></div>
+  <ul class="region-list">{region_links}</ul>
 </section>"""
-    return layout(site, f"{site['name']} — vols pas chers depuis Paris et partout dans le monde",
-                  "Cherche un vol partout dans le monde et repère les meilleures occasions au départ de Paris, relevées deux fois par jour.", "", body)
+    return layout(site, f"{site['name']} — les vols pas chers du moment",
+                  "Les vols les moins chers repérés au départ de Paris, et une recherche pour partir de partout vers partout.", "", body)
 
 
 def flights_page(site):
     body = """<section class="page wrap">
-  <h1>Tous les vols au départ de Paris</h1>
-  <p class="lead dark">Filtre par région, mois, budget ou durée. Prix indicatifs, à confirmer sur le site de réservation.</p>
+  <h1>Tous les vols depuis Paris</h1>
+  <p class="lead">Fixe ton budget et trie. Les prix bougent vite : vérifie avant de payer.</p>
   <form class="filters" id="filters" aria-label="Filtrer les vols">
     <label>Rechercher<input id="q" type="search" placeholder="Une ville"></label>
     <label>Région<select id="region"><option value="">Toutes</option></select></label>
@@ -224,8 +239,8 @@ def flights_page(site):
     <label>Trier<select id="sort"><option value="price">Prix</option><option value="depart">Date de départ</option></select></label>
   </form>
   <p class="count" id="count" role="status"></p>
-  <ul class="grid list" id="offers"></ul>
-  <button class="btn more" id="more" type="button" hidden>Afficher plus de vols</button>
+  <ul class="rows" id="offers"></ul>
+  <button class="more" id="more" type="button" hidden>Afficher plus de vols</button>
 </section>"""
     return layout(site, f"Tous les vols pas chers depuis Paris | {site['name']}",
                   "Tous les vols aller-retour repérés au départ de Paris, à filtrer par région, mois, budget et durée.", "vols/", body)
@@ -243,7 +258,7 @@ def destinations_index(site, cities):
             for c in sorted(groups[region], key=lambda c: c["city"])
         )
         blocks += f'<section class="dest-group"><h2>{e(region)}</h2><ul class="links">{links}</ul></section>'
-    body = f'<section class="page wrap"><h1>Toutes les destinations</h1><p class="lead dark">{len(cities)} destinations surveillées au départ de Paris.</p>{blocks}</section>'
+    body = f'<section class="page wrap"><h1>Toutes les destinations</h1><p class="lead">{len(cities)} villes surveillées au départ de Paris.</p>{blocks}</section>'
     return layout(site, f"Destinations au départ de Paris | {site['name']}",
                   f"{len(cities)} destinations surveillées au départ de Paris, du moins cher au plus cher.", "destinations/", body)
 
@@ -267,7 +282,7 @@ def destination_page(site, city, cities):
     rows = "".join(
         f'<tr><th scope="row">{e(month_name(key).capitalize())}</th><td>{e(day(o["depart"]))} → {e(day(o["back"]))}</td>'
         f'<td>{e(stops(o))}</td><td class="num">{euro(o["price"])}</td>'
-        f'<td><a class="btn tiny" href="{e(o["link"])}" rel="nofollow sponsored noopener" target="_blank">Voir</a></td></tr>'
+        f'<td><a class="go small" href="{e(o["link"])}" rel="nofollow sponsored noopener" target="_blank">Voir</a></td></tr>'
         for key, o in sorted(months.items())
     )
     cheapest_month = month_name(best["depart"][:7])
@@ -285,9 +300,10 @@ def destination_page(site, city, cities):
     name = e(city["city"])
     body = f"""<section class="page wrap">
   <p class="crumb"><a href="{root}destinations/">Destinations</a> › {e(city['region'])}</p>
-  <h1>Vols Paris – {name} pas chers</h1>
-  <p class="lead dark">Dernier prix relevé : <strong>{euro(best['price'])}</strong> l'aller-retour en {e(cheapest_month)}. Prix indicatif, à confirmer avant de réserver.</p>
-  <a class="btn big" href="{e(best['link'])}" rel="nofollow sponsored noopener" target="_blank">Voir ce vol à {euro(best['price'])}</a>
+  <h1>Paris → {name}</h1>
+  <p class="city-price">{euro(best['price'])}</p>
+  <p class="lead">Le prix le plus bas vu pour un aller-retour, en {e(cheapest_month)}. À confirmer avant de payer.</p>
+  <a class="hero-go" href="{e(best['link'])}" rel="nofollow sponsored noopener" target="_blank">Voir ce vol</a>
   <section class="panel"><h2>Le meilleur prix par mois</h2>
     <div class="scroll"><table><thead><tr><th scope="col">Mois</th><th scope="col">Dates</th><th scope="col">Escales</th><th scope="col" class="num">Prix</th><th scope="col"><span class="sr">Lien</span></th></tr></thead><tbody>{rows}</tbody></table></div>
   </section>
@@ -308,11 +324,12 @@ def about_page(site):
         ("La dernière minute est-elle moins chère ?", "En général, non : les prix ont plutôt tendance à monter à l'approche du départ, même s'il existe des exceptions selon les trajets. C'est pour cela que la section « Partir bientôt » montre seulement ce qui reste intéressant."),
         ("Puis-je chercher un vol depuis une autre ville ?", "Oui. Le moteur de recherche de la page d'accueil fonctionne pour des vols partout dans le monde. Les occasions repérées par le radar sont, pour l'instant, au départ de Paris."),
         (f"Comment {name} gagne-t-il de l'argent ?", "Les liens vers les vols sont affiliés. Si tu réserves après avoir cliqué, le site peut toucher une commission, sans frais supplémentaires pour toi."),
+        ("D'où viennent les photos ?", "Les photos du site sont issues de Wikimedia Commons, dans le domaine public ou sous licence CC0."),
         ("Puis-je réserver directement ici ?", f"Non. {name} ne vend pas de billets. La réservation et le paiement se font sur le site du partenaire, qui gère aussi les modifications et les remboursements."),
     ]
     items = "".join(f"<details><summary>{e(q)}</summary><p>{a}</p></details>" for q, a in faq)
-    body = f'<section class="page wrap narrow"><h1>Comment ça marche</h1><p class="lead dark">Un radar pour repérer les bons prix, et un moteur pour chercher un vol partout dans le monde.</p><div class="faq">{items}</div><p><a class="btn" href="{root}">Chercher un vol</a></p></section>'
-    return layout(site, f"Comment ça marche | {site['name']}", f"D'où viennent les prix de {site['name']} et comment fonctionne le site.", "a-propos/", body)
+    body = f'<section class="page wrap narrow"><h1>Comment ça marche</h1><p class="lead">Tout ce qu\'il faut savoir avant de cliquer.</p><div class="faq">{items}</div><p><a class="hero-go" href="{root}">Chercher un vol</a></p></section>'
+    return layout(site, f"Infos | {site['name']}", f"D'où viennent les prix de {site['name']} et comment fonctionne le site.", "a-propos/", body)
 
 
 def write(path, content):
@@ -345,7 +362,7 @@ def build(data, site, places=None, countries=None):
     write(DOCS / "destinations" / "index.html", destinations_index(site, cities))
     write(DOCS / "a-propos" / "index.html", about_page(site))
     write(DOCS / "404.html", layout(site, f"Page introuvable | {site['name']}", "Cette page n'existe pas.", "404.html",
-                                    f'<section class="page wrap narrow"><h1>Cette page n\'existe pas</h1><p class="lead dark">Elle a peut-être changé d\'adresse.</p><a class="btn" href="{site["root"]}">Retour à l\'accueil</a></section>', scripts=False))
+                                    f'<section class="page wrap narrow"><h1>Cette page n\'existe pas</h1><p class="lead">Elle a peut-être changé d\'adresse.</p><a class="hero-go" href="{site["root"]}">Retour à l\'accueil</a></section>', scripts=False))
     shutil.rmtree(DOCS / "destinations" / "_tmp", ignore_errors=True)
     keep = {c["slug"] for c in cities}
     for folder in (DOCS / "destinations").iterdir():
