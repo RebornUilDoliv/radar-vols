@@ -10,23 +10,23 @@
 <meta property="og:description" content="Tous les vols aller-retour repérés au départ de Paris, à filtrer par région, mois, budget et durée.">
 <meta property="og:type" content="website">
 <link rel="icon" href="/radar-vols/assets/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/radar-vols/assets/style.css?v=202611041457">
-<script src="/radar-vols/assets/app.js?v=202611041457" defer></script>
+<link rel="stylesheet" href="/radar-vols/assets/style.css?v=202611041554">
+<script src="/radar-vols/assets/app.js?v=202611041554" defer></script>
 </head>
 <body data-root="/radar-vols/">
 <a class="skip" href="#contenu">Aller au contenu</a>
 <header class="nav">
-  <a class="logo" href="/radar-vols/"><img src="/radar-vols/assets/icon.svg" alt="" width="30" height="30">Radar Flight</a>
+  <a class="logo" href="/radar-vols/">Radar Flight</a>
   <nav aria-label="Navigation principale">
-    <a href="/radar-vols/vols/">Tous les vols</a>
+    <a href="/radar-vols/vols/">Les vols</a>
     <a href="/radar-vols/destinations/">Destinations</a>
-    <a href="/radar-vols/a-propos/">Comment ça marche</a>
+    <a href="/radar-vols/a-propos/">Infos</a>
   </nav>
 </header>
 <main id="contenu">
 <section class="page wrap">
-  <h1>Tous les vols au départ de Paris</h1>
-  <p class="lead dark">Filtre par région, mois, budget ou durée. Prix indicatifs, à confirmer sur le site de réservation.</p>
+  <h1>Tous les vols depuis Paris</h1>
+  <p class="lead">Fixe ton budget et trie. Les prix bougent vite : vérifie avant de payer.</p>
   <form class="filters" id="filters" aria-label="Filtrer les vols">
     <label>Rechercher<input id="q" type="search" placeholder="Une ville"></label>
     <label>Région<select id="region"><option value="">Toutes</option></select></label>
@@ -36,16 +36,16 @@
     <label>Trier<select id="sort"><option value="price">Prix</option><option value="depart">Date de départ</option></select></label>
   </form>
   <p class="count" id="count" role="status"></p>
-  <ul class="grid list" id="offers"></ul>
-  <button class="btn more" id="more" type="button" hidden>Afficher plus de vols</button>
+  <ul class="rows" id="offers"></ul>
+  <button class="more" id="more" type="button" hidden>Afficher plus de vols</button>
 </section>
 </main>
 <footer class="foot">
   <div class="wrap">
     <p class="foot-brand">Radar Flight</p>
-    <p>Les prix affichés proviennent de recherches récentes et sont indicatifs. Le prix final, les bagages et les options se vérifient sur le site de réservation.</p>
-    <p>Radar Flight ne vend pas de billets et n'est pas un site officiel d'une compagnie aérienne. Les liens vers les vols sont affiliés : une réservation peut rapporter une commission au site, sans frais pour toi.</p>
-    <p><a href="/radar-vols/a-propos/">Comment ça marche</a> · <a href="/radar-vols/destinations/">Destinations</a></p>
+    <p>Les prix viennent de recherches récentes et peuvent changer vite. Vérifie toujours le prix final, les bagages et les options avant de payer.</p>
+    <p>Radar Flight ne vend pas de billets. Les liens vers les vols sont affiliés : si tu réserves, le site peut toucher une commission, sans frais pour toi.</p>
+    <p><a href="/radar-vols/a-propos/">Infos</a> · <a href="/radar-vols/destinations/">Destinations</a></p>
   </div>
 </footer>
 </body>
