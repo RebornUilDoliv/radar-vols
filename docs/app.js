@@ -3,6 +3,7 @@
   var PAGE = 40;
   var STORAGE = "radar-consent";
   var all = [];
+  var current = [];
   var shown = PAGE;
   var $ = function (id) { return document.getElementById(id); };
   var euro = function (n) { return Math.round(n).toLocaleString("fr-FR") + " €"; };
@@ -146,14 +147,34 @@
     });
   }
 
+  function updateMore() {
+    var total = current.length;
+    var visible = Math.min(shown, total);
+    $("more").hidden = total <= shown;
+    $("more").textContent = "Afficher plus de vols (" + visible + " sur " + total + ")";
+  }
+
   function render() {
-    var list = filtered();
+    current = filtered();
+    shown = PAGE;
     var box = $("offers");
     box.textContent = "";
-    if (!list.length) box.appendChild(el("li", "empty", "Aucun vol avec ces filtres. Essaie un budget plus large ou un autre mois."));
-    list.slice(0, shown).forEach(function (offer) { box.appendChild(card(offer)); });
-    $("count").textContent = list.length + " vol" + (list.length > 1 ? "s" : "") + " · du moins cher au plus cher";
-    $("more").hidden = list.length <= shown;
+    if (!current.length) box.appendChild(el("li", "empty", "Aucun vol avec ces filtres. Essaie un budget plus large ou un autre mois."));
+    current.slice(0, shown).forEach(function (offer) { box.appendChild(card(offer)); });
+    $("count").textContent = current.length + " vol" + (current.length > 1 ? "s" : "") + " · du moins cher au plus cher";
+    updateMore();
+  }
+
+  function showMore() {
+    var box = $("offers");
+    var added = current.slice(shown, shown + PAGE).map(card);
+    added.forEach(function (item) { box.appendChild(item); });
+    shown += PAGE;
+    updateMore();
+    if (added.length) {
+      added[0].tabIndex = -1;
+      added[0].focus({ preventScroll: true });
+    }
   }
 
   function fill(select, values, label) {
@@ -180,8 +201,8 @@
     render();
   }
 
-  $("filters").addEventListener("change", function () { shown = PAGE; render(); });
-  $("more").addEventListener("click", function () { shown += PAGE; render(); });
+  $("filters").addEventListener("change", render);
+  $("more").addEventListener("click", showMore);
 
   fetch("prices.json", { cache: "no-cache" })
     .then(function (response) { if (!response.ok) throw new Error(); return response.json(); })
