@@ -188,19 +188,19 @@
 
     function card(o) {
       var item = el("li", "row");
-      item.appendChild(el("p", "row-price", euro(o.price)));
       var info = el("div", "row-info");
       var title = el("h3");
       var link = el("a", "", o.city);
       link.href = ROOT + "destinations/" + o.slug + "/";
       title.appendChild(link);
       info.appendChild(title);
-      info.appendChild(el("p", "", fmt(o.depart, { day: "numeric", month: "short" }) + " → " + shortDate(o.back) + " · " + days(o) + " jours · " + stops(o)));
-      var cta = el("a", "go", "Voir le vol");
+      info.appendChild(el("p", "", fmt(o.depart, { day: "numeric", month: "short" }) + " → " + shortDate(o.back) + ", " + days(o) + " jours, " + stops(o)));
+      var cta = el("a", "go", "Voir");
       cta.href = safeLink(o.link);
       cta.target = "_blank";
       cta.rel = "nofollow sponsored noopener";
-      item.appendChild(info); item.appendChild(cta);
+      cta.setAttribute("aria-label", "Voir le vol pour " + o.city);
+      item.appendChild(info); item.appendChild(el("p", "row-price", euro(o.price))); item.appendChild(cta);
       return item;
     }
 

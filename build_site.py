@@ -53,6 +53,10 @@ def stops(offer):
     return "vol direct" if count == 0 else f"{count} escale{'s' if count > 1 else ''}"
 
 
+def photo_exists(code):
+    return (DOCS / "assets" / "photos" / f"{code}.jpg").exists()
+
+
 def destinations(offers):
     """Regroupe les vols par ville, chaque ville avec une adresse unique."""
     cities, used = {}, set()
@@ -120,45 +124,46 @@ def flight_card(offer, root, city=None):
     label = e(offer["city"])
     title = f'<a href="{root}destinations/{city["slug"]}/">{label}</a>' if city else label
     return f"""<li class="row">
-  <p class="row-price">{euro(offer['price'])}</p>
   <div class="row-info">
     <h3>{title}</h3>
-    <p>{e(day(offer['depart'], False))} → {e(day(offer['back']))} · {nights(offer)} jours · {e(stops(offer))}</p>
+    <p>{e(day(offer['depart'], False))} → {e(day(offer['back']))}, {nights(offer)} jours, {e(stops(offer))}</p>
   </div>
-  <a class="go" href="{e(offer['link'])}" rel="nofollow sponsored noopener" target="_blank">Voir le vol</a>
+  <p class="row-price">{euro(offer['price'])}</p>
+  <a class="go" href="{e(offer['link'])}" rel="nofollow sponsored noopener" target="_blank">Voir</a>
 </li>"""
 
 
-def photo_url(site, code):
-    if (DOCS / "assets" / "photos" / f"{code}.jpg").exists():
-        return f"{site['root']}assets/photos/{code}.jpg"
-    return None
+def load_credits():
+    path = DOCS / "assets" / "photos" / "credits.json"
+    return json.loads(path.read_text()) if path.exists() else {}
 
 
-def deal_tile(site, city, index):
-    best, root = city["best"], site["root"]
-    url = photo_url(site, city["code"])
-    picture = f'<img src="{e(url)}" alt="" loading="lazy">' if url else ""
-    tone = "" if url else f" tone-{index % 3}"
-    return f"""<li class="tile{tone}">
-  <a href="{root}destinations/{city['slug']}/">{picture}
-    <span class="sticker">{euro(best['price'])}</span>
-    <span class="tile-name">{e(city['city'])}</span>
-    <span class="tile-date">{e(day(best['depart'], False))} → {e(day(best['back'], False))}</span>
-  </a>
-</li>"""
+def photo_credit(credit):
+    license_name = e(credit["license"])
+    if credit.get("license_url"):
+        license_name = f'<a href="{e(credit["license_url"])}" rel="noopener">{license_name}</a>'
+    return f'Photo : <a href="{e(credit["source"])}" rel="noopener">{e(credit["artist"])}</a>, {license_name}, redimensionnée'
+
+
+def photo_figure(site, city, credit, wide=False):
+    root = site["root"]
+    best = city["best"]
+    return f"""<figure class="photo{' wide' if wide else ''}">
+  <a href="{root}destinations/{city['slug']}/"><img src="{root}assets/photos/{city['code']}.jpg" alt="{e(city['city'])}" loading="lazy" width="1280" height="720"></a>
+  <figcaption><a href="{root}destinations/{city['slug']}/"><strong>{e(city['city'])}</strong> dès {euro(best['price'])}</a><small>{photo_credit(credit)}</small></figcaption>
+</figure>"""
 
 
 def search_form(root):
     return f"""<form class="search" id="search" data-target="https://www.aviasales.com/search/" autocomplete="off">
-  <div class="field grow"><label for="from">D'où ?</label><input id="from" value="Paris (PAR)" data-code="PAR" placeholder="Ville ou aéroport" required>
+  <div class="field grow"><label for="from">Départ</label><input id="from" value="Paris (PAR)" data-code="PAR" placeholder="Ville ou aéroport" required>
     <ul class="suggest" hidden></ul></div>
   <button class="swap" id="swap" type="button" aria-label="Inverser départ et destination">⇄</button>
-  <div class="field grow"><label for="to">Où ?</label><input id="to" placeholder="Partout dans le monde" required>
+  <div class="field grow"><label for="to">Destination</label><input id="to" placeholder="Une ville, partout dans le monde" required>
     <ul class="suggest" hidden></ul></div>
   <div class="field"><label for="out">Aller</label><input id="out" type="date" required></div>
   <div class="field"><label for="back">Retour</label><input id="back" type="date"></div>
-  <div class="field small"><label for="pax">Personnes</label><select id="pax"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></div>
+  <div class="field small"><label for="pax">Voyageurs</label><select id="pax"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></div>
   <button class="search-go" type="submit">Chercher</button>
   <p class="form-error" id="search-error" role="alert" hidden></p>
 </form>"""
@@ -168,10 +173,18 @@ def home(site, cities, offers, updated):
     root = site["root"]
     today = date.today()
     by_code = {c["code"]: c for c in cities}
-    top = cities[0]
-    best = top["best"]
-    tiles = "".join(deal_tile(site, c, i) for i, c in enumerate(cities[1:7]))
-    deals = "".join(flight_card(c["best"], root, c) for c in cities[7:13])
+    credits = load_credits()
+    pictured = [c for c in cities if c["code"] in credits and photo_exists(c["code"])]
+    photos = ""
+    if pictured:
+        cover = max(pictured, key=lambda c: c["code"] == "PRG")
+        rest = [c for c in pictured if c is not cover][:3]
+        photos = f"""<section class="band wrap">
+  <h2>Quelques idées</h2>
+  {photo_figure(site, cover, credits[cover['code']], wide=True)}
+  <div class="photos">{''.join(photo_figure(site, c, credits[c['code']]) for c in rest)}</div>
+</section>"""
+    deals = "".join(flight_card(c["best"], root, c) for c in cities[:10])
     soon_list = sorted((o for o in offers if (date.fromisoformat(o["depart"]) - today).days <= SOON_DAYS), key=lambda o: o["price"])
     ahead_list = sorted((o for o in offers if (date.fromisoformat(o["depart"]) - today).days >= AHEAD_DAYS), key=lambda o: o["price"])
 
@@ -189,47 +202,40 @@ def home(site, cities, offers, updated):
     for offer in offers:
         regions[offer["region"]] = min(offer["price"], regions.get(offer["region"], 10**9))
     region_links = "".join(
-        f'<li><a href="{root}vols/?region={e(name)}"><span>{e(name)}</span><b>dès {euro(price)}</b></a></li>'
+        f'<li><a href="{root}vols/?region={e(name)}">{e(name)}</a>, dès {euro(price)}</li>'
         for name, price in sorted(regions.items(), key=lambda kv: kv[1])
     )
-    budgets = "".join(
-        f'<a class="budget b{i}" href="{root}vols/?budget={value}"><small>Moins de</small><strong>{euro(value)}</strong><span>{sum(1 for c in cities if c["best"]["price"] <= value)} destinations</span></a>'
-        for i, value in enumerate((100, 300, 600, 1000))
+    budget_links = "".join(
+        f'<li><a href="{root}vols/?budget={value}">Moins de {euro(value)}</a>, {sum(1 for c in cities if c["best"]["price"] <= value)} destinations</li>'
+        for value in (100, 300, 600, 1000)
     )
-    body = f"""<section class="hero">
-  <div class="wrap hero-in">
-    <p class="flash">Le meilleur prix du moment</p>
-    <h1>Paris → {e(best['city'])}</h1>
-    <p class="hero-price">{euro(best['price'])}</p>
-    <p class="hero-note">aller-retour, {e(day(best['depart'], False))} → {e(day(best['back']))}. Vu le {e(updated)}, à confirmer.</p>
-    <a class="hero-go" href="{e(best['link'])}" rel="nofollow sponsored noopener" target="_blank">Voir ce vol</a>
-  </div>
-</section>
-<section class="finder">
-  <div class="wrap"><h2>Tu pars d'où ? Tu vas où ?</h2>{search_form(root)}</div>
+    body = f"""<section class="intro wrap">
+  <h1>Les vols pas chers du moment, depuis Paris.</h1>
+  <p class="lead">La liste est mise à jour deux fois par jour. Les prix bougent vite, alors vérifie toujours avant de payer.</p>
+  {search_form(root)}
 </section>
 <section class="band wrap">
-  <div class="head"><h2>Ça part à petit prix</h2><a href="{root}vols/">Tout voir</a></div>
-  <ul class="tiles">{tiles}</ul>
+  <div class="head"><h2>Les moins chers aujourd'hui</h2><a href="{root}vols/">Voir tous les vols</a></div>
+  <p class="sub">Aller-retour par personne. Dernier relevé le {e(updated)}.</p>
   <ul class="rows">{deals}</ul>
 </section>
-<section class="budgets"><div class="wrap"><h2>T'as combien ?</h2><div class="budget-grid">{budgets}</div></div></section>
+{photos}
 <section class="band wrap two">
-  <div><h2>Partir bientôt</h2><p class="sub">Moins de {SOON_DAYS} jours avant le départ. La dernière minute coûte souvent plus cher, alors on garde seulement ce qui vaut le coup.</p><ul class="rows">{soon or '<li class="empty">Rien de bon pour le moment.</li>'}</ul></div>
-  <div><h2>Réserver à l'avance</h2><p class="sub">Départ dans plus de 5 mois. Pour bloquer un prix et voir venir.</p><ul class="rows">{ahead or '<li class="empty">Rien de bon pour le moment.</li>'}</ul></div>
+  <div><h2>Partir bientôt</h2><p class="sub">Moins de {SOON_DAYS} jours avant le départ. La dernière minute coûte souvent plus cher, donc il y a moins de bonnes surprises.</p><ul class="rows">{soon or '<li class="empty">Rien d\'intéressant en ce moment.</li>'}</ul></div>
+  <div><h2>Réserver à l'avance</h2><p class="sub">Plus de 5 mois avant le départ.</p><ul class="rows">{ahead or '<li class="empty">Rien d\'intéressant en ce moment.</li>'}</ul></div>
 </section>
-<section class="band wrap">
-  <div class="head"><h2>Par coin du monde</h2></div>
-  <ul class="region-list">{region_links}</ul>
+<section class="band wrap two">
+  <div><h2>Selon ton budget</h2><ul class="plain">{budget_links}</ul></div>
+  <div><h2>Par région</h2><ul class="plain">{region_links}</ul></div>
 </section>"""
-    return layout(site, f"{site['name']} — les vols pas chers du moment",
+    return layout(site, f"{site['name']} — vols pas chers depuis Paris",
                   "Les vols les moins chers repérés au départ de Paris, et une recherche pour partir de partout vers partout.", "", body)
 
 
 def flights_page(site):
     body = """<section class="page wrap">
   <h1>Tous les vols depuis Paris</h1>
-  <p class="lead">Fixe ton budget et trie. Les prix bougent vite : vérifie avant de payer.</p>
+  <p class="lead">Tu peux filtrer par région, mois, budget ou durée.</p>
   <form class="filters" id="filters" aria-label="Filtrer les vols">
     <label>Rechercher<input id="q" type="search" placeholder="Une ville"></label>
     <label>Région<select id="region"><option value="">Toutes</option></select></label>
@@ -282,7 +288,7 @@ def destination_page(site, city, cities):
     rows = "".join(
         f'<tr><th scope="row">{e(month_name(key).capitalize())}</th><td>{e(day(o["depart"]))} → {e(day(o["back"]))}</td>'
         f'<td>{e(stops(o))}</td><td class="num">{euro(o["price"])}</td>'
-        f'<td><a class="go small" href="{e(o["link"])}" rel="nofollow sponsored noopener" target="_blank">Voir</a></td></tr>'
+        f'<td><a class="go" href="{e(o["link"])}" rel="nofollow sponsored noopener" target="_blank">Voir</a></td></tr>'
         for key, o in sorted(months.items())
     )
     cheapest_month = month_name(best["depart"][:7])
@@ -296,13 +302,17 @@ def destination_page(site, city, cities):
         f'<li><a href="{root}destinations/{c["slug"]}/"><span>{e(c["city"])}</span><span>dès {euro(c["best"]["price"])}</span></a></li>'
         for c in others
     )
-    related_block = f'<section class="panel"><h2>Autres destinations : {e(city["region"])}</h2><ul class="links">{related}</ul></section>' if others else ""
+    related_block = f'<section class="panel"><h2>Autres idées : {e(city["region"])}</h2><ul class="links">{related}</ul></section>' if others else ""
     name = e(city["city"])
+    credits = load_credits()
+    cover = ""
+    if city["code"] in credits and photo_exists(city["code"]):
+        cover = f"""<figure class="photo wide"><img src="{root}assets/photos/{city['code']}.jpg" alt="{name}" width="1280" height="720"><figcaption><small>{photo_credit(credits[city['code']])}</small></figcaption></figure>"""
     body = f"""<section class="page wrap">
   <p class="crumb"><a href="{root}destinations/">Destinations</a> › {e(city['region'])}</p>
-  <h1>Paris → {name}</h1>
-  <p class="city-price">{euro(best['price'])}</p>
-  <p class="lead">Le prix le plus bas vu pour un aller-retour, en {e(cheapest_month)}. À confirmer avant de payer.</p>
+  <h1>Vols Paris – {name}</h1>
+  {cover}
+  <p class="lead">Le prix le plus bas vu en ce moment est <strong>{euro(best['price'])}</strong> l'aller-retour, en {e(cheapest_month)}. À confirmer avant de payer.</p>
   <a class="hero-go" href="{e(best['link'])}" rel="nofollow sponsored noopener" target="_blank">Voir ce vol</a>
   <section class="panel"><h2>Le meilleur prix par mois</h2>
     <div class="scroll"><table><thead><tr><th scope="col">Mois</th><th scope="col">Dates</th><th scope="col">Escales</th><th scope="col" class="num">Prix</th><th scope="col"><span class="sr">Lien</span></th></tr></thead><tbody>{rows}</tbody></table></div>
@@ -324,7 +334,7 @@ def about_page(site):
         ("La dernière minute est-elle moins chère ?", "En général, non : les prix ont plutôt tendance à monter à l'approche du départ, même s'il existe des exceptions selon les trajets. C'est pour cela que la section « Partir bientôt » montre seulement ce qui reste intéressant."),
         ("Puis-je chercher un vol depuis une autre ville ?", "Oui. Le moteur de recherche de la page d'accueil fonctionne pour des vols partout dans le monde. Les occasions repérées par le radar sont, pour l'instant, au départ de Paris."),
         (f"Comment {name} gagne-t-il de l'argent ?", "Les liens vers les vols sont affiliés. Si tu réserves après avoir cliqué, le site peut toucher une commission, sans frais supplémentaires pour toi."),
-        ("D'où viennent les photos ?", "Les photos du site sont issues de Wikimedia Commons, dans le domaine public ou sous licence CC0."),
+        ("D'où viennent les photos ?", "Elles viennent de Wikimedia Commons. Le photographe et la licence sont indiqués sous chaque photo."),
         ("Puis-je réserver directement ici ?", f"Non. {name} ne vend pas de billets. La réservation et le paiement se font sur le site du partenaire, qui gère aussi les modifications et les remboursements."),
     ]
     items = "".join(f"<details><summary>{e(q)}</summary><p>{a}</p></details>" for q, a in faq)
