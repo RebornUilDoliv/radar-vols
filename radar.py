@@ -77,7 +77,8 @@ def to_offer(row, destination=None):
     depart = parse_date(row.get("departure_at") or row.get("depart_date"))
     back = parse_date(row.get("return_at") or row.get("return_date"))
     destination = row.get("destination") or destination
-    if not (price and depart and back and destination):
+    expires = parse_date(row.get("expires_at"))
+    if not (price and depart and back and destination) or (expires and expires < date.today()):
         return None
     link = row.get("link") or ""
     return Offer(
