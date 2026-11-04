@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://rebornuildoliv.github.io/radar-vols/sitemap.xml
