@@ -261,6 +261,15 @@ class SiteTests(unittest.TestCase):
         self.assertEqual(radar.aviasales_link(offer, CONFIG["search"]), "https://www.aviasales.com/search/x")
 
 
+class PartnerLinkTests(unittest.TestCase):
+    def test_wraps_target_with_partner_id(self):
+        link = radar.partner_link("https://www.aviasales.com/search/X?a=1&b=2", CONFIG["site"])
+        query = radar.urllib.parse.parse_qs(radar.urllib.parse.urlparse(link).query)
+        self.assertTrue(link.startswith("https://tp.media/r?"))
+        self.assertEqual(query["marker"], [CONFIG["site"]["marker"]])
+        self.assertEqual(query["u"], ["https://www.aviasales.com/search/X?a=1&b=2"])
+
+
 class StaleTests(unittest.TestCase):
     def site_after(self, rows, state, price):
         with tempfile.TemporaryDirectory() as folder, \

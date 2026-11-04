@@ -89,9 +89,11 @@ python3 -m unittest test_radar
 
 ## Le site public
 
-Après chaque passage, le radar écrit les prix Travelpayouts dans `docs/prices.json`, et GitHub Pages les affiche sur le site. Les budgets et les prix vérifiés via SerpApi ne sont jamais publiés.
+Après chaque passage, le radar écrit les prix Travelpayouts dans `docs/prices.json`, puis `build_site.py` génère le site : accueil, liste des vols, une page par destination, plan du site. Les budgets et les prix vérifiés via SerpApi ne sont jamais publiés.
 
-Le script partenaire de Travelpayouts se charge uniquement si le visiteur accepte les cookies.
+Le moteur de recherche renvoie vers Aviasales avec le lien partenaire. Le site n'utilise ni script partenaire ni cookie.
+
+Le nom et l'adresse du site se changent dans la section `[site]` de `config.toml`.
 
 ## Limites
 

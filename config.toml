@@ -10,6 +10,14 @@ months_ahead = 9                 # surveille les départs sur les 9 prochains mo
 min_days_ahead = 14              # ignore les départs trop proches
 adults = 1
 
+[site]
+name = "Radar Flight"
+url = "https://rebornuildoliv.github.io/radar-vols/"   # à remplacer par le vrai domaine
+marker = "800338"                # identifiant partenaire Travelpayouts
+project = "595480"
+program = "4114"
+campaign = "100"
+
 [alerts]
 deal_drop = 0.25                 # bonne affaire = 25 % sous le prix habituel
 min_history_days = 6             # jours d'historique requis avant de juger un prix « habituel »

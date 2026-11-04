@@ -163,7 +163,16 @@ def aviasales_link(offer, search):
     )
 
 
-def site_rows(offers, state, search):
+def partner_link(url, site):
+    """Lien suivi par Travelpayouts, sans script ni cookie sur le site."""
+    query = urllib.parse.urlencode({
+        "marker": site["marker"], "trs": site["project"], "p": site["program"],
+        "campaign_id": site["campaign"], "u": url,
+    })
+    return f"https://tp.media/r?{query}"
+
+
+def site_rows(offers, state, search, site):
     """Prix Travelpayouts publiés sur le site, sans budget ni vérification Google."""
     history = state.get("history", {})
     rows = [
@@ -176,7 +185,7 @@ def site_rows(offers, state, search):
             "depart": offer.depart.isoformat(),
             "back": offer.back.isoformat(),
             "stops": offer.stops,
-            "link": aviasales_link(offer, search),
+            "link": partner_link(aviasales_link(offer, search), site),
             "history": sorted(history.get(offer.key, {}).items()),
         }
         for offer in offers
@@ -481,7 +490,7 @@ def run(config, state, client, places, serpapi_key, today, site=None):
         if qualify(o, state, alerts, today) and not already_alerted(o, state, alerts, today)
     ]
     update_history(state, offers, today)
-    rows = site_rows(offers, state, search)
+    rows = site_rows(offers, state, search, config["site"])
     found = verify_best(candidates, serpapi_key, state, config, today, places)
     if site:
         write_site(site, rows, state)
