@@ -101,6 +101,8 @@ Pour mesurer l'audience sans cookie, indique l'identifiant public de Cloudflare 
 
 Le relevé mondial (`world.py`) cherche les prix depuis les villes de `[world]` dans `config.toml`, au plus une fois par jour. Le site publie une page par ville de départ, et une page par route pour les destinations les plus desservies.
 
+La page `/vols/` est l'outil « Où partir » : elle lit les prix de la ville choisie dans `docs/assets/routes/`. La page `/test-reservation/` reste accessible par son lien direct, mais n'est plus dans le menu.
+
 Le nom et l'adresse du site se changent dans la section `[site]` de `config.toml`.
 
 ## La version de test de réservation

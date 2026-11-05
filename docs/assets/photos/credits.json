@@ -1,68 +1,68 @@
 {
- "CTA": {
-  "city": "Catane",
-  "artist": "Derbrauni",
-  "license": "CC BY 4.0",
-  "license_url": "https://creativecommons.org/licenses/by/4.0",
-  "source": "https://commons.wikimedia.org/wiki/File:View_from_the_roof_of_San_Nicol%C3%B2_l%27Arena_(Catania)_05.jpg",
-  "size": [
-   4032,
-   2268
-  ]
- },
- "LON": {
-  "city": "Londres",
-  "artist": "Ilya Grigorik",
-  "license": "CC BY-SA 3.0",
-  "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
-  "source": "https://commons.wikimedia.org/wiki/File:London_Skyline_(125508655).jpeg",
-  "size": [
-   2048,
-   1152
-  ]
- },
- "NAP": {
-  "city": "Naples",
-  "artist": "Richard Nevell",
-  "license": "CC BY-SA 4.0",
-  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
-  "source": "https://commons.wikimedia.org/wiki/File:Napoli_-_Maschio_Angioino_-_202209302342_3.jpg",
-  "size": [
-   4032,
-   2268
-  ]
- },
- "PRG": {
-  "city": "Prague",
-  "artist": "Tilman2007",
-  "license": "CC BY-SA 4.0",
-  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
-  "source": "https://commons.wikimedia.org/wiki/File:Praha_1,_Karl%C5%AFv_most_20170810_014.jpg",
-  "size": [
-   6016,
-   4016
-  ]
- },
- "TYO": {
-  "city": "Tokyo",
-  "artist": "David Kernan",
-  "license": "CC BY 4.0",
-  "license_url": "https://creativecommons.org/licenses/by/4.0",
-  "source": "https://commons.wikimedia.org/wiki/File:Tokyo_Tower,_Minato_City.jpg",
-  "size": [
-   5991,
-   3370
-  ]
- },
- "KRK": {
-  "city": "Cracovie",
-  "artist": "Silar",
-  "license": "CC0",
-  "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
-  "source": "https://commons.wikimedia.org/wiki/File:02024_0143_Main_Market_Square_in_Krak%C3%B3w.jpg",
-  "size": [
-   4928,
-   3264
-  ]
- }
+  "CTA": {
+    "city": "Catane",
+    "artist": "Derbrauni",
+    "license": "CC BY 4.0",
+    "license_url": "https://creativecommons.org/licenses/by/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:View_from_the_roof_of_San_Nicol%C3%B2_l%27Arena_(Catania)_05.jpg",
+    "size": [
+      4032,
+      2268
+    ]
+  },
+  "LON": {
+    "city": "Londres",
+    "artist": "Pierre Blaché",
+    "license": "CC0",
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "source": "https://commons.wikimedia.org/wiki/File:London_-_Flickr_-_Pierre_Blach%C3%A9_(1).jpg",
+    "size": [
+      5247,
+      2952
+    ]
+  },
+  "NAP": {
+    "city": "Naples",
+    "artist": "Richard Nevell",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Napoli_-_Maschio_Angioino_-_202209302342_3.jpg",
+    "size": [
+      4032,
+      2268
+    ]
+  },
+  "PRG": {
+    "city": "Prague",
+    "artist": "Tilman2007",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Praha_1,_Karl%C5%AFv_most_20170810_014.jpg",
+    "size": [
+      6016,
+      4016
+    ]
+  },
+  "TYO": {
+    "city": "Tokyo",
+    "artist": "David Kernan",
+    "license": "CC BY 4.0",
+    "license_url": "https://creativecommons.org/licenses/by/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Tokyo_Tower,_Minato_City.jpg",
+    "size": [
+      5991,
+      3370
+    ]
+  },
+  "KRK": {
+    "city": "Cracovie",
+    "artist": "Silar",
+    "license": "CC0",
+    "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "source": "https://commons.wikimedia.org/wiki/File:02024_0143_Main_Market_Square_in_Krak%C3%B3w.jpg",
+    "size": [
+      4928,
+      3264
+    ]
+  }
 }

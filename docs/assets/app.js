@@ -185,12 +185,13 @@
       var info = el("div", "row-info");
       var title = el("h3");
       var link = el("a", "", o.city);
-      link.href = ROOT + "destinations/" + o.slug + "/";
+      link.href = o.href || ROOT + "destinations/" + o.slug + "/";
       title.appendChild(link);
       info.appendChild(title);
       info.appendChild(el("p", "", fmt(o.depart, { day: "numeric", month: "short" }) + " → " + shortDate(o.back) + " · " + say("days", { count: days(o) }) + " · " + stops(o)));
       var cta = el("a", "go", RF.t.see);
-      cta.href = link.href + "?mois=" + o.depart.slice(0, 7);
+      cta.href = o.href || link.href + "?mois=" + o.depart.slice(0, 7);
+      if (o.external) [link, cta].forEach(function (a) { a.target = "_blank"; a.rel = "nofollow sponsored noopener"; });
       item.appendChild(info); item.appendChild(el("p", "row-price", euro(o.price))); item.appendChild(cta);
       return item;
     }
@@ -233,30 +234,46 @@
     }
 
     function fill(select, values, label) {
+      var keep = select.value;
+      while (select.options.length > 1) select.remove(1);
       values.forEach(function (value) {
         var option = el("option", "", label ? label(value) : value);
         option.value = value;
         select.appendChild(option);
       });
+      select.value = keep;
+      if (select.selectedIndex < 0) select.selectedIndex = 0;
     }
 
-    fetch(ROOT + "prices.json", { cache: "no-cache" })
+    var query = new URLSearchParams(location.search), picked = false;
+    function load() {
+      var origin = $("origin");
+      if (origin && query.get("origin")) origin.value = query.get("origin");
+      if (origin && origin.selectedIndex < 0) origin.selectedIndex = 0;
+      return fetch(origin ? BASE + "assets/routes/" + RF.lang + "/" + origin.value + ".json" : ROOT + "prices.json", { cache: "no-cache" })
       .then(function (r) { if (!r.ok) throw new Error(); return r.json(); })
       .then(function (data) {
-        all = data.offers || [];
+        all = data.offers || data;
         var regions = {}, months = {};
         all.forEach(function (o) { regions[o.region] = 1; months[o.depart.slice(0, 7)] = 1; });
         fill($("region"), Object.keys(regions).sort(function (a, b) { return a.localeCompare(b, "fr"); }));
         fill($("month"), Object.keys(months).sort(), function (m) { return fmt(m + "-15", { month: "long", year: "numeric" }); });
-        new URLSearchParams(location.search).forEach(function (value, key) {
+        if (!picked) query.forEach(function (value, key) {
           if ($(key) && $(key).closest("#filters")) $(key).value = value;
         });
+        picked = true;
+        query = new URLSearchParams();
         render();
       })
       .catch(function () {
+        $("offers").textContent = "";
         $("offers").appendChild(el("li", "empty", RF.t.soon));
       });
-    $("filters").addEventListener("input", render);
+    }
+    load();
+    $("filters").addEventListener("input", function (event) {
+      if (event.target.id === "origin") load(); else render();
+    });
     $("filters").addEventListener("submit", function (event) { event.preventDefault(); });
     $("more").addEventListener("click", showMore);
   }
@@ -287,7 +304,11 @@
   function rotatePhotos(today) {
     var hero = document.querySelector(".hero-img");
     var photos = RF.photos || [];
-    if (hero && photos.length) hero.src = BASE + "assets/photos/" + photos[today % photos.length] + ".jpg";
+    if (hero && photos.length) {
+      var photo = BASE + "assets/photos/" + photos[today % photos.length];
+      if (hero.srcset) hero.srcset = photo + ".jpg 1280w, " + photo + "-4k.jpg 3840w";
+      hero.src = photo + ".jpg";
+    }
     var cards = Array.prototype.slice.call(document.querySelectorAll(".mosaic .card"));
     if (cards.length < 2) return;
     var content = cards.map(function (card) { return { href: card.href, html: card.innerHTML }; });

@@ -79,7 +79,6 @@ class BuildTests(unittest.TestCase):
         self.assertIn('content="noindex, nofollow"', page)
         self.assertIn("Aucun vrai vol", page)
         self.assertNotIn("test-reservation", (docs / "sitemap.xml").read_text())
-        self.assertIn(">Réservation test<", (docs / "index.html").read_text())
 
     def test_languages_stay_on_site(self):
         docs = self.build([offer("BCN", "Barcelone", "Europe", 43, 30)])
@@ -182,6 +181,23 @@ class BuildTests(unittest.TestCase):
         names = build_site.clean_names({"fr": {"ACE": "ACE", "MAD": "Ville de Madrid", "BUD": "Buda"},
                                         "en": {"ACE": "Arrecife", "MAD": "Madrid", "BUD": "Budapest"}})
         self.assertEqual(names["fr"], {"ACE": "Arrecife", "MAD": "Madrid", "BUD": "Budapest"})
+
+    def test_test_booking_is_hidden_from_public_pages(self):
+        docs = self.build(self.deals())
+        self.assertNotIn("test-reservation", (docs / "index.html").read_text())
+        self.assertTrue((docs / "test-reservation" / "index.html").exists())
+
+    def test_continent_from_city_data(self):
+        self.assertEqual(build_site.continent({"time_zone": "America/Lima", "country_code": "PE"}), "SA")
+        self.assertEqual(build_site.continent({"time_zone": "America/New_York", "country_code": "US"}), "NA")
+        self.assertEqual(build_site.continent({"time_zone": "Atlantic/Canary", "country_code": "ES"}), "EU")
+
+    def test_world_destinations_group_routes(self):
+        origin = {"code": "LON", "slug": "londres", "pages": [{"to": "TYO", "to_slug": "tokyo", "price": 500}]}
+        other = {"code": "PAR", "slug": "paris", "pages": [{"to": "TYO", "to_slug": "tokyo", "price": 400}]}
+        places = build_site.world_destinations([origin, other])
+        self.assertEqual(len(places), 1)
+        self.assertEqual(places[0]["routes"][0][0]["code"], "PAR")
 
     def test_slug_removes_accents(self):
         self.assertEqual(build_site.slug("Montréal – Dorval"), "montreal-dorval")

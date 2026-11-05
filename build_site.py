@@ -13,7 +13,7 @@ from statistics import median
 from pathlib import Path
 
 import radar
-from site_text import LANG_NAMES, LANGS, LOCALES, MONTHS, REGIONS, SCRIPT_TEXT, SHORT_MONTHS, TEXT
+from site_text import CONTINENTS, LANG_NAMES, LANGS, LOCALES, MONTHS, REGIONS, SCRIPT_TEXT, SHORT_MONTHS, TEXT
 
 ROOT = Path(__file__).parent
 DOCS = ROOT / "docs"
@@ -27,6 +27,8 @@ ROUTES_PER_ORIGIN = 40           # pages de route créées par ville de départ
 POPULAR_ORIGINS = 10             # une destination doit être desservie depuis autant de villes
 MAX_ROUTE_PRICE = 3000           # écarte les prix aberrants
 HUB_ROWS = 60
+DEFAULT_ORIGIN = {"fr": "PAR", "en": "LON", "es": "MAD"}
+SOUTH_AMERICA = {"AR", "BO", "BR", "CL", "CO", "EC", "GF", "GY", "PE", "PY", "SR", "UY", "VE"}
 LOGO = (
     '<svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="13.8" fill="none" stroke="currentColor" stroke-width="2"/>'
     '<path d="M9.5 17.5a6.5 6.5 0 0 1 13 0z" fill="currentColor"/><rect x="6.2" y="18.8" width="19.6" height="1.6" rx=".8" fill="currentColor"/>'
@@ -49,6 +51,7 @@ class Page:
         self.root = self.base if lang == "fr" else f"{self.base}{lang}/"
         self.folder = DOCS if lang == "fr" else DOCS / lang
         self.prefix = "" if lang == "fr" else f"{lang}/"
+        self.zones = {}
 
     def t(self, key, **values):
         return TEXT[self.lang][key].format(**values) if values else TEXT[self.lang][key]
@@ -90,6 +93,14 @@ def nights(offer):
 
 def photo_exists(code):
     return (DOCS / "assets" / "photos" / f"{code}.jpg").exists()
+
+
+def photo_set(p, code, sizes):
+    """Sert la version 4K aux grands écrans, et la version légère aux autres."""
+    light = f"{p.base}assets/photos/{code}.jpg"
+    if not (DOCS / "assets" / "photos" / f"{code}-4k.jpg").exists():
+        return f'src="{light}"'
+    return f'src="{light}" srcset="{light} 1280w, {p.base}assets/photos/{code}-4k.jpg 3840w" sizes="{sizes}"'
 
 
 def load_credits():
@@ -166,7 +177,6 @@ def layout(p, title, description, path, body, noindex=False, extra=""):
     <a href="{root}depuis/">{p.t('nav_world')}</a>
     <a href="{root}destinations/">{p.t('nav_places')}</a>
     <a href="{root}a-propos/">{p.t('nav_info')}</a>
-    <a class="nav-test" href="{root}test-reservation/">{p.t('nav_test')}</a>
   </nav>
   <div class="langs" aria-label="Langue">{switch}</div>
 </header>
@@ -212,7 +222,7 @@ def photo_credit(p, credit):
 def photo_card(p, city, big=False):
     name = e(p.city(city["code"], city["city"]))
     return f"""<a class="card{' big' if big else ''}" href="{p.root}destinations/{city['slug']}/">
-  <img src="{p.base}assets/photos/{city['code']}.jpg" alt="{name}" loading="lazy">
+  <img {photo_set(p, city['code'], '(max-width: 980px) 100vw, 66vw' if big else '(max-width: 980px) 50vw, 33vw')} alt="{name}" loading="lazy">
   <span class="card-label"><strong>{name}</strong><span>{p.t('from_price', price=p.euro(city['best']['price']))}</span></span>
 </a>"""
 
@@ -256,7 +266,7 @@ def home(p, cities, offers, updated, origins=()):
     pictured = [c for c in cities if c["code"] in credits and photo_exists(c["code"])]
     best = cities[0]["best"]
     hero_code = HERO_PHOTO if photo_exists(HERO_PHOTO) else (pictured[0]["code"] if pictured else "")
-    hero_image = f'<img class="hero-img" src="{p.base}assets/photos/{hero_code}.jpg" alt="">' if hero_code else ""
+    hero_image = f'<img class="hero-img" {photo_set(p, hero_code, "100vw")} alt="">' if hero_code else ""
     mosaic = ""
     if pictured:
         first, *others = pictured[:5]
@@ -278,12 +288,13 @@ def home(p, cities, offers, updated, origins=()):
     regions = {}
     for offer in offers:
         regions[offer["region"]] = min(offer["price"], regions.get(offer["region"], 10**9))
+    region_pages = {g["slug"] for g in collections(offers)}
     region_links = "".join(
-        f'<a class="pill" href="{p.root}vols/?region={e(p.region(name))}">{e(p.region(name))}<span>{p.t("from_price", price=p.euro(price))}</span></a>'
-        for name, price in sorted(regions.items(), key=lambda kv: kv[1])
+        f'<a class="pill" href="{p.root}vols-pas-chers/{slug(name)}/">{e(p.region(name))}<span>{p.t("from_price", price=p.euro(price))}</span></a>'
+        for name, price in sorted(regions.items(), key=lambda kv: kv[1]) if slug(name) in region_pages
     )
     budgets = "".join(
-        f'<a class="budget" href="{p.root}vols/?budget={value}"><strong>{p.t("under", price=p.euro(value))}</strong><span>{p.t("places_count", count=sum(1 for c in cities if c["best"]["price"] <= value))}</span></a>'
+        f'<a class="budget" href="{p.root}vols/?origin=PAR&amp;budget={value}"><strong>{p.t("under", price=p.euro(value))}</strong><span>{p.t("places_count", count=sum(1 for c in cities if c["best"]["price"] <= value))}</span></a>'
         for value in (100, 300, 600, 1000)
     )
     nothing = f'<li class="empty">{p.t("nothing")}</li>'
@@ -338,17 +349,23 @@ def home(p, cities, offers, updated, origins=()):
   <div class="pills">{region_links}</div>
 </section>
 <section class="band wrap">
-  <a class="test-cta" href="{p.root}test-reservation/"><strong>{p.t('test_cta')}</strong><span>{p.t('test_cta_b')}</span></a>
 </section>"""
     return layout(p, f"{p.site['name']} — {p.t('title_home')}", p.t("meta_home"), "", body)
 
 
-def flights_page(p):
+def flights_page(p, origins=()):
+    default = DEFAULT_ORIGIN[p.lang]
+    choices = "".join(
+        f'<option value="{o["code"]}"{" selected" if o["code"] == default else ""}>{e(p.city(o["code"], o["code"]))}</option>'
+        for o in sorted(origins, key=lambda o: p.city(o["code"], o["code"]))
+    )
+    origin = f'<label>{p.t("f_from")}<select id="origin">{choices}</select></label>' if origins else ""
     options = "".join(f'<option value="{v}">{p.euro(v)}</option>' for v in (50, 100, 200, 300, 400, 600, 1000))
     body = f"""<section class="page wrap">
   <h1>{p.t('flights_title')}</h1>
   <p class="lead">{p.t('flights_lead')}</p>
   <form class="filters" id="filters">
+    {origin}
     <label>{p.t('f_search')}<input id="q" type="search" placeholder="{p.t('f_city')}"></label>
     <label>{p.t('f_region')}<select id="region"><option value="">{p.t('f_all_f')}</option></select></label>
     <label>{p.t('f_month')}<select id="month"><option value="">{p.t('f_all_m')}</option></select></label>
@@ -361,6 +378,69 @@ def flights_page(p):
   <button class="more" id="more" type="button" hidden></button>
 </section>"""
     return layout(p, f"{p.t('flights_title')} | {p.site['name']}", p.t("flights_lead"), "vols/", body)
+
+
+def world_destinations(origins):
+    """Regroupe les routes publiées par destination."""
+    places = {}
+    for origin in origins:
+        for route in origin["pages"]:
+            place = places.setdefault(route["to"], {"code": route["to"], "slug": route["to_slug"], "routes": []})
+            place["routes"].append((origin, route))
+    for place in places.values():
+        place["routes"].sort(key=lambda pair: pair[1]["price"])
+    return sorted(places.values(), key=lambda place: place["slug"])
+
+
+def world_places_index(p, places, zones):
+    groups = {}
+    for place in places:
+        groups.setdefault(zones.get(place["code"], "XX"), []).append(place)
+    blocks = ""
+    for zone in sorted(groups, key=lambda z: (z == "XX", CONTINENTS[p.lang][z])):
+        ordered = sorted(groups[zone], key=lambda place: p.city(place["code"], place["code"]))
+        links = "".join(
+            f'<li><a href="{p.root}vers/{place["slug"]}/"><span>{e(p.city(place["code"], place["code"]))}</span>'
+            f'<span>{p.t("from_price", price=p.euro(place["routes"][0][1]["price"]))}</span></a></li>'
+            for place in ordered
+        )
+        blocks += f'<section class="dest-group"><h2>{e(CONTINENTS[p.lang][zone])}</h2><ul class="links">{links}</ul></section>'
+    lead = p.t("places_lead", count=len(places))
+    body = f'<section class="page wrap"><h1>{p.t("places_title")}</h1><p class="lead">{lead}</p>{blocks}</section>'
+    return layout(p, f"{p.t('places_title')} | {p.site['name']}", lead, "destinations/", body)
+
+
+def world_place_page(p, place):
+    city = p.city(place["code"], place["code"])
+    values = {"count": len(place["routes"]), "price": p.euro(place["routes"][0][1]["price"])}
+    rows = "".join(world_row(p, origin, route, p.city(origin["code"], origin["code"])) for origin, route in place["routes"])
+    cover = ""
+    if place["code"] in load_credits() and photo_exists(place["code"]):
+        cover = f'<figure class="cover"><img {photo_set(p, place["code"], "(max-width: 1200px) 100vw, 1200px")} alt="{e(city)}"></figure>'
+    body = f"""<section class="page wrap">
+  <p class="crumb"><a href="{p.root}destinations/">{p.t('nav_places')}</a></p>
+  <h1>{e(p.t('to_title', city=city))}</h1>
+  {cover}
+  <p class="lead">{p.t('to_lead', **values)}</p>
+  <h2>{p.t('to_list')}</h2>
+  <ul class="rows">{rows}</ul>
+  <section class="panel"><h2>{e(p.t('stay_title', city=city))}</h2><p class="sub">{p.t('stay_lead')}</p><div class="stays">{stay_links(p, city)}</div></section>
+</section>"""
+    return layout(p, f"{p.t('to_title', city=city)} | {p.site['name']}", p.t("to_meta", city=city, **values), f"vers/{place['slug']}/", body)
+
+
+def route_rows(p, origin):
+    """Données de l'outil « où partir » pour une ville de départ."""
+    rows = []
+    for route in origin["routes"]:
+        internal = has_page(origin, route)
+        rows.append({
+            "city": p.city(route["to"], route["to"]),
+            "region": CONTINENTS[p.lang][p.zones.get(route["to"], "XX")],
+            "price": route["price"], "depart": route["depart"], "back": route["back"], "stops": route["stops"],
+            "href": f"{p.root}{route_path(origin, route)}" if internal else route["link"], "external": not internal,
+        })
+    return rows
 
 
 def destinations_index(p, cities):
@@ -523,8 +603,8 @@ def has_page(origin, route):
     return any(row["to"] == route["to"] for row in origin["pages"])
 
 
-def world_row(p, origin, route):
-    name = e(p.city(route["to"], route["to"]))
+def world_row(p, origin, route, label=None):
+    name = e(label or p.city(route["to"], route["to"]))
     detail = f'{e(p.day(route["depart"], False))} → {e(p.day(route["back"]))} · {e(p.t("days", count=nights(route)))} · {e(p.stops(route))}'
     title = f'<a href="{p.root}{route_path(origin, route)}">{name}</a>' if has_page(origin, route) else name
     action = (f'<a class="go" href="{p.root}{route_path(origin, route)}">{p.t("see")}</a>' if has_page(origin, route)
@@ -681,7 +761,7 @@ def destination_page(p, city, cities):
     credits = load_credits()
     cover = ""
     if city["code"] in credits and photo_exists(city["code"]):
-        cover = f'<figure class="cover"><img src="{p.base}assets/photos/{city["code"]}.jpg" alt="{name}"></figure>'
+        cover = f'<figure class="cover"><img {photo_set(p, city["code"], "(max-width: 1200px) 100vw, 1200px")} alt="{name}"></figure>'
     body = f"""<section class="page wrap">
   <p class="crumb"><a href="{p.root}destinations/">{p.t('nav_places')}</a> › {e(p.region(city['region']))}</p>
   <h1>{e(p.t('dest_title', city=p.city(city['code'], city['city'])))}</h1>
@@ -764,8 +844,16 @@ def build_language(p, data, cities, updated_at, groups, origins=()):
         write(world / origin["slug"] / "index.html", origin_page(p, origin))
         for route in origin["pages"]:
             write(world / origin["slug"] / route["to_slug"] / "index.html", route_page(p, origin, route, origins, updated))
-    write(folder / "vols" / "index.html", flights_page(p))
-    write(folder / "destinations" / "index.html", destinations_index(p, cities))
+    write(folder / "vols" / "index.html", flights_page(p, origins))
+    places = world_destinations(origins)
+    write(folder / "destinations" / "index.html", world_places_index(p, places, p.zones) if places else destinations_index(p, cities))
+    to_world = folder / "vers"
+    if to_world.exists():
+        shutil.rmtree(to_world)
+    for place in places:
+        write(to_world / place["slug"] / "index.html", world_place_page(p, place))
+    for origin in origins:
+        write(DOCS / "assets" / "routes" / lang / f"{origin['code']}.json", json.dumps(route_rows(p, origin), ensure_ascii=False, separators=(",", ":")))
     write(folder / "a-propos" / "index.html", about_page(p))
     deals = folder / "vols-pas-chers"
     if deals.exists():
@@ -808,8 +896,12 @@ def build(data, site, catalog=None):
         write(names_path, json.dumps(names, ensure_ascii=False, separators=(",", ":")))
     groups = collections(offers)
     origins = load_world(names.get("fr", {}))
+    zones_path = DOCS / "assets" / "zones.json"
+    zones = json.loads(zones_path.read_text()) if zones_path.exists() else {}
     for lang in LANGS:
-        build_language(Page(site, lang, names.get(lang)), data, cities, updated_at, groups, origins)
+        page = Page(site, lang, names.get(lang))
+        page.zones = zones
+        build_language(page, data, cities, updated_at, groups, origins)
     write(DOCS / "404.html", missing_page(Page(site, "fr", names.get("fr"))))
     pages = ["", "vols/", "vols-pas-chers/", "destinations/", "a-propos/"] + [f"destinations/{c['slug']}/" for c in cities]
     pages += [f"vols-pas-chers/{g['slug']}/" for g in groups]
@@ -818,6 +910,7 @@ def build(data, site, catalog=None):
     for origin in origins:
         pages.append(f"depuis/{origin['slug']}/")
         pages += [route_path(origin, route) for route in origin["pages"]]
+    pages += [f"vers/{place['slug']}/" for place in world_destinations(origins)]
     urls = "".join(
         f"<url><loc>{e(site['url'] + ('' if lang == 'fr' else lang + '/') + page)}</loc></url>"
         for lang in LANGS for page in pages
@@ -827,7 +920,21 @@ def build(data, site, catalog=None):
     return len(cities)
 
 
+def continent(row):
+    zone, country = (row.get("time_zone") or "").split("/")[0], row.get("country_code")
+    if country in SOUTH_AMERICA:
+        return "SA"
+    if country in ("US", "CA", "MX"):
+        return "NA"
+    if country == "CV":
+        return "AF"
+    return {"Africa": "AF", "America": "NA", "Cuba": "NA", "Asia": "AS", "Europe": "EU", "Atlantic": "EU",
+            "Australia": "OC", "Pacific": "OC", "Indian": "IN"}.get(zone, "XX")
+
+
 def load_catalog():
+    rows = radar.http_json(f"{radar.TP_BASE}/data/en/cities.json")
+    write(DOCS / "assets" / "zones.json", json.dumps({row["code"]: continent(row) for row in rows}, separators=(",", ":")))
     catalog = {}
     for lang in LANGS:
         places = radar.load_places(lang)

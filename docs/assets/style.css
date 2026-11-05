@@ -126,7 +126,7 @@ h2 { font-size: 32px; font-weight: 500; }
 .cover figcaption { margin-top: 6px; color: var(--g3); font-size: 13px; }
 .notice { margin-top: 18px; padding: 12px 14px; color: var(--g3); background: var(--g1); border-radius: 10px; font-size: 14px; }
 .notice strong { color: var(--k); font-weight: 650; }
-.filters { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin-top: 20px; padding: 14px; background: var(--g1); border-radius: 14px; }
+.filters { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 20px; padding: 14px; background: var(--g1); border-radius: 14px; }
 .filters label { min-width: 0; }
 .filters input, .filters select { background: var(--w); }
 .count { margin: 18px 0 6px; color: var(--g3); }
