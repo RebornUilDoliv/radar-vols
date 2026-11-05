@@ -301,14 +301,24 @@
   }
 
   /* Une nouvelle photo chaque jour, sans dépendre d'un passage du serveur */
+  function initMenu() {
+    var button = $("menu-btn"), nav = document.querySelector(".nav");
+    if (!button) return;
+    button.addEventListener("click", function () {
+      var open = nav.classList.toggle("open");
+      button.setAttribute("aria-expanded", open ? "true" : "false");
+    });
+  }
+
+  function initMoreFilters() {
+    var button = $("more-filters");
+    if (!button) return;
+    button.addEventListener("click", function () {
+      $("filters").classList.add("all");
+    });
+  }
+
   function rotatePhotos(today) {
-    var hero = document.querySelector(".hero-img");
-    var photos = RF.photos || [];
-    if (hero && photos.length) {
-      var photo = BASE + "assets/photos/" + photos[today % photos.length];
-      if (hero.srcset) hero.srcset = photo + ".jpg 1280w, " + photo + "-4k.jpg 3840w";
-      hero.src = photo + ".jpg";
-    }
     var cards = Array.prototype.slice.call(document.querySelectorAll(".mosaic .card"));
     if (cards.length < 2) return;
     var content = cards.map(function (card) { return { href: card.href, html: card.innerHTML }; });
@@ -321,6 +331,8 @@
 
   initSearch();
   initNewsletter();
+  initMenu();
+  initMoreFilters();
   rotatePhotos(Math.floor(Date.now() / 864e5));
   highlightMonth();
   initCharts();

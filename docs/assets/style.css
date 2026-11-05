@@ -1,4 +1,5 @@
-@import url("https://api.fontshare.com/v2/css?f[]=clash-display@500,600&display=swap");
+@font-face { font-family: "Clash Display"; src: url("clash-500.woff2") format("woff2"); font-weight: 500; font-display: swap; }
+@font-face { font-family: "Clash Display"; src: url("clash-600.woff2") format("woff2"); font-weight: 600; font-display: swap; }
 @font-face { font-family: "Geist"; src: url("geist.woff2") format("woff2"); font-weight: 100 900; font-display: swap; }
 :root { --w: #fff; --k: #0b0b0b; --g1: #f4f4f4; --g2: #e4e4e4; --g3: #6a6a6a; color-scheme: light; }
 * { box-sizing: border-box; }
@@ -16,6 +17,7 @@ img { display: block; width: 100%; }
 :focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
 
 .nav { position: absolute; z-index: 5; inset: 12px 12px auto; display: flex; flex-wrap: wrap; gap: 6px 24px; align-items: center; padding: 18px 26px; color: var(--w); }
+.menu-btn, .more-filters { display: none; }
 .mark { display: block; width: 28px; height: 28px; flex: none; }
 .logo, .foot-brand { display: inline-flex; gap: 9px; align-items: center; }
 .logo { font-size: 20px; font-weight: 600; text-decoration: none; }
@@ -132,6 +134,7 @@ h2 { font-size: 32px; font-weight: 500; }
 .count { margin: 18px 0 6px; color: var(--g3); }
 .more { display: flex; width: 100%; margin-top: 18px; }
 .more[hidden] { display: none; }
+img { max-width: 100%; }
 .empty { padding: 20px 0; color: var(--g3); }
 .panel { margin-top: 36px; }
 .panel h2 { margin-bottom: 10px; font-size: 24px; }
@@ -236,4 +239,42 @@ details p { margin-top: 6px; color: var(--g3); }
   .row-price { grid-column: 2; grid-row: 1; font-size: 20px; }
   .go { grid-column: 1 / -1; justify-content: center; }
   .route { grid-row: auto; }
+  /* Menu */
+  .nav { align-items: center; }
+  .nav nav { display: none; flex-direction: column; gap: 0; padding-top: 6px; }
+  .nav.open { z-index: 8; background: var(--k); border-radius: 12px; }
+  .nav.open nav { display: flex; }
+  .nav nav a { display: flex; align-items: center; min-height: 48px; font-size: 16px; border-top: 1px solid #333; }
+  .logo { min-height: 44px; }
+  .langs { gap: 2px; }
+  .langs a { display: flex; align-items: center; justify-content: center; min-width: 36px; min-height: 44px; padding: 0 4px; font-size: 14px; }
+  .menu-btn { display: inline-flex; flex-direction: column; gap: 5px; align-items: center; justify-content: center; width: 44px; height: 44px; margin-right: -8px; padding: 0; color: inherit; background: none; border: 0; }
+  .menu-btn span { width: 22px; height: 2px; background: currentColor; border-radius: 2px; }
+  /* Accueil */
+  .hero { min-height: 54svh; }
+  .hero-in { padding: 110px 18px 88px; }
+  .stays.tools { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .stays.tools .stay { padding: 14px; }
+  .stays.tools .stay strong { font-size: 16px; line-height: 1.2; }
+  .stays.tools .stay span { display: none; }
+  .links.cities { grid-template-columns: 1fr; }
+  .links.cities li:nth-child(n+9) { display: none; }
+  .all-cities { margin-top: 12px; }
+  .all-cities a { display: flex; align-items: center; min-height: 44px; font-weight: 500; }
+  .mosaic-side { grid-template-columns: 1fr 1fr; }
+  .card.big { min-height: 260px; }
+  /* Listes */
+  .links a { align-items: center; min-height: 48px; padding: 10px 0; }
+  .row { position: relative; grid-template-columns: 1fr auto; padding: 14px 0; }
+  .row h3 a::after { content: ""; position: absolute; inset: 0; }
+  .row .go { display: none; }
+  .foot-links a { display: flex; align-items: center; min-height: 44px; }
+  .news-consent input { width: 24px; height: 24px; flex: none; }
+  .news-consent { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; }
+  /* Filtres */
+  .filters { position: relative; padding: 12px; }
+  .filters:not(.all) .adv { display: none; }
+  .filters:not(.all) .more-filters { display: flex; }
+  .more-filters { grid-column: 1 / -1; align-items: center; justify-content: center; min-height: 44px; color: var(--k); font: inherit; font-weight: 500; background: var(--w); border: 1px solid var(--g2); border-radius: 10px; }
+  .filters > label:first-child { grid-column: 1 / -1; }
 }

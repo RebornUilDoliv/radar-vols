@@ -20,7 +20,6 @@ ROOT = Path(__file__).parent
 DOCS = ROOT / "docs"
 SOON_DAYS = 45
 AHEAD_DAYS = 150
-HERO_PHOTO = "TYO"
 BUDGETS = (100, 200, 500)
 MIN_COLLECTION_CITIES = 3
 COLLECTION_ROWS = 40
@@ -101,7 +100,8 @@ def photo_set(p, code, sizes):
     light = f"{p.base}assets/photos/{code}.jpg"
     if not (DOCS / "assets" / "photos" / f"{code}-4k.jpg").exists():
         return f'src="{light}"'
-    return f'src="{light}" srcset="{light} 1280w, {p.base}assets/photos/{code}-4k.jpg 3840w" sizes="{sizes}"'
+    small = f"{p.base}assets/photos/{code}-m.jpg"
+    return f'src="{light}" srcset="{small} 828w, {light} 1280w, {p.base}assets/photos/{code}-4k.jpg 3840w" sizes="{sizes}" decoding="async"'
 
 
 def load_credits():
@@ -163,7 +163,12 @@ def layout(p, title, description, path, body, noindex=False, extra=""):
 <meta property="og:title" content="{e(title)}">
 <meta property="og:description" content="{e(description)}">
 <meta property="og:type" content="website">
+<meta name="theme-color" content="#0b0b0b">
 <link rel="icon" href="{base}assets/icon.svg?v=3" type="image/svg+xml">
+<link rel="apple-touch-icon" href="{base}assets/icon-180.png">
+<link rel="manifest" href="{base}manifest.webmanifest">
+<link rel="preload" href="{base}assets/clash-600.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="{base}assets/geist.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="{base}assets/style.css?v={version}">
 <script>window.RF={script}</script>
 <script src="{base}assets/app.js?v={version}" defer></script>
@@ -173,7 +178,7 @@ def layout(p, title, description, path, body, noindex=False, extra=""):
 <body>
 <header class="nav">
   <a class="logo" href="{root}" aria-label="{name}">{LOGO}{name}</a>
-  <nav aria-label="Menu">
+  <nav aria-label="Menu" id="menu">
     <a href="{root}vols/">{p.t('nav_flights')}</a>
     <a href="{root}depuis/">{p.t('nav_world')}</a>
     <a href="{root}destinations/">{p.t('nav_places')}</a>
@@ -181,6 +186,7 @@ def layout(p, title, description, path, body, noindex=False, extra=""):
     <a href="{root}a-propos/">{p.t('nav_info')}</a>
   </nav>
   <div class="langs" aria-label="Langue">{switch}</div>
+  <button class="menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="menu" aria-label="{p.t('menu')}"><span></span><span></span><span></span></button>
 </header>
 <main>
 {body}
@@ -267,8 +273,9 @@ def home(p, cities, offers, updated, origins=()):
     credits = load_credits()
     pictured = [c for c in cities if c["code"] in credits and photo_exists(c["code"])]
     best = cities[0]["best"]
-    hero_code = HERO_PHOTO if photo_exists(HERO_PHOTO) else (pictured[0]["code"] if pictured else "")
-    hero_image = f'<img class="hero-img" {photo_set(p, hero_code, "100vw")} alt="">' if hero_code else ""
+    choices = sorted(code for code in credits if photo_exists(code))
+    hero_code = choices[(today - date(1970, 1, 1)).days % len(choices)] if choices else ""
+    hero_image = f'<img class="hero-img" {photo_set(p, hero_code, "100vw")} fetchpriority="high" alt="">' if hero_code else ""
     mosaic = ""
     if pictured:
         first, *others = pictured[:5]
@@ -313,7 +320,7 @@ def home(p, cities, offers, updated, origins=()):
                 picks.append((origin, route))
         deals = "".join(world_deal(p, origin, route) for origin, route in picks[:8])
         start = p.city(hero_route[0]["code"], hero_route[0]["code"])
-        world = f'''<section class="band wrap"><h2>{p.t("world_home")}</h2><p class="sub">{p.t("world_home_sub", count=len(origins))}</p><ul class="links">{origin_links(p, origins)}</ul></section>'''
+        world = f'''<section class="band wrap"><h2>{p.t("world_home")}</h2><p class="sub">{p.t("world_home_sub", count=len(origins))}</p><ul class="links cities">{origin_links(p, origins)}</ul><p class="all-cities"><a href="{p.root}depuis/">{p.t("world_all")}</a></p></section>'''
     body = f"""<section class="hero">
   {hero_image}
   <div class="hero-in">
@@ -385,12 +392,13 @@ def flights_page(p, origins=()):
   <p class="lead">{p.t('flights_lead')}</p>
   <form class="filters" id="filters">
     {origin}
-    <label>{p.t('f_search')}<input id="q" type="search" placeholder="{p.t('f_city')}"></label>
-    <label>{p.t('f_region')}<select id="region"><option value="">{p.t('f_all_f')}</option></select></label>
+    <label class="adv">{p.t('f_search')}<input id="q" type="search" placeholder="{p.t('f_city')}"></label>
+    <label class="adv">{p.t('f_region')}<select id="region"><option value="">{p.t('f_all_f')}</option></select></label>
     <label>{p.t('f_month')}<select id="month"><option value="">{p.t('f_all_m')}</option></select></label>
     <label>{p.t('f_budget')}<select id="budget"><option value="">{p.t('f_nolimit')}</option>{options}</select></label>
-    <label>{p.t('f_length')}<select id="length"><option value="">{p.t('f_all_f')}</option><option value="0-7">{p.t('f_week')}</option><option value="8-21">{p.t('f_weeks')}</option><option value="22-999">{p.t('f_long')}</option></select></label>
-    <label>{p.t('f_sort')}<select id="sort"><option value="price">{p.t('f_price')}</option><option value="depart">{p.t('f_date')}</option></select></label>
+    <label class="adv">{p.t('f_length')}<select id="length"><option value="">{p.t('f_all_f')}</option><option value="0-7">{p.t('f_week')}</option><option value="8-21">{p.t('f_weeks')}</option><option value="22-999">{p.t('f_long')}</option></select></label>
+    <label class="adv">{p.t('f_sort')}<select id="sort"><option value="price">{p.t('f_price')}</option><option value="depart">{p.t('f_date')}</option></select></label>
+    <button class="more-filters" id="more-filters" type="button">{p.t('f_more')}</button>
   </form>
   <p class="count" id="count" role="status"></p>
   <ul class="rows" id="offers"></ul>
@@ -947,6 +955,11 @@ def build(data, site, catalog=None):
         for lang in LANGS for page in pages
     )
     write(DOCS / "sitemap.xml", f'<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{urls}</urlset>\n')
+    write(DOCS / "manifest.webmanifest", json.dumps({
+        "name": site["name"], "short_name": site["name"], "start_url": site["root"], "display": "standalone",
+        "background_color": "#ffffff", "theme_color": "#0b0b0b",
+        "icons": [{"src": f"{site['root']}assets/icon-{size}.png", "sizes": f"{size}x{size}", "type": "image/png"} for size in (192, 512)],
+    }, ensure_ascii=False))
     write(DOCS / "robots.txt", f"User-agent: *\nAllow: /\nSitemap: {site['url']}sitemap.xml\n")
     return len(cities)
 
