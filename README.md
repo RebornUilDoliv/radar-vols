@@ -95,6 +95,10 @@ Après chaque passage, le radar écrit les prix Travelpayouts dans `docs/prices.
 
 Le moteur de recherche renvoie vers Aviasales avec le lien partenaire. Le site n'utilise ni script partenaire ni cookie.
 
+Les pages `/vols-pas-chers/` regroupent les prix par mois, par région et par budget. Une sélection n'est publiée que si elle couvre au moins 3 villes.
+
+Pour mesurer l'audience sans cookie, indique l'identifiant public de Cloudflare Web Analytics dans `analytics_token` de `config.toml`.
+
 Le nom et l'adresse du site se changent dans la section `[site]` de `config.toml`.
 
 ## La version de test de réservation

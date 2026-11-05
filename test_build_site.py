@@ -139,6 +139,33 @@ class BuildTests(unittest.TestCase):
         docs = self.build([offer("BCN", "Barcelone", "Europe", 43, 30)])
         self.assertEqual((docs / "index.html").read_text().count('class="mark"'), 2)
 
+    def deals(self):
+        return [offer("BCN", "Barcelone", "Europe", 43, 30), offer("LIS", "Lisbonne", "Europe", 60, 30),
+                offer("ROM", "Rome", "Europe", 80, 30), offer("TYO", "Tokyo", "Asie", 480, 30)]
+
+    def test_collections_need_three_cities(self):
+        groups = build_site.collections(self.deals())
+        slugs = {g["slug"] for g in groups}
+        self.assertIn("europe", slugs)
+        self.assertIn("moins-de-100-euros", slugs)
+        self.assertNotIn("asie", slugs)
+
+    def test_collection_page_is_in_every_language_and_sitemap(self):
+        docs = self.build(self.deals())
+        page = (docs / "vols-pas-chers" / "europe" / "index.html").read_text()
+        self.assertIn("Vols pas chers depuis Paris : Europe", page)
+        self.assertIn("Le moins cher : Barcelone", page)
+        self.assertIn("Cheap flights from Paris: Europe", (docs / "en" / "vols-pas-chers" / "europe" / "index.html").read_text())
+        self.assertIn("vols-pas-chers/moins-de-100-euros/", (docs / "sitemap.xml").read_text())
+
+    def test_old_collections_are_removed(self):
+        docs = self.build(self.deals())
+        self.assertFalse((docs / "vols-pas-chers" / "asie").exists())
+
+    def test_analytics_only_when_configured(self):
+        docs = self.build(self.deals())
+        self.assertNotIn("cloudflareinsights", (docs / "index.html").read_text())
+
     def test_slug_removes_accents(self):
         self.assertEqual(build_site.slug("Montréal – Dorval"), "montreal-dorval")
 

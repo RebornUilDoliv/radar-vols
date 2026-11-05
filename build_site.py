@@ -9,6 +9,7 @@ import tomllib
 import unicodedata
 import urllib.parse
 from datetime import date, datetime
+from statistics import median
 from pathlib import Path
 
 import radar
@@ -19,6 +20,9 @@ DOCS = ROOT / "docs"
 SOON_DAYS = 45
 AHEAD_DAYS = 150
 HERO_PHOTO = "TYO"
+BUDGETS = (100, 200, 500)
+MIN_COLLECTION_CITIES = 3
+COLLECTION_ROWS = 40
 LOGO = (
     '<svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="13.8" fill="none" stroke="currentColor" stroke-width="2"/>'
     '<path d="M9.5 17.5a6.5 6.5 0 0 1 13 0z" fill="currentColor"/><rect x="6.2" y="18.8" width="19.6" height="1.6" rx=".8" fill="currentColor"/>'
@@ -126,6 +130,10 @@ def layout(p, title, description, path, body, noindex=False, extra=""):
         ensure_ascii=False, separators=(",", ":"),
     ).replace("</", "<\\/")
     version = site["version"]
+    analytics = ""
+    if site.get("analytics_token"):
+        beacon = e(json.dumps({"token": site["analytics_token"]}))
+        analytics = f'<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon="{beacon}"></script>'
     return f"""<!doctype html>
 <html lang="{p.lang}">
 <head>
@@ -144,6 +152,7 @@ def layout(p, title, description, path, body, noindex=False, extra=""):
 <script>window.RF={script}</script>
 <script src="{base}assets/app.js?v={version}" defer></script>
 {extra}
+{analytics}
 </head>
 <body>
 <header class="nav">
@@ -166,7 +175,7 @@ def layout(p, title, description, path, body, noindex=False, extra=""):
       <p>{p.t('foot_1')}</p>
       <p>{p.t('foot_2', name=name)}</p>
     </div>
-    <p class="foot-links"><a href="{root}vols/">{p.t('nav_flights')}</a><a href="{root}destinations/">{p.t('nav_places')}</a><a href="{root}a-propos/">{p.t('nav_info')}</a><a href="{root}credits/">{p.t('credits')}</a></p>
+    <p class="foot-links"><a href="{root}vols/">{p.t('nav_flights')}</a><a href="{root}vols-pas-chers/">{p.t('nav_deals')}</a><a href="{root}destinations/">{p.t('nav_places')}</a><a href="{root}a-propos/">{p.t('nav_info')}</a><a href="{root}credits/">{p.t('credits')}</a></p>
   </div>
 </footer>
 </body>
@@ -351,6 +360,95 @@ def destinations_index(p, cities):
     return layout(p, f"{p.t('places_title')} | {p.site['name']}", lead, "destinations/", body)
 
 
+def collections(offers):
+    """Sélections par mois, région et budget, gardées si elles couvrent assez de villes."""
+    groups = []
+    for key in sorted({o["depart"][:7] for o in offers}):
+        month = int(key[5:])
+        groups.append({"kind": "month", "slug": slug(MONTHS["fr"][month - 1]), "value": key,
+                       "offers": [o for o in offers if o["depart"][:7] == key]})
+    for region in sorted({o["region"] for o in offers}):
+        groups.append({"kind": "region", "slug": slug(region), "value": region,
+                       "offers": [o for o in offers if o["region"] == region]})
+    for budget in BUDGETS:
+        groups.append({"kind": "budget", "slug": f"moins-de-{budget}-euros", "value": budget,
+                       "offers": [o for o in offers if o["price"] < budget]})
+    kept, used = [], set()
+    for group in groups:
+        best = {}
+        for offer in sorted(group["offers"], key=lambda o: o["price"]):
+            best.setdefault(offer["code"], offer)
+        if len(best) >= MIN_COLLECTION_CITIES and group["slug"] not in used:
+            used.add(group["slug"])
+            kept.append({**group, "best": list(best.values())})
+    return kept
+
+
+def collection_name(p, group):
+    if group["kind"] == "month":
+        return MONTHS[p.lang][int(group["value"][5:]) - 1]
+    if group["kind"] == "region":
+        return p.region(group["value"])
+    return p.euro(group["value"])
+
+
+def collection_title(p, group):
+    return p.t(f"coll_{group['kind']}", name=collection_name(p, group))
+
+
+def collection_links(p, groups):
+    return "".join(
+        f'<li><a href="{p.root}vols-pas-chers/{g["slug"]}/"><span>{e(collection_title(p, g))}</span>'
+        f'<span>{p.t("from_price", price=p.euro(g["best"][0]["price"]))}</span></a></li>'
+        for g in groups
+    )
+
+
+def collection_facts(p, group):
+    cheapest = group["best"][0]
+    facts = [p.t("coll_cheapest", city=e(p.city(cheapest["code"], cheapest["city"])), price=p.euro(cheapest["price"]),
+                 start=e(p.day(cheapest["depart"], False)), end=e(p.day(cheapest["back"])))]
+    direct = next((o for o in group["best"] if o.get("stops") == 0), None)
+    if direct:
+        facts.append(p.t("coll_direct", city=e(p.city(direct["code"], direct["city"])), price=p.euro(direct["price"])))
+    if group["kind"] != "month":
+        first = min(group["offers"], key=lambda o: o["price"])
+        facts.append(p.t("coll_best_month", month=e(p.month(first["depart"][:7])), price=p.euro(first["price"])))
+    if group["kind"] != "region":
+        first = min(group["offers"], key=lambda o: o["price"])
+        facts.append(p.t("coll_best_region", region=e(p.region(first["region"])), price=p.euro(first["price"])))
+    return "".join(f"<li>{fact}</li>" for fact in facts)
+
+
+def collection_page(p, group, groups, by_code, updated):
+    title = collection_title(p, group)
+    prices = [o["price"] for o in group["best"]]
+    values = {"count": len(prices), "price": p.euro(prices[0]), "median": p.euro(median(prices))}
+    rows = "".join(flight_row(p, o, by_code[o["code"]]) for o in group["best"][:COLLECTION_ROWS])
+    others = [g for g in groups if g["kind"] == group["kind"] and g["slug"] != group["slug"]]
+    more = f'<section class="panel"><h2>{p.t("coll_more")}</h2><ul class="links">{collection_links(p, others)}</ul></section>' if others else ""
+    body = f"""<section class="page wrap">
+  <p class="crumb"><a href="{p.root}vols-pas-chers/">{p.t('nav_deals')}</a></p>
+  <h1>{e(title)}</h1>
+  <p class="lead">{p.t('coll_lead', **values)}</p>
+  <section class="panel"><h2>{p.t('coll_key')}</h2><ul class="guide">{collection_facts(p, group)}</ul></section>
+  <ul class="rows">{rows}</ul>
+  <p class="sub">{p.t('coll_note', updated=e(updated))}</p>
+  {more}
+</section>"""
+    return layout(p, f"{title} | {p.site['name']}", p.t("coll_meta", **values), f"vols-pas-chers/{group['slug']}/", body)
+
+
+def collections_index(p, groups):
+    blocks = ""
+    for kind, label in (("month", "deals_months"), ("region", "deals_regions"), ("budget", "deals_budgets")):
+        links = collection_links(p, [g for g in groups if g["kind"] == kind])
+        if links:
+            blocks += f'<section class="dest-group"><h2>{p.t(label)}</h2><ul class="links">{links}</ul></section>'
+    body = f'<section class="page wrap"><h1>{p.t("deals_title")}</h1><p class="lead">{p.t("deals_lead")}</p>{blocks}</section>'
+    return layout(p, f"{p.t('deals_title')} | {p.site['name']}", p.t("deals_lead"), "vols-pas-chers/", body)
+
+
 BOOKING_LOCALES = {"fr": "fr", "en": "en-gb", "es": "es"}
 
 
@@ -499,7 +597,7 @@ def city_index(places, countries):
     return sorted(rows, key=lambda row: row[1])
 
 
-def build_language(p, data, cities, updated_at):
+def build_language(p, data, cities, updated_at, groups):
     lang, folder = p.lang, p.folder
     updated = f"{updated_at.day} {MONTHS[lang][updated_at.month - 1]}, {updated_at:%H:%M} UTC"
     offers = data["offers"]
@@ -513,6 +611,13 @@ def build_language(p, data, cities, updated_at):
     write(folder / "vols" / "index.html", flights_page(p))
     write(folder / "destinations" / "index.html", destinations_index(p, cities))
     write(folder / "a-propos" / "index.html", about_page(p))
+    deals = folder / "vols-pas-chers"
+    if deals.exists():
+        shutil.rmtree(deals)
+    by_code = {c["code"]: c for c in cities}
+    write(deals / "index.html", collections_index(p, groups))
+    for group in groups:
+        write(deals / group["slug"] / "index.html", collection_page(p, group, groups, by_code, updated))
     write(folder / "test-reservation" / "index.html", test_booking_page(p))
     write(folder / "credits" / "index.html", credits_page(p))
     keep = {c["slug"] for c in cities}
@@ -544,10 +649,12 @@ def build(data, site, catalog=None):
         write(DOCS / "assets" / f"cities-{lang}.json", json.dumps(rows, ensure_ascii=False, separators=(",", ":")))
     if catalog:
         write(names_path, json.dumps(names, ensure_ascii=False, separators=(",", ":")))
+    groups = collections(offers)
     for lang in LANGS:
-        build_language(Page(site, lang, names.get(lang)), data, cities, updated_at)
+        build_language(Page(site, lang, names.get(lang)), data, cities, updated_at, groups)
     write(DOCS / "404.html", missing_page(Page(site, "fr", names.get("fr"))))
-    pages = ["", "vols/", "destinations/", "a-propos/"] + [f"destinations/{c['slug']}/" for c in cities]
+    pages = ["", "vols/", "vols-pas-chers/", "destinations/", "a-propos/"] + [f"destinations/{c['slug']}/" for c in cities]
+    pages += [f"vols-pas-chers/{g['slug']}/" for g in groups]
     urls = "".join(
         f"<url><loc>{e(site['url'] + ('' if lang == 'fr' else lang + '/') + page)}</loc></url>"
         for lang in LANGS for page in pages
