@@ -2,7 +2,7 @@ name: Radar de vols
 
 on:
   schedule:
-    - cron: "17 6,16 * * *"
+    - cron: "17 */2 * * *"
   workflow_dispatch:
     inputs:
       test_email:
@@ -32,7 +32,7 @@ jobs:
           SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
           MAIL_FROM: ${{ secrets.MAIL_FROM }}
           MAIL_TO: ${{ secrets.MAIL_TO }}
-        run: python radar.py ${{ inputs.test_email && '--test-email' || '' }}
+        run: python radar.py ${{ github.event_name == 'schedule' && '--auto' || '' }} ${{ inputs.test_email && '--test-email' || '' }}
       - name: Construire le site
         if: ${{ !inputs.test_email }}
         run: python build_site.py

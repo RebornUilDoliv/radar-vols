@@ -270,6 +270,21 @@ class PartnerLinkTests(unittest.TestCase):
         self.assertEqual(query["u"], ["https://www.aviasales.com/search/X?a=1&b=2"])
 
 
+class ScheduleTests(unittest.TestCase):
+    NOW = radar.datetime(2026, 11, 5, 12, tzinfo=radar.timezone.utc)
+
+    def test_skips_recent_run(self):
+        state = {"last_run": "2026-11-05T05:00+00:00"}
+        self.assertTrue(radar.run_is_recent(state, 10, self.NOW))
+
+    def test_runs_after_delay(self):
+        state = {"last_run": "2026-11-05T01:00+00:00"}
+        self.assertFalse(radar.run_is_recent(state, 10, self.NOW))
+
+    def test_runs_without_history(self):
+        self.assertFalse(radar.run_is_recent({}, 10, self.NOW))
+
+
 class StaleTests(unittest.TestCase):
     def site_after(self, rows, state, price):
         with tempfile.TemporaryDirectory() as folder, \

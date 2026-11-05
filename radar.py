@@ -459,6 +459,11 @@ def demo_offers():
     ]
 
 
+def run_is_recent(state, min_hours, now):
+    last = state.get("last_run")
+    return bool(last) and now - datetime.fromisoformat(last) < timedelta(hours=min_hours)
+
+
 def load_state(path):
     return json.loads(path.read_text()) if path.exists() else {}
 
@@ -504,6 +509,7 @@ def main():
     parser.add_argument("--state", type=Path, default=ROOT / "data" / "state.json")
     parser.add_argument("--site", type=Path, default=ROOT / "docs" / "prices.json")
     parser.add_argument("--dry-run", action="store_true", help="affiche les offres sans e-mail, sans sauvegarde et sans utiliser SerpApi")
+    parser.add_argument("--auto", action="store_true", help="ne fait rien si le dernier relevé est trop récent")
     parser.add_argument("--test-email", action="store_true", help="envoie un e-mail d'exemple")
     args = parser.parse_args()
     config = tomllib.loads(args.config.read_text())
@@ -518,6 +524,11 @@ def main():
             raise ConfigError("TRAVELPAYOUTS_TOKEN manquant")
         today = date.today()
         state = load_state(args.state)
+        now = datetime.now(timezone.utc)
+        if args.auto and run_is_recent(state, config["schedule"]["min_hours"], now):
+            print("Relevé récent : rien à faire.")
+            return 0
+        state["last_run"] = now.isoformat(timespec="minutes")
         client = Travelpayouts(token, config["search"])
         serpapi_key = None if args.dry_run else os.environ.get("SERPAPI_KEY")
         site = None if args.dry_run else args.site
