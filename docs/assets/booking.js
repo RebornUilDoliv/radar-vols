@@ -88,7 +88,7 @@
   function stepSearch() {
     show("Où veux-tu aller ?", 1);
     var form = el("form", "book-form");
-    var from = select(AIRPORTS, "CDG"), to = select(AIRPORTS, "LHR");
+    var from = select(AIRPORTS, "LHR"), to = select(AIRPORTS, "JFK");
     var depart = input("date", dayAhead(30), { min: dayAhead(1) });
     var back = input("date", dayAhead(37), { min: dayAhead(1) });
     back.required = false;
@@ -115,7 +115,9 @@
       box.appendChild(el("p", "sub", "Aucun vol de test pour ce trajet."));
     }
     var list = el("ul", "rows");
-    offers.forEach(function (offer) {
+    offers.slice().sort(function (a, b) {
+      return (b.airline === "Duffel Airways") - (a.airline === "Duffel Airways");
+    }).forEach(function (offer) {
       var row = el("li", "row");
       var info = el("div", "row-info");
       info.appendChild(el("h3", "", offer.airline));
@@ -153,7 +155,7 @@
         born_on: input("date", "1990-01-0" + (index + 1), { max: dayAhead(-6600) }),
         gender: select([["f", "Femme"], ["m", "Homme"]], "f"),
         email: input("email", "test" + (index + 1) + "@example.com", { autocomplete: "off" }),
-        phone_number: input("tel", "+33100000000", { autocomplete: "off", pattern: "\\+[0-9]{6,15}" })
+        phone_number: input("tel", "+442080160508", { autocomplete: "off", pattern: "\\+[0-9]{6,15}" })
       };
       var group = el("fieldset", "book-person");
       group.appendChild(el("legend", "", "Voyageur " + (index + 1)));

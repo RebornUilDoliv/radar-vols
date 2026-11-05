@@ -17,7 +17,7 @@ marker = "800338"                # identifiant partenaire Travelpayouts
 project = "595480"
 program = "4114"
 campaign = "100"
-test_api = ""                    # adresse du serveur de test ; vide = mode démonstration
+test_api = "https://radar-flight-test.joseluiscardozopintos.workers.dev"                    # adresse du serveur de test ; vide = mode démonstration
 
 [schedule]
 min_hours = 12                   # le radar vérifie toutes les 2 heures, et relève au plus toutes les 12 heures
