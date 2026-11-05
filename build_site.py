@@ -237,7 +237,7 @@ def newsletter_block(p):
 
 def search_form(p):
     return f"""<form class="search" id="search" data-target="https://www.aviasales.com/search/" autocomplete="off">
-  <div class="field grow"><label for="from">{p.t('search_from')}</label><input id="from" value="{e(p.city('PAR', 'Paris'))} (PAR)" data-code="PAR" required>
+  <div class="field grow"><label for="from">{p.t('search_from')}</label><input id="from" placeholder="{p.t('search_place')}" required>
     <ul class="suggest" hidden></ul></div>
   <div class="field grow"><label for="to">{p.t('search_to')}</label><input id="to" placeholder="{e(p.t('search_place'))}" required>
     <ul class="suggest" hidden></ul></div>
@@ -288,13 +288,24 @@ def home(p, cities, offers, updated, origins=()):
     )
     nothing = f'<li class="empty">{p.t("nothing")}</li>'
     world = ""
+    start = p.city("PAR", "Paris")
+    hero_route = None
     if origins:
+        cheapest = sorted(((o, r) for o in origins for r in o["pages"]), key=lambda pair: pair[1]["price"])
+        hero_route = cheapest[0]
+        seen, picks = set(), []
+        for origin, route in cheapest:
+            if route["to"] not in seen:
+                seen.add(route["to"])
+                picks.append((origin, route))
+        deals = "".join(world_deal(p, origin, route) for origin, route in picks[:8])
+        start = p.city(hero_route[0]["code"], hero_route[0]["code"])
         world = f'''<section class="band wrap"><h2>{p.t("world_home")}</h2><p class="sub">{p.t("world_home_sub", count=len(origins))}</p><ul class="links">{origin_links(p, origins)}</ul></section>'''
     body = f"""<section class="hero">
   {hero_image}
   <div class="hero-in">
     <h1>{p.t('hero')}</h1>
-    <p>{e(p.t('hero_sub', city=p.city(best['code'], best['city']), price=p.euro(best['price'])))}</p>
+    <p>{e(p.t('hero_sub', start=start, city=p.city(hero_route[1]['to'], hero_route[1]['to']) if hero_route else p.city(best['code'], best['city']), price=p.euro(hero_route[1]['price'] if hero_route else best['price'])))}</p>
   </div>
 </section>
 <div class="wrap search-wrap">{search_form(p)}</div>
@@ -519,6 +530,13 @@ def world_row(p, origin, route):
     action = (f'<a class="go" href="{p.root}{route_path(origin, route)}">{p.t("see")}</a>' if has_page(origin, route)
               else f'<a class="go" href="{e(route["link"])}" rel="nofollow sponsored noopener" target="_blank">{p.t("see")}</a>')
     return f"""<li class="row"><div class="row-info"><h3>{title}</h3><p>{detail}</p></div><p class="row-price">{p.euro(route['price'])}</p>{action}</li>"""
+
+
+def world_deal(p, origin, route):
+    name = f'{p.city(origin["code"], origin["code"])} → {p.city(route["to"], route["to"])}'
+    detail = f'{e(p.day(route["depart"], False))} → {e(p.day(route["back"]))} · {e(p.t("days", count=nights(route)))} · {e(p.stops(route))}'
+    page = f'{p.root}{route_path(origin, route)}'
+    return f"""<li class="row"><div class="row-info"><h3><a href="{page}">{e(name)}</a></h3><p>{detail}</p></div><p class="row-price">{p.euro(route['price'])}</p><a class="go" href="{page}">{p.t('see')}</a></li>"""
 
 
 def world_index(p, origins):

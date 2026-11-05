@@ -162,9 +162,10 @@ class BuildTests(unittest.TestCase):
         docs = self.build(self.deals())
         self.assertFalse((docs / "vols-pas-chers" / "asie").exists())
 
-    def test_analytics_only_when_configured(self):
+    def test_analytics_beacon_follows_config(self):
         docs = self.build(self.deals())
-        self.assertNotIn("cloudflareinsights", (docs / "index.html").read_text())
+        token = tomllib.loads(Path("config.toml").read_text())["site"]["analytics_token"]
+        self.assertEqual("cloudflareinsights" in (docs / "index.html").read_text(), bool(token))
 
     def test_world_pages_only_for_popular_routes(self):
         names = {"LON": "Londres", "PAR": "Paris", "TYO": "Tokyo", "LIS": "Lisbonne"}
