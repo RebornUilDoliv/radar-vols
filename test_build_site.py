@@ -97,14 +97,16 @@ class BuildTests(unittest.TestCase):
         docs = self.build([offer("BCN", "Barcelone", "Europe", 43, 30)])
         page = (docs / "en/destinations/barcelone/index.html").read_text()
         self.assertIn("booking.com/searchresults.en-gb.html?ss=Barcelona", page)
-        self.assertIn("getyourguide.com/en-gb/s/?q=Barcelona", page)
+        self.assertIn("tp.media/r?", page)
+        self.assertIn("campaign_id=89", page)
+        self.assertIn("tiqets.com%2Fen%2Fsearch%3Fq%3DBarcelona", page)
 
     def test_partner_program_wraps_stay_links(self):
         site = dict(SITE, root="/", version="1", hotels_program="111", hotels_campaign="222", url="https://x.test/")
         html = build_site.stay_links(build_site.Page(site, "fr"), "São Paulo")
         self.assertIn("tp.media/r?", html)
         self.assertIn("p=111", html)
-        self.assertIn("getyourguide.com/fr-fr/s/?q=S%C3%A3o%20Paulo", html)
+        self.assertIn("campaign_id=222", html)
 
     def test_slug_removes_accents(self):
         self.assertEqual(build_site.slug("Montréal – Dorval"), "montreal-dorval")

@@ -332,14 +332,13 @@ def destinations_index(p, cities):
 
 
 BOOKING_LOCALES = {"fr": "fr", "en": "en-gb", "es": "es"}
-GYG_LOCALES = {"fr": "fr-fr", "en": "en-gb", "es": "es-es"}
 
 
 def stay_links(p, name):
     """Liens vers les partenaires, suivis dès que le programme est renseigné dans config.toml."""
     query = urllib.parse.quote(name)
     hotel = f"https://www.booking.com/searchresults.{BOOKING_LOCALES[p.lang]}.html?ss={query}"
-    tour = f"https://www.getyourguide.com/{GYG_LOCALES[p.lang]}/s/?q={query}"
+    tour = f"https://www.tiqets.com/{p.lang}/search?q={query}"
 
     def tracked(url, kind):
         program = p.site.get(f"{kind}_program")
