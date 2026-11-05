@@ -21,6 +21,8 @@ hotels_program = ""              # identifiant du programme d'hôtels, une fois 
 hotels_campaign = ""
 tours_program = "2074"           # Tiqets
 tours_campaign = "89"
+claims_program = "9139"          # AirHelp
+claims_campaign = "120"
 test_api = "https://radar-flight-test.joseluiscardozopintos.workers.dev"                    # adresse du serveur de test ; vide = mode démonstration
 
 [schedule]

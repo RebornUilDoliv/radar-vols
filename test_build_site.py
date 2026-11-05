@@ -100,6 +100,8 @@ class BuildTests(unittest.TestCase):
         self.assertIn("tp.media/r?", page)
         self.assertIn("campaign_id=89", page)
         self.assertIn("tiqets.com%2Fen%2Fsearch%3Fq%3DBarcelona", page)
+        self.assertIn("campaign_id=120", page)
+        self.assertIn("airhelp.com%2Fen%2F", page)
 
     def test_partner_program_wraps_stay_links(self):
         site = dict(SITE, root="/", version="1", hotels_program="111", hotels_campaign="222", url="https://x.test/")

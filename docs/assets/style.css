@@ -133,7 +133,7 @@ td.num, th.num { text-align: right; font-weight: 650; font-variant-numeric: tabu
 .links a { display: flex; gap: 12px; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--g2); font-weight: 500; text-decoration: none; }
 .links a:hover span:first-child { text-decoration: underline; text-underline-offset: 3px; }
 .links span:last-child { color: var(--g3); font-size: 15px; font-weight: 400; white-space: nowrap; }
-.stays { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.stays { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
 .stay { display: grid; gap: 2px; padding: 18px; background: var(--g1); border-radius: 12px; text-decoration: none; transition: color .2s, background .2s; }
 .stay strong { font-family: "Clash Display", "Geist", sans-serif; font-size: 20px; font-weight: 500; letter-spacing: normal; }
 .stay span { color: var(--g3); font-size: 14px; }
@@ -187,6 +187,7 @@ details p { margin-top: 6px; color: var(--g3); }
   .mosaic { grid-template-columns: 1fr; }
   .card.big { min-height: 340px; }
   .budgets, .links { grid-template-columns: repeat(2, 1fr); }
+  .stays { grid-template-columns: 1fr; }
   .filters { grid-template-columns: repeat(3, 1fr); }
   .two { grid-template-columns: 1fr; }
   .foot-in { grid-template-columns: 1fr; }

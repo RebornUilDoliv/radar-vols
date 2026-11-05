@@ -349,8 +349,10 @@ def stay_links(p, name):
     def card(url, title, text):
         return f'<a class="stay" href="{e(url)}" rel="nofollow sponsored noopener" target="_blank"><strong>{title}</strong><span>{text}</span></a>'
 
+    claim = f"https://www.airhelp.com/{p.lang}/"
     return (card(tracked(hotel, "hotels"), p.t("stay_hotel"), p.t("stay_hotel_b"))
-            + card(tracked(tour, "tours"), p.t("stay_tour"), p.t("stay_tour_b")))
+            + card(tracked(tour, "tours"), p.t("stay_tour"), p.t("stay_tour_b"))
+            + card(tracked(claim, "claims"), p.t("stay_claim"), p.t("stay_claim_b")))
 
 
 def merged_history(city):
