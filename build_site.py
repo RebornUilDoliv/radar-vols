@@ -401,11 +401,13 @@ def flights_page(p, origins=()):
 
 def world_destinations(origins):
     """Regroupe les routes publiées par destination."""
+    published = {route["to"] for origin in origins for route in origin["pages"]}
     places = {}
     for origin in origins:
-        for route in origin["pages"]:
-            place = places.setdefault(route["to"], {"code": route["to"], "slug": route["to_slug"], "routes": []})
-            place["routes"].append((origin, route))
+        for route in origin["routes"]:
+            if route["to"] in published:
+                place = places.setdefault(route["to"], {"code": route["to"], "slug": route["to_slug"], "routes": []})
+                place["routes"].append((origin, route))
     for place in places.values():
         place["routes"].sort(key=lambda pair: pair[1]["price"])
     return sorted(places.values(), key=lambda place: place["slug"])

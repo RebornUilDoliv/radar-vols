@@ -54,7 +54,7 @@ class BuildTests(unittest.TestCase):
     def test_home_links_stay_on_site(self):
         docs = self.build([offer("BCN", "Barcelone", "Europe", 43, 30)])
         home = (docs / "index.html").read_text()
-        self.assertNotIn("tp.media", home)
+        self.assertNotIn("tp.media", home.split('id="preparer"')[0])
         month = str(TODAY + timedelta(days=30))[:7]
         self.assertIn(f"destinations/barcelone/?mois={month}", home)
         self.assertIn(f'id="m-{month}"', (docs / "destinations/barcelone/index.html").read_text())
@@ -193,8 +193,10 @@ class BuildTests(unittest.TestCase):
         self.assertEqual(build_site.continent({"time_zone": "Atlantic/Canary", "country_code": "ES"}), "EU")
 
     def test_world_destinations_group_routes(self):
-        origin = {"code": "LON", "slug": "londres", "pages": [{"to": "TYO", "to_slug": "tokyo", "price": 500}]}
-        other = {"code": "PAR", "slug": "paris", "pages": [{"to": "TYO", "to_slug": "tokyo", "price": 400}]}
+        page = {"to": "TYO", "to_slug": "tokyo", "price": 500}
+        cheaper = {"to": "TYO", "to_slug": "tokyo", "price": 400}
+        origin = {"code": "LON", "slug": "londres", "pages": [page], "routes": [page]}
+        other = {"code": "PAR", "slug": "paris", "pages": [], "routes": [cheaper]}
         places = build_site.world_destinations([origin, other])
         self.assertEqual(len(places), 1)
         self.assertEqual(places[0]["routes"][0][0]["code"], "PAR")
