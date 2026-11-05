@@ -4,6 +4,8 @@
   if (!box) return;
   var API = box.dataset.api || "";
   var AIRPORTS = [["CDG", "Paris Charles-de-Gaulle"], ["ORY", "Paris Orly"], ["LHR", "Londres Heathrow"], ["JFK", "New York JFK"], ["BCN", "Barcelone"], ["LIS", "Lisbonne"], ["FCO", "Rome Fiumicino"], ["BKK", "Bangkok"]];
+  var NAMES = ["Alice", "Bruno", "Chloe", "David", "Emma", "Felix"];
+  var LETTERS = "[A-Za-zÀ-ÿ' \\-]+";
   var state = {};
 
   function el(tag, className, text) {
@@ -150,8 +152,8 @@
     var people = state.offer.passengers.map(function (_, index) {
       var person = {
         title: select([["ms", "Mme"], ["mr", "M."]], "ms"),
-        given_name: input("text", "Test" + (index + 1), { autocomplete: "off" }),
-        family_name: input("text", "Demo", { autocomplete: "off" }),
+        given_name: input("text", NAMES[index % NAMES.length], { autocomplete: "off", pattern: LETTERS, title: "Lettres uniquement" }),
+        family_name: input("text", "Demo", { autocomplete: "off", pattern: LETTERS, title: "Lettres uniquement" }),
         born_on: input("date", "1990-01-0" + (index + 1), { max: dayAhead(-6600) }),
         gender: select([["f", "Femme"], ["m", "Homme"]], "f"),
         email: input("email", "test" + (index + 1) + "@example.com", { autocomplete: "off" }),
