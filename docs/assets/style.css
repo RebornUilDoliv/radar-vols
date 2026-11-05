@@ -16,6 +16,8 @@ img { display: block; width: 100%; }
 :focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
 
 .nav { position: absolute; z-index: 5; inset: 12px 12px auto; display: flex; flex-wrap: wrap; gap: 6px 24px; align-items: center; padding: 18px 26px; color: var(--w); }
+.mark { display: block; width: 28px; height: 28px; flex: none; }
+.logo, .foot-brand { display: inline-flex; gap: 9px; align-items: center; }
 .logo { font-size: 20px; font-weight: 600; text-decoration: none; }
 .nav nav { display: flex; flex-wrap: wrap; gap: 4px 22px; margin-left: auto; }
 .nav nav a { font-size: 14px; font-weight: 500; letter-spacing: -.02em; text-decoration: none; }

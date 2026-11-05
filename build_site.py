@@ -19,6 +19,11 @@ DOCS = ROOT / "docs"
 SOON_DAYS = 45
 AHEAD_DAYS = 150
 HERO_PHOTO = "TYO"
+LOGO = (
+    '<svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="13.8" fill="none" stroke="currentColor" stroke-width="2"/>'
+    '<path d="M9.5 17.5a6.5 6.5 0 0 1 13 0z" fill="currentColor"/><rect x="6.2" y="18.8" width="19.6" height="1.6" rx=".8" fill="currentColor"/>'
+    '<rect x="9.5" y="22" width="13" height="1.4" rx=".7" fill="currentColor"/></svg>'
+)
 e = html.escape
 
 
@@ -134,7 +139,7 @@ def layout(p, title, description, path, body, noindex=False, extra=""):
 <meta property="og:title" content="{e(title)}">
 <meta property="og:description" content="{e(description)}">
 <meta property="og:type" content="website">
-<link rel="icon" href="{base}assets/icon.svg?v=2" type="image/svg+xml">
+<link rel="icon" href="{base}assets/icon.svg?v=3" type="image/svg+xml">
 <link rel="stylesheet" href="{base}assets/style.css?v={version}">
 <script>window.RF={script}</script>
 <script src="{base}assets/app.js?v={version}" defer></script>
@@ -142,7 +147,7 @@ def layout(p, title, description, path, body, noindex=False, extra=""):
 </head>
 <body>
 <header class="nav">
-  <a class="logo" href="{root}">{name}</a>
+  <a class="logo" href="{root}" aria-label="{name}">{LOGO}{name}</a>
   <nav aria-label="Menu">
     <a href="{root}vols/">{p.t('nav_flights')}</a>
     <a href="{root}destinations/">{p.t('nav_places')}</a>
@@ -156,7 +161,7 @@ def layout(p, title, description, path, body, noindex=False, extra=""):
 </main>
 <footer class="foot">
   <div class="wrap foot-in">
-    <p class="foot-brand">{name}</p>
+    <p class="foot-brand">{LOGO}{name}</p>
     <div>
       <p>{p.t('foot_1')}</p>
       <p>{p.t('foot_2', name=name)}</p>

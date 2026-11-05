@@ -135,6 +135,10 @@ class BuildTests(unittest.TestCase):
         self.assertIn("90 €", page)
         self.assertIn("campaign_id=87", page)
 
+    def test_logo_is_in_header_and_footer(self):
+        docs = self.build([offer("BCN", "Barcelone", "Europe", 43, 30)])
+        self.assertEqual((docs / "index.html").read_text().count('class="mark"'), 2)
+
     def test_slug_removes_accents(self):
         self.assertEqual(build_site.slug("Montréal – Dorval"), "montreal-dorval")
 
