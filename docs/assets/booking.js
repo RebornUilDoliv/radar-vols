@@ -12,6 +12,11 @@
   var loading = null;
   var NAMES = ["Alice", "Bruno", "Chloe", "David", "Emma", "Felix"];
   var LETTERS = "[A-Za-zÀ-ÿ' \\-]+";
+  var LIVE_NOTE = {
+    fr: "Vrais prix du moment. La réservation reste simulée : aucun billet n'est émis.",
+    en: "Real current prices. The booking stays simulated: no ticket is issued.",
+    es: "Precios reales del momento. La reserva sigue simulada: no se emite ningún billete."
+  };
   var state = {};
 
   function el(tag, className, text) {
@@ -175,7 +180,7 @@
       submit.disabled = true;
       state.adults = Number(adults.value);
       call("/search", { from: origin, to: destination, depart: depart.value, back: back.value, adults: state.adults })
-        .then(function (data) { stepOffers(data.offers); })
+        .then(function (data) { state.live = Boolean(data.live); stepOffers(data.offers); })
         .catch(function () { submit.disabled = false; problem(RF.t.search_fail); });
     });
     box.appendChild(form);
@@ -227,12 +232,13 @@
 
   function stepOffers(offers) {
     show(RF.t.choose, 2);
+    if (state.live) box.appendChild(el("p", "notice", LIVE_NOTE[RF.lang]));
     if (!offers.length) {
       box.appendChild(el("p", "sub", RF.t.none_test));
     }
     var list = el("ul", "rows");
     offers.slice().sort(function (a, b) {
-      return (b.airline === "Duffel Airways") - (a.airline === "Duffel Airways");
+      return state.live ? 0 : (b.airline === "Duffel Airways") - (a.airline === "Duffel Airways");
     }).forEach(function (offer) {
       var row = el("li", "row");
       var info = el("div", "row-info");
@@ -318,7 +324,7 @@
     box.textContent = "";
     box.appendChild(el("h2", "", RF.t.done));
     box.appendChild(el("p", "lead", say("ref", { ref: order.reference })));
-    box.appendChild(el("p", "sub", say("not_real", { airline: order.airline, price: money(order.amount, order.currency) })));
+    box.appendChild(el("p", "sub", say("not_real", { airline: order.airline || state.offer.airline, price: money(order.amount || state.offer.amount, order.currency || state.offer.currency) })));
     var again = el("button", "search-go", RF.t.again);
     again.type = "button";
     again.addEventListener("click", stepSearch);

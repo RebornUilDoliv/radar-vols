@@ -101,6 +101,8 @@ La page `/test-reservation/` montre un parcours de réservation complet. Elle n'
 
 Pour la brancher sur l'environnement de test de Duffel, déploie le dossier `worker/` sur Cloudflare Workers, ajoute le secret `DUFFEL_TEST_TOKEN`, puis indique l'adresse du serveur dans `test_api` de `config.toml`. Le serveur refuse tout jeton qui ne commence pas par `duffel_test_`.
 
+Pour afficher de vrais prix, ajoute le secret `DUFFEL_LIVE_SEARCH_TOKEN`, qui doit commencer par `duffel_live_`. Le serveur s'en sert uniquement pour chercher : la réservation reste alors simulée et aucune commande n'est envoyée à Duffel.
+
 Cette version ne vend rien. Ne la passe pas en réel sans avoir validé les obligations légales, l'assurance, la garantie, le paiement et le service client.
 
 ## Limites
