@@ -16,7 +16,7 @@
 <script>window.RF={"lang":"en","locale":"en-GB","root":"/en/","base":"/","t":{"more":"Show more flights ({shown} of {total})","count_one":"{count} flight","count_many":"{count} flights","empty":"No flights match these filters. Try a higher budget or another month.","soon":"Prices are coming soon. Check back after the next update.","news_ok":"Thanks! Check your inbox and confirm your subscription.","pick_from":"Choose a departure city from the list.","pick_to":"Choose a destination from the list.","same":"Departure and destination must be different.","step":"Step {n} of 4","where":"Where do you want to go?","back_opt":"Return (optional)","adults":"Adults","see_flights":"See flights","pick_list":"Choose the cities from the suggestions.","same_city":"Choose two different cities.","search_fail":"The search didn't work. Try again in a moment.","choose":"Choose your flight","none_test":"No test flight for this route.","pick":"Choose","itinerary":"View itinerary","outbound":"Outbound","inbound":"Return","trip":"{time} journey","no_detail":"details unavailable","stop_at":"Stop in {place}, {time}","back_step":"Go back","who":"Who's travelling?","fake":"Keep this data fictional: it's a test.","traveller":"Traveller {n}","title":"Title","ms":"Ms","mr":"Mr","given":"First name","family":"Last name","born":"Date of birth","gender":"Gender","f":"Female","m":"Male","email":"Email","phone":"Phone","letters":"Letters only","next":"Continue","pay":"Simulated payment","total":"{airline}, total {price}","no_card":"No card is requested and no money is taken.","pay_go":"Simulate payment","order_fail":"The test booking failed. The flight may no longer be available.","done":"Test booking confirmed","ref":"Reference: {ref}","not_real":"{airline}, {price}. This ticket doesn't exist and can't be used to travel.","again":"Start again","see":"View","direct":"direct","stop":"{count} stop","stops":"{count} stops","stops_unknown":"stops not specified","days":"{count} days"},"from_label":"From","to_label":"To","out_label":"Depart","search_place":"Any city in the world","from_name":"Paris","to_name":"New York","photos":["CTA","KRK","LON","NAP","PRG","TYO"]}</script>
 <script src="/assets/app.js?v=202611052125" defer></script>
 
-
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon="{&quot;token&quot;: &quot;71176418a1124737b274a50c21f6e2a5&quot;}"></script>
 </head>
 <body>
 <header class="nav">
@@ -35,11 +35,11 @@
   <img class="hero-img" src="/assets/photos/TYO.jpg" alt="">
   <div class="hero-in">
     <h1>Your next flight starts here.</h1>
-    <p>Today: Paris → Warsaw from €49</p>
+    <p>Today: Barcelona → Turin from €25</p>
   </div>
 </section>
 <div class="wrap search-wrap"><form class="search" id="search" data-target="https://www.aviasales.com/search/" autocomplete="off">
-  <div class="field grow"><label for="from">From</label><input id="from" value="Paris (PAR)" data-code="PAR" required>
+  <div class="field grow"><label for="from">From</label><input id="from" placeholder="Any city in the world" required>
     <ul class="suggest" hidden></ul></div>
   <div class="field grow"><label for="to">To</label><input id="to" placeholder="Any city in the world" required>
     <ul class="suggest" hidden></ul></div>
@@ -56,7 +56,7 @@
 </ul>
 <section class="band wrap"><h2>Leave from your city</h2><p class="sub">The best prices from 30 major cities around the world.</p><ul class="links"><li><a href="/en/depuis/amsterdam/"><span>Amsterdam</span><span>from €67</span></a></li><li><a href="/en/depuis/bangkok/"><span>Bangkok</span><span>from €49</span></a></li><li><a href="/en/depuis/barcelone/"><span>Barcelona</span><span>from €25</span></a></li><li><a href="/en/depuis/berlin/"><span>Berlin</span><span>from €45</span></a></li><li><a href="/en/depuis/bogota/"><span>Bogota</span><span>from €34</span></a></li><li><a href="/en/depuis/buenos-aires/"><span>Buenos Aires</span><span>from €46</span></a></li><li><a href="/en/depuis/casablanca/"><span>Casablanca</span><span>from €77</span></a></li><li><a href="/en/depuis/dubai/"><span>Dubai</span><span>from €118</span></a></li><li><a href="/en/depuis/hong-kong/"><span>Hong Kong</span><span>from €101</span></a></li><li><a href="/en/depuis/istanbul/"><span>Istanbul</span><span>from €40</span></a></li><li><a href="/en/depuis/johannesbourg/"><span>Johannesburg</span><span>from €87</span></a></li><li><a href="/en/depuis/le-caire/"><span>Cairo</span><span>from €81</span></a></li><li><a href="/en/depuis/lima/"><span>Lima</span><span>from €58</span></a></li><li><a href="/en/depuis/lisbonne/"><span>Lisbon</span><span>from €33</span></a></li><li><a href="/en/depuis/londres/"><span>London</span><span>from €29</span></a></li><li><a href="/en/depuis/los-angeles/"><span>Los Angeles</span><span>from €27</span></a></li><li><a href="/en/depuis/madrid/"><span>Madrid</span><span>from €31</span></a></li><li><a href="/en/depuis/mexico/"><span>Mexico City</span><span>from €66</span></a></li><li><a href="/en/depuis/miami/"><span>Miami</span><span>from €55</span></a></li><li><a href="/en/depuis/new-delhi/"><span>New Delhi</span><span>from €72</span></a></li><li><a href="/en/depuis/new-york/"><span>New York</span><span>from €109</span></a></li><li><a href="/en/depuis/paris/"><span>Paris</span><span>from €32</span></a></li><li><a href="/en/depuis/rome/"><span>Rome</span><span>from €31</span></a></li><li><a href="/en/depuis/santiago/"><span>Santiago</span><span>from €41</span></a></li><li><a href="/en/depuis/sao-paulo/"><span>Sao Paulo</span><span>from €50</span></a></li><li><a href="/en/depuis/seoul/"><span>Seoul</span><span>from €38</span></a></li><li><a href="/en/depuis/singapour/"><span>Singapore</span><span>from €74</span></a></li><li><a href="/en/depuis/sydney/"><span>Sydney</span><span>from €71</span></a></li><li><a href="/en/depuis/tokyo/"><span>Tokyo</span><span>from €63</span></a></li><li><a href="/en/depuis/toronto/"><span>Toronto</span><span>from €117</span></a></li></ul></section>
 <section class="band wrap">
-  <h2>Deals right now</h2>
+  <h2>Deals right now from Paris</h2>
   <p class="sub">Return per person, last checked on 5 November, 21:25 UTC. Prices may have gone up since.</p>
   <div class="mosaic"><a class="card big" href="/en/destinations/naples/">
   <img src="/assets/photos/NAP.jpg" alt="Naples" loading="lazy">
@@ -71,63 +71,7 @@
 </section>
 <section class="dark"><div class="wrap">
   <div class="head"><h2>Cheapest today</h2><a href="/en/vols/">See all flights</a></div>
-  <ul class="rows"><li class="row">
-  <div class="row-info">
-    <h3><a href="/en/destinations/varsovie/">Warsaw</a></h3>
-    <p>10 Dec → 14 Dec 2026 · 4 days · direct</p>
-  </div>
-  <p class="row-price">€49</p>
-  <a class="go" href="/en/destinations/varsovie/?mois=2026-12" aria-label="View the flight to Warsaw">View</a>
-</li><li class="row">
-  <div class="row-info">
-    <h3><a href="/en/destinations/porto/">Porto</a></h3>
-    <p>3 Mar → 6 Mar 2027 · 3 days · direct</p>
-  </div>
-  <p class="row-price">€54</p>
-  <a class="go" href="/en/destinations/porto/?mois=2027-03" aria-label="View the flight to Porto">View</a>
-</li><li class="row">
-  <div class="row-info">
-    <h3><a href="/en/destinations/tirana/">Tirana</a></h3>
-    <p>12 Dec → 14 Dec 2026 · 2 days · direct</p>
-  </div>
-  <p class="row-price">€55</p>
-  <a class="go" href="/en/destinations/tirana/?mois=2026-12" aria-label="View the flight to Tirana">View</a>
-</li><li class="row">
-  <div class="row-info">
-    <h3><a href="/en/destinations/valence/">Valencia</a></h3>
-    <p>16 Jan → 26 Jan 2027 · 10 days · direct</p>
-  </div>
-  <p class="row-price">€57</p>
-  <a class="go" href="/en/destinations/valence/?mois=2027-01" aria-label="View the flight to Valencia">View</a>
-</li><li class="row">
-  <div class="row-info">
-    <h3><a href="/en/destinations/zagreb/">Zagreb</a></h3>
-    <p>4 Dec → 6 Dec 2026 · 2 days · direct</p>
-  </div>
-  <p class="row-price">€59</p>
-  <a class="go" href="/en/destinations/zagreb/?mois=2026-12" aria-label="View the flight to Zagreb">View</a>
-</li><li class="row">
-  <div class="row-info">
-    <h3><a href="/en/destinations/iassy/">Iasi</a></h3>
-    <p>27 Nov → 6 Dec 2026 · 9 days · direct</p>
-  </div>
-  <p class="row-price">€62</p>
-  <a class="go" href="/en/destinations/iassy/?mois=2026-11" aria-label="View the flight to Iasi">View</a>
-</li><li class="row">
-  <div class="row-info">
-    <h3><a href="/en/destinations/naples/">Naples</a></h3>
-    <p>11 Dec → 15 Dec 2026 · 4 days · direct</p>
-  </div>
-  <p class="row-price">€66</p>
-  <a class="go" href="/en/destinations/naples/?mois=2026-12" aria-label="View the flight to Naples">View</a>
-</li><li class="row">
-  <div class="row-info">
-    <h3><a href="/en/destinations/catane/">Catania</a></h3>
-    <p>26 Nov → 29 Nov 2026 · 3 days · direct</p>
-  </div>
-  <p class="row-price">€66</p>
-  <a class="go" href="/en/destinations/catane/?mois=2026-11" aria-label="View the flight to Catania">View</a>
-</li></ul>
+  <ul class="rows"><li class="row"><div class="row-info"><h3><a href="/en/depuis/barcelone/turin/">Barcelona → Turin</a></h3><p>3 Feb → 10 Feb 2027 · 7 days · direct</p></div><p class="row-price">€25</p><a class="go" href="/en/depuis/barcelone/turin/">View</a></li><li class="row"><div class="row-info"><h3><a href="/en/depuis/barcelone/ibiza/">Barcelona → Ibiza</a></h3><p>4 Feb → 10 Feb 2027 · 6 days · direct</p></div><p class="row-price">€26</p><a class="go" href="/en/depuis/barcelone/ibiza/">View</a></li><li class="row"><div class="row-info"><h3><a href="/en/depuis/barcelone/palma-de-mallorca/">Barcelona → Palma</a></h3><p>10 Feb → 14 Feb 2027 · 4 days · direct</p></div><p class="row-price">€26</p><a class="go" href="/en/depuis/barcelone/palma-de-mallorca/">View</a></li><li class="row"><div class="row-info"><h3><a href="/en/depuis/los-angeles/san-francisco/">Los Angeles → San Francisco</a></h3><p>21 Jan → 26 Jan 2027 · 5 days · direct</p></div><p class="row-price">€27</p><a class="go" href="/en/depuis/los-angeles/san-francisco/">View</a></li><li class="row"><div class="row-info"><h3><a href="/en/depuis/barcelone/bologne/">Barcelona → Bologna</a></h3><p>10 Dec → 15 Dec 2026 · 5 days · direct</p></div><p class="row-price">€28</p><a class="go" href="/en/depuis/barcelone/bologne/">View</a></li><li class="row"><div class="row-info"><h3><a href="/en/depuis/londres/barcelone/">London → Barcelona</a></h3><p>3 Dec → 10 Dec 2026 · 7 days · direct</p></div><p class="row-price">€29</p><a class="go" href="/en/depuis/londres/barcelone/">View</a></li><li class="row"><div class="row-info"><h3><a href="/en/depuis/barcelone/milan/">Barcelona → Milan</a></h3><p>13 Jan → 20 Jan 2027 · 7 days · direct</p></div><p class="row-price">€31</p><a class="go" href="/en/depuis/barcelone/milan/">View</a></li><li class="row"><div class="row-info"><h3><a href="/en/depuis/madrid/marrakech/">Madrid → Marrakech</a></h3><p>23 Nov → 26 Nov 2026 · 3 days · direct</p></div><p class="row-price">€31</p><a class="go" href="/en/depuis/madrid/marrakech/">View</a></li></ul>
 </div></section>
 <section class="news"><div class="wrap news-in">
   <div><h2>Get verified deals</h2><p>A few genuinely good flights from France, straight to your inbox.</p></div>
@@ -142,11 +86,11 @@
   </form>
 </div></section>
 <section class="band wrap">
-  <h2>By budget</h2>
+  <h2>By budget from Paris</h2>
   <div class="budgets"><a class="budget" href="/en/vols/?budget=100"><strong>Under €100</strong><span>27 destinations</span></a><a class="budget" href="/en/vols/?budget=300"><strong>Under €300</strong><span>66 destinations</span></a><a class="budget" href="/en/vols/?budget=600"><strong>Under €600</strong><span>101 destinations</span></a><a class="budget" href="/en/vols/?budget=1000"><strong>Under €1,000</strong><span>134 destinations</span></a></div>
 </section>
 <section class="band wrap two">
-  <div><h2>Leaving soon</h2><p class="sub">Less than 45 days before departure. Last-minute fares are often higher, so good surprises are rarer.</p><ul class="rows"><li class="row">
+  <div><h2>Leaving soon from Paris</h2><p class="sub">Less than 45 days before departure. Last-minute fares are often higher, so good surprises are rarer.</p><ul class="rows"><li class="row">
   <div class="row-info">
     <h3><a href="/en/destinations/varsovie/">Warsaw</a></h3>
     <p>10 Dec → 14 Dec 2026 · 4 days · direct</p>
@@ -175,7 +119,7 @@
   <p class="row-price">€62</p>
   <a class="go" href="/en/destinations/iassy/?mois=2026-11" aria-label="View the flight to Iasi">View</a>
 </li></ul></div>
-  <div><h2>Book ahead</h2><p class="sub">More than 5 months before departure.</p><ul class="rows"><li class="row">
+  <div><h2>Book ahead from Paris</h2><p class="sub">More than 5 months before departure.</p><ul class="rows"><li class="row">
   <div class="row-info">
     <h3><a href="/en/destinations/florence/">Florence</a></h3>
     <p>17 May → 23 May 2027 · 6 days · direct</p>
