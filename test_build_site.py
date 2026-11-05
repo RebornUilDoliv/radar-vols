@@ -76,7 +76,7 @@ class BuildTests(unittest.TestCase):
         self.assertIn('content="noindex, nofollow"', page)
         self.assertIn("Aucun vrai vol", page)
         self.assertNotIn("test-reservation", (docs / "sitemap.xml").read_text())
-        self.assertIn(">Test réservation<", (docs / "index.html").read_text())
+        self.assertIn(">Réservation test<", (docs / "index.html").read_text())
 
     def test_slug_removes_accents(self):
         self.assertEqual(build_site.slug("Montréal – Dorval"), "montreal-dorval")

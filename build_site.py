@@ -92,7 +92,7 @@ def layout(site, title, description, path, body, scripts=True, noindex=False):
 <meta property="og:description" content="{e(description)}">
 <meta property="og:type" content="website">
 <link rel="icon" href="{root}assets/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="{root}assets/style.css?v={site['version']}-5">
+<link rel="stylesheet" href="{root}assets/style.css?v={site['version']}-6">
 {script}
 </head>
 <body data-root="{root}">
@@ -103,7 +103,7 @@ def layout(site, title, description, path, body, scripts=True, noindex=False):
     <a href="{root}vols/">Les vols</a>
     <a href="{root}destinations/">Destinations</a>
     <a href="{root}a-propos/">Infos</a>
-    <a class="nav-test" href="{root}test-reservation/">Test réservation</a>
+    <a class="nav-test" href="{root}test-reservation/">Réservation test</a>
   </nav>
 </header>
 <main id="contenu">
@@ -215,6 +215,7 @@ def home(site, cities, offers, updated):
   <h1>Les vols pas chers du moment, depuis Paris.</h1>
   <p class="lead">La liste est mise à jour deux fois par jour. Les prix bougent vite, alors vérifie toujours avant de payer.</p>
   {search_form(root)}
+  <a class="test-cta" href="{root}test-reservation/"><strong>Essayer la réservation test</strong><span>Aucun vrai vol, aucun paiement</span></a>
 </section>
 <section class="band wrap">
   <div class="head"><h2>Les moins chers aujourd'hui</h2><a href="{root}vols/">Voir tous les vols</a></div>

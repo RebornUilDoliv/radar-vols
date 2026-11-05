@@ -45,6 +45,10 @@ input, select { width: 100%; min-height: 46px; padding: 8px 10px; color: var(--i
 .suggest button:hover, .suggest button:focus { background: var(--bg); }
 .suggest small { color: var(--soft); }
 .form-error { grid-column: 1 / -1; color: var(--link); }
+.test-cta { display: flex; flex-wrap: wrap; gap: 2px 12px; align-items: baseline; justify-content: space-between; margin-top: 18px; padding: 14px 16px; color: var(--ink); background: var(--field); border: 2px solid var(--link); border-radius: 4px; text-decoration: none; }
+.test-cta strong { color: var(--link); font-size: 20px; font-weight: 600; }
+.test-cta span { color: var(--soft); font-size: 16px; }
+.test-cta:hover strong { text-decoration: underline; }
 .band { margin-top: 46px; }
 .head { display: flex; flex-wrap: wrap; gap: 4px 16px; align-items: baseline; justify-content: space-between; }
 h2 { font-size: 28px; }
