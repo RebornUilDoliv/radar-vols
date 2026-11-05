@@ -26,6 +26,7 @@ CONTINENTS = {
 
 TEXT = {
     "fr": {
+        "ticker": "Les prix, pays par pays",
         "f_more": "Plus de filtres", "world_all": "Voir toutes les villes", "menu": "Menu",
         "tools_title": "Tout ce que tu peux faire sur Eunodia", "tools_budget": "Où partir avec mon budget", "tools_budget_b": "Choisis ta ville et ton budget, on te montre où aller", "tools_world": "Partir de ma ville", "tools_world_b": "Les meilleurs prix depuis 30 grandes villes", "tools_places": "Explorer les destinations", "tools_places_b": "Le monde entier, classé par continent", "tools_deals": "Voir les bons plans", "tools_deals_b": "Par mois, par région et par budget", "tools_alert": "Recevoir les bons plans", "tools_alert_b": "Les meilleures offres par e-mail, gratuitement", "tools_trip": "Préparer mon voyage", "tools_trip_b": "Hôtel, activités, eSIM, transfert et voiture", "tools_search": "Chercher un vol", "tools_search_b": "De n'importe quelle ville vers n'importe où", "tools_claim": "Vol retardé ou annulé", "tools_claim_b": "Vérifie si tu peux être indemnisé", "trip_title": "Prépare ton voyage",
         "f_from": "Je pars de", "to_title": "Vols vers {city}", "to_lead": "Au départ de {count} villes, à partir de {price} l'aller-retour.", "to_meta": "Vols vers {city} depuis {count} villes, à partir de {price} l'aller-retour.", "to_list": "Depuis quelle ville ?",
@@ -69,7 +70,7 @@ TEXT = {
         "regions": "Par région", "nothing": "Rien d'intéressant en ce moment.",
         "news_title": "Reçois les bons plans vérifiés", "news_lead": "Quelques vols vraiment intéressants depuis la France, directement par e-mail.", "news_email": "Ton adresse e-mail", "news_go": "S'inscrire", "news_consent": "J'accepte de recevoir la newsletter de Eunodia. Je peux me désinscrire à tout moment.",
         "test_cta": "Essayer la réservation test", "test_cta_b": "Aucun vrai vol, aucun paiement",
-        "see": "Voir", "see_flight": "Voir le vol pour {city}", "direct": "vol direct", "stop": "{count} escale", "stops": "{count} escales", "stops_unknown": "escales non précisées", "days": "{count} jours",
+        "see": "Voir", "see_flight": "Voir le vol pour {city}", "direct": "vol direct", "stop": "{count} escale", "stops": "{count} escales", "stops_unknown": "escales non précisées", "days": "{count} jours", "day_one": "1 jour",
         "foot_1": "Les prix viennent de recherches récentes et peuvent changer vite. Vérifie toujours le prix final, les bagages et les options avant de payer.",
         "foot_2": "{name} ne vend pas de billets. Les liens vers les vols sont affiliés : si tu réserves, le site peut toucher une commission, sans frais pour toi.",
         "flights_title": "Où partir avec ton budget ?", "flights_lead": "Choisis ta ville de départ, ton budget et ton mois : Eunodia te montre où tu peux aller.",
@@ -96,6 +97,7 @@ TEXT = {
         "test_title": "Réservation de test", "test_banner": "Version de test ({mode}).", "test_banner_b": "Aucun vrai vol, aucun vrai billet, aucun paiement.", "test_server": "serveur de test Duffel", "test_demo": "démonstration", "test_meta": "Page de test.",
     },
     "en": {
+        "ticker": "Prices, country by country",
         "f_more": "More filters", "world_all": "See all cities", "menu": "Menu",
         "tools_title": "Everything you can do on Eunodia", "tools_budget": "Where can my budget take me", "tools_budget_b": "Choose your city and budget, we show you where to go", "tools_world": "Leave from my city", "tools_world_b": "The best prices from 30 major cities", "tools_places": "Explore destinations", "tools_places_b": "The whole world, sorted by continent", "tools_deals": "See the deals", "tools_deals_b": "By month, region and budget", "tools_alert": "Get the deals", "tools_alert_b": "The best offers by email, for free", "tools_trip": "Plan my trip", "tools_trip_b": "Hotels, activities, eSIM, transfers and cars", "tools_search": "Search for a flight", "tools_search_b": "From any city to anywhere", "tools_claim": "Delayed or cancelled flight", "tools_claim_b": "Check if you can get compensation", "trip_title": "Plan your trip",
         "f_from": "Leaving from", "to_title": "Flights to {city}", "to_lead": "From {count} cities, starting at {price} return.", "to_meta": "Flights to {city} from {count} cities, starting at {price} return.", "to_list": "From which city?",
@@ -139,7 +141,7 @@ TEXT = {
         "regions": "By region", "nothing": "Nothing interesting right now.",
         "news_title": "Get verified deals", "news_lead": "A few genuinely good flights from France, straight to your inbox.", "news_email": "Your email address", "news_go": "Sign up", "news_consent": "I agree to receive the Eunodia newsletter. I can unsubscribe at any time.",
         "test_cta": "Try the test booking", "test_cta_b": "No real flight, no payment",
-        "see": "View", "see_flight": "View the flight to {city}", "direct": "direct", "stop": "{count} stop", "stops": "{count} stops", "stops_unknown": "stops not specified", "days": "{count} days",
+        "see": "View", "see_flight": "View the flight to {city}", "direct": "direct", "stop": "{count} stop", "stops": "{count} stops", "stops_unknown": "stops not specified", "days": "{count} days", "day_one": "1 day",
         "foot_1": "Prices come from recent searches and can change quickly. Always check the final price, baggage and extras before paying.",
         "foot_2": "{name} does not sell tickets. Flight links are affiliate links: if you book, the site may earn a commission at no cost to you.",
         "flights_title": "Where can your budget take you?", "flights_lead": "Choose your departure city, budget and month: Eunodia shows you where you can go.",
@@ -166,6 +168,7 @@ TEXT = {
         "test_title": "Test booking", "test_banner": "Test version ({mode}).", "test_banner_b": "No real flight, no real ticket, no payment.", "test_server": "Duffel test server", "test_demo": "demo", "test_meta": "Test page.",
     },
     "es": {
+        "ticker": "Precios, país por país",
         "f_more": "Más filtros", "world_all": "Ver todas las ciudades", "menu": "Menú",
         "tools_title": "Todo lo que puedes hacer en Eunodia", "tools_budget": "A dónde ir con mi presupuesto", "tools_budget_b": "Elige tu ciudad y presupuesto, te mostramos a dónde ir", "tools_world": "Salir de mi ciudad", "tools_world_b": "Los mejores precios desde 30 grandes ciudades", "tools_places": "Explorar destinos", "tools_places_b": "Todo el mundo, ordenado por continente", "tools_deals": "Ver las ofertas", "tools_deals_b": "Por mes, región y presupuesto", "tools_alert": "Recibir las ofertas", "tools_alert_b": "Las mejores ofertas por e-mail, gratis", "tools_trip": "Preparar mi viaje", "tools_trip_b": "Hotel, actividades, eSIM, traslado y coche", "tools_search": "Buscar un vuelo", "tools_search_b": "De cualquier ciudad a cualquier lugar", "tools_claim": "Vuelo retrasado o cancelado", "tools_claim_b": "Comprueba si puedes recibir una compensación", "trip_title": "Prepara tu viaje",
         "f_from": "Salgo de", "to_title": "Vuelos a {city}", "to_lead": "Desde {count} ciudades, a partir de {price} ida y vuelta.", "to_meta": "Vuelos a {city} desde {count} ciudades, a partir de {price} ida y vuelta.", "to_list": "¿Desde qué ciudad?",
@@ -209,7 +212,7 @@ TEXT = {
         "regions": "Por región", "nothing": "Nada interesante por ahora.",
         "news_title": "Recibe las ofertas comprobadas", "news_lead": "Algunos vuelos realmente interesantes desde Francia, directamente en tu correo.", "news_email": "Tu correo electrónico", "news_go": "Suscribirme", "news_consent": "Acepto recibir la newsletter de Eunodia. Puedo darme de baja en cualquier momento.",
         "test_cta": "Probar la reserva de prueba", "test_cta_b": "Sin vuelo real ni pago",
-        "see": "Ver", "see_flight": "Ver el vuelo a {city}", "direct": "vuelo directo", "stop": "{count} escala", "stops": "{count} escalas", "stops_unknown": "escalas sin indicar", "days": "{count} días",
+        "see": "Ver", "see_flight": "Ver el vuelo a {city}", "direct": "vuelo directo", "stop": "{count} escala", "stops": "{count} escalas", "stops_unknown": "escalas sin indicar", "days": "{count} días", "day_one": "1 día",
         "foot_1": "Los precios vienen de búsquedas recientes y pueden cambiar rápido. Comprueba siempre el precio final, el equipaje y los extras antes de pagar.",
         "foot_2": "{name} no vende billetes. Los enlaces a los vuelos son de afiliados: si reservas, el sitio puede recibir una comisión sin coste para ti.",
         "flights_title": "¿A dónde ir con tu presupuesto?", "flights_lead": "Elige tu ciudad de salida, tu presupuesto y tu mes: Eunodia te muestra a dónde puedes ir.",

@@ -188,7 +188,7 @@
       link.href = o.href || ROOT + "destinations/" + o.slug + "/";
       title.appendChild(link);
       info.appendChild(title);
-      info.appendChild(el("p", "", fmt(o.depart, { day: "numeric", month: "short" }) + " → " + shortDate(o.back) + " · " + say("days", { count: days(o) }) + " · " + stops(o)));
+      info.appendChild(el("p", "", fmt(o.depart, { day: "numeric", month: "short" }) + " → " + shortDate(o.back) + " · " + (days(o) === 1 ? RF.t.day_one : say("days", { count: days(o) })) + " · " + stops(o)));
       var cta = el("a", "go", RF.t.see);
       cta.href = o.href || link.href + "?mois=" + o.depart.slice(0, 7);
       if (o.external) [link, cta].forEach(function (a) { a.target = "_blank"; a.rel = "nofollow sponsored noopener"; });

@@ -206,6 +206,20 @@ class BuildTests(unittest.TestCase):
         self.assertIn("Tout ce que tu peux faire sur Eunodia", page)
         self.assertIn('id="preparer"', page)
 
+    def test_ticker_shows_best_price_per_country(self):
+        names = {"LON": "Londres", "TYO": "Tokyo"}
+        route = {"to": "TYO", "to_slug": "tokyo", "from": "LON", "price": 400, "link": "x"}
+        origin = {"code": "LON", "slug": "londres", "routes": [route], "pages": [route]}
+        page = build_site.Page({"root": "/"}, "fr", names)
+        page.countries = {"cities": {"TYO": "JP"}, "names": {"fr": {"JP": "Japon"}}}
+        html = build_site.ticker_block(page, [origin])
+        self.assertIn("Japon", html)
+        self.assertIn("400", html)
+        self.assertIn("/vers/tokyo/", html)
+
+    def test_one_day_is_singular(self):
+        self.assertEqual(build_site.Page({"root": "/"}, "fr").t("days", count=1), "1 jour")
+
     def test_slug_removes_accents(self):
         self.assertEqual(build_site.slug("Montréal – Dorval"), "montreal-dorval")
 

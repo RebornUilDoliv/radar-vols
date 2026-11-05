@@ -52,8 +52,11 @@ class Page:
         self.folder = DOCS if lang == "fr" else DOCS / lang
         self.prefix = "" if lang == "fr" else f"{lang}/"
         self.zones = {}
+        self.countries = {}
 
     def t(self, key, **values):
+        if key == "days" and values.get("count") == 1:
+            key = "day_one"
         return TEXT[self.lang][key].format(**values) if values else TEXT[self.lang][key]
 
     def euro(self, value):
@@ -137,7 +140,7 @@ def layout(p, title, description, path, body, noindex=False, extra=""):
         f'{" aria-current=\"true\"" if lang == p.lang else ""} title="{LANG_NAMES[lang]}">{lang.upper()}</a>'
         for lang in LANGS
     )
-    shared = {key: TEXT[p.lang][key] for key in ("see", "direct", "stop", "stops", "stops_unknown", "days")}
+    shared = {key: TEXT[p.lang][key] for key in ("see", "direct", "stop", "stops", "stops_unknown", "days", "day_one")}
     script = json.dumps(
         {"lang": p.lang, "locale": LOCALES[p.lang], "root": root, "base": base, "t": {**SCRIPT_TEXT[p.lang], **shared},
          "from_label": p.t("search_from"), "to_label": p.t("search_to"), "out_label": p.t("search_out"), "search_place": p.t("search_place"),
@@ -359,13 +362,39 @@ def home(p, cities, offers, updated, origins=()):
   <div><h2>{p.t('soon')}</h2><p class="sub">{p.t('soon_sub', days=SOON_DAYS)}</p><ul class="rows">{soon or nothing}</ul></div>
   <div><h2>{p.t('ahead')}</h2><p class="sub">{p.t('ahead_sub')}</p><ul class="rows">{ahead or nothing}</ul></div>
 </section>
-<section class="band wrap">
+{ticker_block(p, origins)}
+<section class="band wrap"{' hidden' if origins else ''}>
   <h2>{p.t('regions')}</h2>
   <div class="pills">{region_links}</div>
 </section>
 <section class="band wrap">
 </section>"""
     return layout(p, f"{p.site['name']} — {p.t('title_home')}", p.t("meta_home"), "", body)
+
+
+def ticker_block(p, origins):
+    """Bandeau continu : le meilleur prix relevé pour chaque pays."""
+    cities = p.countries.get("cities", {})
+    names = p.countries.get("names", {}).get(p.lang, {})
+    published = {route["to"] for origin in origins for route in origin["pages"]}
+    best = {}
+    for origin in origins:
+        for route in origin["routes"]:
+            country = cities.get(route["to"])
+            if country in names and (country not in best or route["price"] < best[country][1]["price"]):
+                best[country] = (origin, route)
+    if not best:
+        return ""
+    items = ""
+    for country in sorted(best, key=lambda code: names[code]):
+        origin, route = best[country]
+        city = p.city(route["to"], route["to"])
+        href = (f"{p.root}vers/{route['to_slug']}/" if route["to"] in published
+                else f"{p.root}vols/?origin={origin['code']}&amp;q={urllib.parse.quote(city)}")
+        items += f'<li><a href="{href}">{e(names[country])}<span>{p.t("from_price", price=p.euro(route["price"]))}</span></a></li>'
+    copy = items.replace("<a ", '<a tabindex="-1" ')
+    return f"""<section class="ticker-box"><h2 class="wrap">{p.t('ticker')}</h2>
+<div class="ticker" style="--time:{len(best) * 3}s"><div class="ticker-track"><ul>{items}</ul><ul aria-hidden="true">{copy}</ul></div></div></section>"""
 
 
 def tools_block(p):
@@ -937,9 +966,11 @@ def build(data, site, catalog=None):
     origins = load_world(names.get("fr", {}))
     zones_path = DOCS / "assets" / "zones.json"
     zones = json.loads(zones_path.read_text()) if zones_path.exists() else {}
+    countries_path = DOCS / "assets" / "countries.json"
+    countries = json.loads(countries_path.read_text()) if countries_path.exists() else {}
     for lang in LANGS:
         page = Page(site, lang, names.get(lang))
-        page.zones = zones
+        page.zones, page.countries = zones, countries
         build_language(page, data, cities, updated_at, groups, origins)
     write(DOCS / "404.html", missing_page(Page(site, "fr", names.get("fr"))))
     pages = ["", "vols/", "vols-pas-chers/", "destinations/", "a-propos/"] + [f"destinations/{c['slug']}/" for c in cities]
@@ -979,11 +1010,15 @@ def continent(row):
 def load_catalog():
     rows = radar.http_json(f"{radar.TP_BASE}/data/en/cities.json")
     write(DOCS / "assets" / "zones.json", json.dumps({row["code"]: continent(row) for row in rows}, separators=(",", ":")))
-    catalog = {}
+    catalog, country_names = {}, {}
     for lang in LANGS:
         places = radar.load_places(lang)
         rows = radar.http_json(f"{radar.TP_BASE}/data/{lang}/countries.json")
         catalog[lang] = (places, {row["code"]: row.get("name") or row["code"] for row in rows})
+        country_names[lang] = catalog[lang][1]
+    write(DOCS / "assets" / "countries.json", json.dumps(
+        {"cities": {code: place["country"] for code, place in catalog["fr"][0].items()}, "names": country_names},
+        ensure_ascii=False, separators=(",", ":")))
     return catalog
 
 

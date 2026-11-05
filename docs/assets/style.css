@@ -3,6 +3,7 @@
 @font-face { font-family: "Geist"; src: url("geist.woff2") format("woff2"); font-weight: 100 900; font-display: swap; }
 :root { --w: #fff; --k: #0b0b0b; --g1: #f4f4f4; --g2: #e4e4e4; --g3: #6a6a6a; color-scheme: light; }
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 html { -webkit-text-size-adjust: 100%; }
 body { margin: 0; color: var(--k); background: var(--w); font: 400 16px/1.4 "Geist", system-ui, -apple-system, sans-serif; letter-spacing: -.02em; }
 h1, h2, h3, p, ul, ol, figure { margin: 0; padding: 0; }
@@ -109,6 +110,20 @@ h2 { font-size: 32px; font-weight: 500; }
 .budget:hover { color: var(--w); background: var(--k); }
 .budget strong { font-size: 24px; font-weight: 500; }
 .budget span { font-size: 14px; opacity: .72; }
+.ticker-box { margin-top: 72px; }
+.ticker { overflow: hidden; margin-top: 18px; padding: 4px 0; color: var(--w); background: var(--k); }
+.ticker-track { display: flex; width: max-content; animation: ticker var(--time) linear infinite; }
+.ticker:hover .ticker-track, .ticker:focus-within .ticker-track { animation-play-state: paused; }
+.ticker ul { display: flex; flex: none; }
+.ticker a { display: flex; gap: 8px; align-items: center; min-height: 48px; padding: 0 22px; font-weight: 500; text-decoration: none; white-space: nowrap; }
+.ticker a:hover { text-decoration: underline; text-underline-offset: 4px; }
+.ticker span { color: #b5b5b5; font-weight: 400; }
+@keyframes ticker { to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) {
+  .ticker { overflow-x: auto; }
+  .ticker-track { animation: none; }
+  .ticker ul[aria-hidden] { display: none; }
+}
 .pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
 .pill { display: inline-flex; gap: 8px; padding: 10px 16px; border: 1px solid var(--g2); border-radius: 999px; font-weight: 600; text-decoration: none; }
 .pill span { color: var(--g3); font-weight: 400; }
