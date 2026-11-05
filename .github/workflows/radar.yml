@@ -37,6 +37,12 @@ jobs:
           MAIL_FROM: ${{ secrets.MAIL_FROM }}
           MAIL_TO: ${{ secrets.MAIL_TO }}
         run: python radar.py ${{ (github.event_name == 'schedule' || inputs.auto) && '--auto' || '' }} ${{ inputs.test_email && '--test-email' || '' }}
+      - name: Relever les prix mondiaux
+        if: ${{ !inputs.test_email }}
+        continue-on-error: true
+        env:
+          TRAVELPAYOUTS_TOKEN: ${{ secrets.TRAVELPAYOUTS_TOKEN }}
+        run: python world.py
       - name: Construire le site
         if: ${{ !inputs.test_email }}
         run: python build_site.py

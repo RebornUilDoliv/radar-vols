@@ -33,6 +33,9 @@ newsletter_url = "https://ab67ba27.sibforms.com/serve/MUIFAM-kHU83B6EgUuJ_iQCwDI
 analytics_token = ""             # identifiant public de Cloudflare Web Analytics ; vide = pas de mesure
 test_api = "https://radar-flight-test.joseluiscardozopintos.workers.dev"                    # adresse du serveur de test ; vide = mode démonstration
 
+[world]
+origins = ["LON", "PAR", "MAD", "BCN", "ROM", "BER", "AMS", "LIS", "IST", "DXB", "DEL", "BKK", "SIN", "HKG", "TYO", "SEL", "SYD", "JNB", "CAI", "CMN", "NYC", "LAX", "MIA", "YTO", "MEX", "BOG", "LIM", "SAO", "BUE", "SCL"]
+
 [schedule]
 min_hours = 12                   # le radar vérifie toutes les 4 heures, et relève au plus toutes les 12 heures
 
