@@ -92,7 +92,7 @@ def layout(site, title, description, path, body, scripts=True, noindex=False):
 <meta property="og:description" content="{e(description)}">
 <meta property="og:type" content="website">
 <link rel="icon" href="{root}assets/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="{root}assets/style.css?v={site['version']}">
+<link rel="stylesheet" href="{root}assets/style.css?v={site['version']}-5">
 {script}
 </head>
 <body data-root="{root}">
@@ -103,6 +103,7 @@ def layout(site, title, description, path, body, scripts=True, noindex=False):
     <a href="{root}vols/">Les vols</a>
     <a href="{root}destinations/">Destinations</a>
     <a href="{root}a-propos/">Infos</a>
+    <a class="nav-test" href="{root}test-reservation/">Test réservation</a>
   </nav>
 </header>
 <main id="contenu">
@@ -349,7 +350,7 @@ def test_booking_page(site):
     body = f"""<section class="page wrap narrow">
   <p class="test-banner"><strong>Version de test ({mode}).</strong> Aucun vrai vol, aucun vrai billet, aucun paiement.</p>
   <div id="booking" tabindex="-1" data-api="{e(site.get('test_api', ''))}"></div>
-  <script src="{root}assets/booking.js?v={site['version']}-4" defer></script>
+  <script src="{root}assets/booking.js?v={site['version']}-5" defer></script>
 </section>"""
     return layout(site, f"Réservation de test | {site['name']}", "Page de test.", "test-reservation/", body, noindex=True)
 

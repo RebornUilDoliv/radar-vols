@@ -21,6 +21,8 @@ img { display: block; width: 100%; height: auto; }
 .logo { color: var(--ink); font-size: 22px; font-weight: 600; text-decoration: none; }
 .nav nav { display: flex; gap: 18px; }
 .nav nav a { color: var(--soft); }
+.nav nav .nav-test { color: var(--link); font-weight: 600; }
+.nav nav { flex-wrap: wrap; }
 .intro { padding-top: 26px; }
 h1 { font-size: clamp(34px, 6vw, 50px); letter-spacing: -.01em; }
 .lead { margin-top: 12px; color: var(--soft); font-size: 20px; }
@@ -118,6 +120,16 @@ details p { margin-top: 6px; color: var(--soft); }
 .book-form .search-go { grid-column: 1 / -1; justify-self: start; }
 .book-person { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 12px; border: 1px solid var(--line); border-radius: 4px; }
 .book-person legend { padding-inline: 4px; font-weight: 600; }
+.row .route { grid-column: 1 / -1; font-size: 16px; }
+.route summary { color: var(--link); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.route-part { margin-top: 10px; }
+.route-part h4 { margin: 0 0 4px; font-size: 17px; font-weight: 600; }
+.route-steps { margin: 0; padding: 0; list-style: none; border-left: 2px solid var(--line); }
+.route-steps li { padding: 4px 0 4px 12px; }
+.route-leg strong, .route-leg span { display: block; }
+.route-leg strong { font-weight: 600; }
+.route-leg span { padding-block: 2px; color: var(--soft); }
+.route-stop { color: var(--link); }
 .linkish { min-height: 44px; padding: 4px 0; color: var(--link); background: none; border: 0; font: inherit; text-decoration: underline; cursor: pointer; }
 .book-back { margin-top: 12px; }
 .search-go:disabled { opacity: .6; cursor: wait; }

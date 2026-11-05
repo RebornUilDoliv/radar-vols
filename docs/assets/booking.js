@@ -177,6 +177,50 @@
     box.appendChild(form);
   }
 
+  function clock(iso) {
+    return new Date(iso).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
+  }
+  function duration(value) {
+    var match = /^P(?:(\d+)D)?T?(?:(\d+)H)?(?:(\d+)M)?/.exec(value || "");
+    if (!match) return "";
+    var hours = Number(match[1] || 0) * 24 + Number(match[2] || 0);
+    return hours + " h " + String(Number(match[3] || 0)).padStart(2, "0");
+  }
+  function gap(from, to) {
+    var minutes = Math.round((new Date(to) - new Date(from)) / 6e4);
+    return Math.floor(minutes / 60) + " h " + String(minutes % 60).padStart(2, "0");
+  }
+  function airport(point) {
+    return (point.city || point.name || point.code) + " (" + point.code + ")";
+  }
+  function itinerary(offer) {
+    var box = el("details", "route");
+    box.appendChild(el("summary", "", "Voir l'itinéraire"));
+    offer.slices.forEach(function (slice, index) {
+      var part = el("div", "route-part");
+      var total = duration(slice.duration);
+      part.appendChild(el("h4", "", (index ? "Retour" : "Aller") + (total ? ", " + total + " de voyage" : "")));
+      if (!slice.segments) {
+        part.appendChild(el("p", "", slice.from + " → " + slice.to + ", détail indisponible"));
+      }
+      var stops = el("ol", "route-steps");
+      (slice.segments || []).forEach(function (segment, position) {
+        if (position) {
+          var pause = el("li", "route-stop", "Escale à " + airport(segment.from) + ", " + gap(slice.segments[position - 1].arriving, segment.departing));
+          stops.appendChild(pause);
+        }
+        var leg = el("li", "route-leg");
+        leg.appendChild(el("strong", "", clock(segment.departing) + " " + airport(segment.from)));
+        leg.appendChild(el("span", "", "↓ " + [segment.carrier, segment.flight, duration(segment.duration)].filter(Boolean).join(", ")));
+        leg.appendChild(el("strong", "", clock(segment.arriving) + " " + airport(segment.to)));
+        stops.appendChild(leg);
+      });
+      part.appendChild(stops);
+      box.appendChild(part);
+    });
+    return box;
+  }
+
   function stepOffers(offers) {
     show("Choisis ton vol", 2);
     if (!offers.length) {
@@ -198,6 +242,7 @@
       row.appendChild(info);
       row.appendChild(el("p", "row-price", money(offer.amount, offer.currency)));
       row.appendChild(pick);
+      row.appendChild(itinerary(offer));
       list.appendChild(row);
     });
     box.appendChild(list);

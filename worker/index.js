@@ -38,6 +38,23 @@ async function duffel(path, token, options = {}) {
   return payload.data;
 }
 
+function simplifyAirport(airport) {
+  return { code: airport.iata_code, name: airport.name, city: airport.city_name };
+}
+
+function simplifySegment(segment) {
+  const carrier = segment.marketing_carrier || segment.operating_carrier || {};
+  return {
+    from: simplifyAirport(segment.origin),
+    to: simplifyAirport(segment.destination),
+    departing: segment.departing_at,
+    arriving: segment.arriving_at,
+    duration: segment.duration,
+    carrier: carrier.name,
+    flight: `${carrier.iata_code || ""}${segment.marketing_carrier_flight_number || ""}`,
+  };
+}
+
 function simplifySlice(slice) {
   const first = slice.segments[0];
   const last = slice.segments[slice.segments.length - 1];
@@ -47,6 +64,8 @@ function simplifySlice(slice) {
     departing: first.departing_at,
     arriving: last.arriving_at,
     stops: slice.segments.length - 1,
+    duration: slice.duration,
+    segments: slice.segments.map(simplifySegment),
   };
 }
 
