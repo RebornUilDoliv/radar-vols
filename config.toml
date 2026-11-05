@@ -19,7 +19,7 @@ program = "4114"
 campaign = "100"
 
 [schedule]
-min_hours = 10                   # le radar vérifie toutes les 2 heures, et relève au plus toutes les 10 heures
+min_hours = 12                   # le radar vérifie toutes les 2 heures, et relève au plus toutes les 12 heures
 
 [alerts]
 deal_drop = 0.25                 # bonne affaire = 25 % sous le prix habituel
