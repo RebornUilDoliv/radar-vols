@@ -1,0 +1,9 @@
+name = "radar-flight-test"
+main = "index.js"
+compatibility_date = "2026-10-01"
+
+[vars]
+ALLOWED_ORIGIN = "https://rebornuildoliv.github.io"
+
+# Le jeton se configure comme secret, jamais dans ce fichier :
+# wrangler secret put DUFFEL_TEST_TOKEN

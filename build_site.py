@@ -73,7 +73,7 @@ def destinations(offers):
     return sorted(cities.values(), key=lambda c: c["best"]["price"])
 
 
-def layout(site, title, description, path, body, scripts=True):
+def layout(site, title, description, path, body, scripts=True, noindex=False):
     base = site["url"]
     home = base.split("//", 1)[1].split("/", 1)[1] if "/" in base.split("//", 1)[1] else ""
     root = "/" + home
@@ -87,6 +87,7 @@ def layout(site, title, description, path, body, scripts=True):
 <title>{e(title)}</title>
 <meta name="description" content="{e(description)}">
 <link rel="canonical" href="{e(base + path)}">
+{'<meta name="robots" content="noindex, nofollow">' if noindex else ''}
 <meta property="og:title" content="{e(title)}">
 <meta property="og:description" content="{e(description)}">
 <meta property="og:type" content="website">
@@ -342,6 +343,17 @@ def about_page(site):
     return layout(site, f"Infos | {site['name']}", f"D'où viennent les prix de {site['name']} et comment fonctionne le site.", "a-propos/", body)
 
 
+def test_booking_page(site):
+    root = site["root"]
+    mode = "serveur de test Duffel" if site.get("test_api") else "démonstration"
+    body = f"""<section class="page wrap narrow">
+  <p class="test-banner"><strong>Version de test ({mode}).</strong> Aucun vrai vol, aucun vrai billet, aucun paiement.</p>
+  <div id="booking" tabindex="-1" data-api="{e(site.get('test_api', ''))}"></div>
+  <script src="{root}assets/booking.js?v={site['version']}" defer></script>
+</section>"""
+    return layout(site, f"Réservation de test | {site['name']}", "Page de test.", "test-reservation/", body, noindex=True)
+
+
 def write(path, content):
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(content)
@@ -371,6 +383,7 @@ def build(data, site, places=None, countries=None):
     write(DOCS / "vols" / "index.html", flights_page(site))
     write(DOCS / "destinations" / "index.html", destinations_index(site, cities))
     write(DOCS / "a-propos" / "index.html", about_page(site))
+    write(DOCS / "test-reservation" / "index.html", test_booking_page(site))
     write(DOCS / "404.html", layout(site, f"Page introuvable | {site['name']}", "Cette page n'existe pas.", "404.html",
                                     f'<section class="page wrap narrow"><h1>Cette page n\'existe pas</h1><p class="lead">Elle a peut-être changé d\'adresse.</p><a class="hero-go" href="{site["root"]}">Retour à l\'accueil</a></section>', scripts=False))
     shutil.rmtree(DOCS / "destinations" / "_tmp", ignore_errors=True)

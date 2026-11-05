@@ -70,6 +70,14 @@ class BuildTests(unittest.TestCase):
         docs = self.build([offer("BCN", "Barcelone", "Europe", 43, 30)])
         self.assertEqual(json.loads((docs / "assets" / "cities.json").read_text()), [["PAR", "Paris", "France"]])
 
+    def test_booking_page_is_hidden_from_search(self):
+        docs = self.build([offer("BCN", "Barcelone", "Europe", 43, 30)])
+        page = (docs / "test-reservation" / "index.html").read_text()
+        self.assertIn('content="noindex, nofollow"', page)
+        self.assertIn("Aucun vrai vol", page)
+        self.assertNotIn("test-reservation", (docs / "sitemap.xml").read_text())
+        self.assertNotIn("test-reservation", (docs / "index.html").read_text())
+
     def test_slug_removes_accents(self):
         self.assertEqual(build_site.slug("Montréal – Dorval"), "montreal-dorval")
 

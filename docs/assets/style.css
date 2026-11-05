@@ -106,6 +106,20 @@ tbody th { font-weight: 600; }
 details { padding: 12px 0; border-bottom: 1px solid var(--line); }
 summary { font-weight: 600; cursor: pointer; }
 details p { margin-top: 6px; color: var(--soft); }
+.test-banner { padding: 10px 12px; color: var(--ink); background: var(--field); border-left: 3px solid var(--link); }
+.test-banner strong { font-weight: 600; }
+#booking { margin-top: 18px; }
+#booking:focus { outline: none; }
+#booking h2 { margin-bottom: 10px; }
+.book-step { color: var(--soft); font-size: 15px; }
+.book-form { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 8px; }
+.book-field { display: block; color: var(--soft); font-size: 15px; }
+.book-form .search-go { grid-column: 1 / -1; justify-self: start; }
+.book-person { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 12px; border: 1px solid var(--line); border-radius: 4px; }
+.book-person legend { padding-inline: 4px; font-weight: 600; }
+.linkish { min-height: 44px; padding: 4px 0; color: var(--link); background: none; border: 0; font: inherit; text-decoration: underline; cursor: pointer; }
+.book-back { margin-top: 12px; }
+.search-go:disabled { opacity: .6; cursor: wait; }
 .foot { margin-top: 60px; padding-block: 24px 40px; color: var(--soft); border-top: 1px solid var(--line); font-size: 16px; }
 .foot .wrap { padding-inline: 18px; }
 .foot p { margin-bottom: 8px; }
@@ -116,7 +130,7 @@ details p { margin-top: 6px; color: var(--soft); }
   .search > .field:nth-child(1), .search > .field:nth-child(3), .search > .small, .search-go { grid-column: 1 / -1; }
   .search > .swap { display: none; }
   .search > .field:nth-child(4), .search > .field:nth-child(5) { grid-column: span 1; }
-  .photos, .two, .links { grid-template-columns: 1fr; }
+  .photos, .two, .links, .book-form, .book-person { grid-template-columns: 1fr; }
   .filters { grid-template-columns: repeat(2, 1fr); }
   .row { grid-template-columns: 1fr auto; gap: 2px 12px; }
   .row-info { grid-column: 1 / -1; }

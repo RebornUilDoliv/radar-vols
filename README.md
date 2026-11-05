@@ -95,6 +95,14 @@ Le moteur de recherche renvoie vers Aviasales avec le lien partenaire. Le site n
 
 Le nom et l'adresse du site se changent dans la section `[site]` de `config.toml`.
 
+## La version de test de réservation
+
+La page `/test-reservation/` montre un parcours de réservation complet. Elle n'apparaît pas dans le menu et elle est cachée aux moteurs de recherche. Par défaut, elle fonctionne en mode démonstration, avec des données simulées dans le navigateur.
+
+Pour la brancher sur l'environnement de test de Duffel, déploie le dossier `worker/` sur Cloudflare Workers, ajoute le secret `DUFFEL_TEST_TOKEN`, puis indique l'adresse du serveur dans `test_api` de `config.toml`. Le serveur refuse tout jeton qui ne commence pas par `duffel_test_`.
+
+Cette version ne vend rien. Ne la passe pas en réel sans avoir validé les obligations légales, l'assurance, la garantie, le paiement et le service client.
+
 ## Limites
 
 - Les prix Travelpayouts viennent d'un cache alimenté par les recherches d'autres utilisateurs. Il peut donc rater des offres ou couvrir certaines destinations moins bien.
