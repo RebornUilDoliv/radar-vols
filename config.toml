@@ -33,7 +33,7 @@ newsletter_url = "https://ab67ba27.sibforms.com/serve/MUIFAM-kHU83B6EgUuJ_iQCwDI
 test_api = "https://radar-flight-test.joseluiscardozopintos.workers.dev"                    # adresse du serveur de test ; vide = mode démonstration
 
 [schedule]
-min_hours = 12                   # le radar vérifie toutes les 2 heures, et relève au plus toutes les 12 heures
+min_hours = 12                   # le radar vérifie toutes les 4 heures, et relève au plus toutes les 12 heures
 
 [alerts]
 deal_drop = 0.25                 # bonne affaire = 25 % sous le prix habituel

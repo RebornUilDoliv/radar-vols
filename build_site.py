@@ -116,7 +116,8 @@ def layout(p, title, description, path, body, noindex=False, extra=""):
     script = json.dumps(
         {"lang": p.lang, "locale": LOCALES[p.lang], "root": root, "base": base, "t": {**SCRIPT_TEXT[p.lang], **shared},
          "from_label": p.t("search_from"), "to_label": p.t("search_to"), "out_label": p.t("search_out"), "search_place": p.t("search_place"),
-         "from_name": p.city("PAR", "Paris"), "to_name": p.city("NYC", "New York")},
+         "from_name": p.city("PAR", "Paris"), "to_name": p.city("NYC", "New York"),
+         "photos": sorted(code for code in load_credits() if photo_exists(code))},
         ensure_ascii=False, separators=(",", ":"),
     ).replace("</", "<\\/")
     version = site["version"]

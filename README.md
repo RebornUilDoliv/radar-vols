@@ -46,7 +46,7 @@ Ne mets jamais ces valeurs dans un fichier du dépôt.
 
 ### 4. Lancer un premier passage
 
-Dans l'onglet **Actions**, ouvre **Radar de vols**, puis clique sur **Run workflow**. Ensuite, l'outil vérifie toutes les 2 heures s'il doit passer, et fait un relevé au plus toutes les 12 heures. Ça compense les retards de GitHub.
+Dans l'onglet **Actions**, ouvre **Radar de vols**, puis clique sur **Run workflow**. Ensuite, l'outil vérifie toutes les 4 heures s'il doit passer, et fait un relevé au plus toutes les 12 heures. Ça compense les retards de GitHub.
 
 Pour tester uniquement l'envoi, coche **Envoyer seulement un e-mail d'exemple** avant de lancer **Run workflow**. Ce test n'utilise aucune recherche SerpApi.
 

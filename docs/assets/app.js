@@ -283,8 +283,24 @@
     });
   }
 
+  /* Une nouvelle photo chaque jour, sans dépendre d'un passage du serveur */
+  function rotatePhotos(today) {
+    var hero = document.querySelector(".hero-img");
+    var photos = RF.photos || [];
+    if (hero && photos.length) hero.src = BASE + "assets/photos/" + photos[today % photos.length] + ".jpg";
+    var cards = Array.prototype.slice.call(document.querySelectorAll(".mosaic .card"));
+    if (cards.length < 2) return;
+    var content = cards.map(function (card) { return { href: card.href, html: card.innerHTML }; });
+    cards.forEach(function (card, index) {
+      var next = content[(index + today) % content.length];
+      card.href = next.href;
+      card.innerHTML = next.html;
+    });
+  }
+
   initSearch();
   initNewsletter();
+  rotatePhotos(Math.floor(Date.now() / 864e5));
   highlightMonth();
   initCharts();
   initFlights();

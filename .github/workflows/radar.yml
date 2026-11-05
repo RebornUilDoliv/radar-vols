@@ -2,7 +2,7 @@ name: Radar de vols
 
 on:
   schedule:
-    - cron: "17 */2 * * *"
+    - cron: "43 1,5,9,13,17,21 * * *"
   workflow_dispatch:
     inputs:
       test_email:
