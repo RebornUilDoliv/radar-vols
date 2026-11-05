@@ -12,7 +12,7 @@ adults = 1
 
 [site]
 name = "Eunodia"
-url = "https://rebornuildoliv.github.io/radar-vols/"   # à remplacer par le vrai domaine
+url = "https://eunodia.com/"
 marker = "800338"                # identifiant partenaire Travelpayouts
 project = "595480"
 program = "4114"
