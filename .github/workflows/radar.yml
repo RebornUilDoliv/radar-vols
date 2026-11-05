@@ -9,6 +9,10 @@ on:
         description: "Envoyer seulement un e-mail d'exemple"
         type: boolean
         default: false
+      auto:
+        description: "Ignorer le passage si le dernier relevé est trop récent"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -32,7 +36,7 @@ jobs:
           SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
           MAIL_FROM: ${{ secrets.MAIL_FROM }}
           MAIL_TO: ${{ secrets.MAIL_TO }}
-        run: python radar.py ${{ github.event_name == 'schedule' && '--auto' || '' }} ${{ inputs.test_email && '--test-email' || '' }}
+        run: python radar.py ${{ (github.event_name == 'schedule' || inputs.auto) && '--auto' || '' }} ${{ inputs.test_email && '--test-email' || '' }}
       - name: Construire le site
         if: ${{ !inputs.test_email }}
         run: python build_site.py

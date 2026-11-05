@@ -2,8 +2,13 @@ name = "radar-flight-test"
 main = "index.js"
 compatibility_date = "2026-10-01"
 
+# Lance le radar toutes les 4 heures. Le radar ignore le passage si le dernier relevé est trop récent.
+[triggers]
+crons = ["17 */4 * * *"]
+
 [vars]
 ALLOWED_ORIGIN = "https://rebornuildoliv.github.io"
 
 # Le jeton se configure comme secret, jamais dans ce fichier :
 # wrangler secret put DUFFEL_TEST_TOKEN
+# wrangler secret put GITHUB_DISPATCH_TOKEN

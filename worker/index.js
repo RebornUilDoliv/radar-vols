@@ -1,3 +1,4 @@
+const RADAR_REPOSITORY = "RebornUilDoliv/radar-vols";
 // Serveur de test Radar Flight : il garde le jeton Duffel hors du navigateur.
 const DUFFEL = "https://api.duffel.com";
 const IATA = /^[A-Z]{3}$/;
@@ -164,7 +165,27 @@ async function order(body, token) {
   };
 }
 
+async function startRadar(token) {
+  if (!token) throw new Error("secret GITHUB_DISPATCH_TOKEN manquant");
+  const response = await fetch(`https://api.github.com/repos/${RADAR_REPOSITORY}/actions/workflows/radar.yml/dispatches`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "User-Agent": "eunodia-radar",
+      "X-GitHub-Api-Version": "2022-11-28",
+    },
+    body: JSON.stringify({ ref: "main", inputs: { auto: "true" } }),
+  });
+  if (!response.ok) throw new Error(`GitHub a refusé le lancement du radar (${response.status})`);
+}
+
 export default {
+  async scheduled(event, env) {
+    await startRadar(env.GITHUB_DISPATCH_TOKEN);
+  },
+
   async fetch(request, env) {
     const origin = env.ALLOWED_ORIGIN || "";
     if (request.method === "OPTIONS") return respond({}, 204, origin);

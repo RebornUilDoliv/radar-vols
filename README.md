@@ -48,6 +48,8 @@ Ne mets jamais ces valeurs dans un fichier du dépôt.
 
 Dans l'onglet **Actions**, ouvre **Radar de vols**, puis clique sur **Run workflow**. Ensuite, l'outil vérifie toutes les 4 heures s'il doit passer, et fait un relevé au plus toutes les 12 heures. Ça compense les retards de GitHub.
 
+Les horaires de GitHub peuvent être retardés ou sautés. Le serveur Cloudflare du dossier `worker/` lance donc aussi le radar toutes les 4 heures, avec le secret `GITHUB_DISPATCH_TOKEN` : une clé GitHub limitée à ce dépôt, avec la seule permission **Actions** en lecture et écriture. Si les deux planifications se suivent, la seconde ne refait pas de relevé.
+
 Pour tester uniquement l'envoi, coche **Envoyer seulement un e-mail d'exemple** avant de lancer **Run workflow**. Ce test n'utilise aucune recherche SerpApi.
 
 Si un passage échoue, GitHub t'avertit et le journal du passage indique quoi corriger. Vérifie aussi tes courriers indésirables lors des premières alertes.
