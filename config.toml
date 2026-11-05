@@ -17,6 +17,10 @@ marker = "800338"                # identifiant partenaire Travelpayouts
 project = "595480"
 program = "4114"
 campaign = "100"
+hotels_program = ""              # identifiant du programme Booking, une fois accepté
+hotels_campaign = ""
+tours_program = ""               # identifiant du programme GetYourGuide, une fois accepté
+tours_campaign = ""
 test_api = "https://radar-flight-test.joseluiscardozopintos.workers.dev"                    # adresse du serveur de test ; vide = mode démonstration
 
 [schedule]

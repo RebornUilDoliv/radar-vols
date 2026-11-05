@@ -93,6 +93,19 @@ class BuildTests(unittest.TestCase):
         self.assertIn("/en/vols/", (docs / "sitemap.xml").read_text())
         self.assertEqual(json.loads((docs / "en/prices.json").read_text())["offers"][0]["city"], "Barcelona")
 
+    def test_destination_links_to_hotels_and_activities(self):
+        docs = self.build([offer("BCN", "Barcelone", "Europe", 43, 30)])
+        page = (docs / "en/destinations/barcelone/index.html").read_text()
+        self.assertIn("booking.com/searchresults.en-gb.html?ss=Barcelona", page)
+        self.assertIn("getyourguide.com/en-gb/s/?q=Barcelona", page)
+
+    def test_partner_program_wraps_stay_links(self):
+        site = dict(SITE, root="/", version="1", hotels_program="111", hotels_campaign="222", url="https://x.test/")
+        html = build_site.stay_links(build_site.Page(site, "fr"), "São Paulo")
+        self.assertIn("tp.media/r?", html)
+        self.assertIn("p=111", html)
+        self.assertIn("getyourguide.com/fr-fr/s/?q=S%C3%A3o%20Paulo", html)
+
     def test_slug_removes_accents(self):
         self.assertEqual(build_site.slug("Montréal – Dorval"), "montreal-dorval")
 

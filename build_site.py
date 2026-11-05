@@ -7,6 +7,7 @@ import shutil
 import sys
 import tomllib
 import unicodedata
+import urllib.parse
 from datetime import date, datetime
 from pathlib import Path
 
@@ -330,6 +331,29 @@ def destinations_index(p, cities):
     return layout(p, f"{p.t('places_title')} | {p.site['name']}", lead, "destinations/", body)
 
 
+BOOKING_LOCALES = {"fr": "fr", "en": "en-gb", "es": "es"}
+GYG_LOCALES = {"fr": "fr-fr", "en": "en-gb", "es": "es-es"}
+
+
+def stay_links(p, name):
+    """Liens vers les partenaires, suivis dès que le programme est renseigné dans config.toml."""
+    query = urllib.parse.quote(name)
+    hotel = f"https://www.booking.com/searchresults.{BOOKING_LOCALES[p.lang]}.html?ss={query}"
+    tour = f"https://www.getyourguide.com/{GYG_LOCALES[p.lang]}/s/?q={query}"
+
+    def tracked(url, kind):
+        program = p.site.get(f"{kind}_program")
+        if not program:
+            return url
+        return radar.partner_link(url, {**p.site, "program": program, "campaign": p.site[f"{kind}_campaign"]})
+
+    def card(url, title, text):
+        return f'<a class="stay" href="{e(url)}" rel="nofollow sponsored noopener" target="_blank"><strong>{title}</strong><span>{text}</span></a>'
+
+    return (card(tracked(hotel, "hotels"), p.t("stay_hotel"), p.t("stay_hotel_b"))
+            + card(tracked(tour, "tours"), p.t("stay_tour"), p.t("stay_tour_b")))
+
+
 def merged_history(city):
     days = {}
     for offer in city["offers"]:
@@ -376,6 +400,7 @@ def destination_page(p, city, cities):
   <section class="panel"><h2>{p.t('best_month')}</h2>
     <div class="scroll"><table><thead><tr><th scope="col">{p.t('t_month')}</th><th scope="col">{p.t('t_dates')}</th><th scope="col">{p.t('t_stops')}</th><th scope="col" class="num">{p.t('t_price')}</th><th scope="col"><span class="sr">{p.t('t_link')}</span></th></tr></thead><tbody>{rows}</tbody></table></div>
   </section>
+  <section class="panel"><h2>{e(p.t('stay_title', city=p.city(city['code'], city['city'])))}</h2><p class="sub">{p.t('stay_lead')}</p><div class="stays">{stay_links(p, p.city(city['code'], city['city']))}</div></section>
   {chart}
   {related_block}
 </section>"""
