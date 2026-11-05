@@ -81,7 +81,7 @@
         }, 250);
       });
     }
-    return fetch(API + path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
+    return fetch(API + path, { method: "POST", headers: { "Content-Type": "text/plain" }, body: JSON.stringify(body) })
       .then(function (r) { return r.json().then(function (data) { if (!r.ok) throw new Error(data.error); return data; }); });
   }
 

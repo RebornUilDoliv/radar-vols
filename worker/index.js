@@ -5,7 +5,7 @@ const DAY = /^\d{4}-\d{2}-\d{2}$/;
 const TITLES = new Set(["mr", "ms", "mrs", "miss", "dr"]);
 
 function respond(body, status, origin) {
-  return new Response(JSON.stringify(body), {
+  return new Response(status === 204 ? null : JSON.stringify(body), {
     status,
     headers: {
       "Content-Type": "application/json",
