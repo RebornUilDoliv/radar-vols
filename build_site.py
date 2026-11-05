@@ -133,7 +133,7 @@ def layout(p, title, description, path, body, noindex=False, extra=""):
 <meta property="og:title" content="{e(title)}">
 <meta property="og:description" content="{e(description)}">
 <meta property="og:type" content="website">
-<link rel="icon" href="{base}assets/icon.svg" type="image/svg+xml">
+<link rel="icon" href="{base}assets/icon.svg?v=2" type="image/svg+xml">
 <link rel="stylesheet" href="{base}assets/style.css?v={version}">
 <script>window.RF={script}</script>
 <script src="{base}assets/app.js?v={version}" defer></script>
