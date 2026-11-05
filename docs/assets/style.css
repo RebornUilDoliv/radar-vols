@@ -50,6 +50,14 @@ input:focus, select:focus { background: var(--w); border-color: var(--k); outlin
 .perks { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 30px; }
 .perks strong { display: block; font-family: "Clash Display", "Geist", sans-serif; font-size: 20px; font-weight: 500; letter-spacing: normal; line-height: 1.4; }
 .perks span { color: var(--g3); font-size: 14px; }
+.news { margin-top: 72px; padding-block: 44px; background: var(--g1); }
+.news-in { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: center; }
+.news p { margin-top: 6px; color: var(--g3); }
+.news-row { display: flex; gap: 8px; }
+.news-row input { flex: 1; margin: 0; background: var(--w); }
+.news-row button { min-height: 44px; padding: 8px 18px; color: var(--w); background: var(--k); border: 0; border-radius: 10px; font-family: "Clash Display", "Geist", sans-serif; font-size: 16px; font-weight: 600; cursor: pointer; }
+.news-consent { display: flex; gap: 8px; align-items: flex-start; margin-top: 10px; color: var(--g3); font-size: 13px; }
+.news-consent input { width: auto; min-height: 0; margin-top: 3px; }
 .band { margin-top: 72px; }
 h2 { font-size: 32px; font-weight: 500; }
 .sub { margin: 8px 0 18px; color: var(--g3); }
@@ -207,6 +215,8 @@ details p { margin-top: 6px; color: var(--g3); }
   .search { grid-template-columns: 1fr 1fr; padding: 12px; }
   .search > .field:nth-child(1), .search > .field:nth-child(2), .search > .small { grid-column: 1 / -1; }
   .perks { grid-template-columns: 1fr; gap: 12px; }
+  .news-in { grid-template-columns: 1fr; }
+  .news-row { flex-direction: column; }
   .mosaic-side { grid-template-columns: 1fr; }
   .band, .dark { margin-top: 52px; }
   .dark { padding-block: 44px; }

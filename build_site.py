@@ -197,6 +197,22 @@ def photo_card(p, city, big=False):
 </a>"""
 
 
+def newsletter_block(p):
+    url = p.site.get("newsletter_url")
+    if not url:
+        return ""
+    return f"""<section class="news"><div class="wrap news-in">
+  <div><h2>{p.t('news_title')}</h2><p>{p.t('news_lead')}</p></div>
+  <form action="{e(url)}" method="post" target="_blank">
+    <label class="sr" for="news-email">{p.t('news_email')}</label>
+    <div class="news-row"><input id="news-email" name="EMAIL" type="email" placeholder="{e(p.t('news_email'))}" autocomplete="email" required><button type="submit">{p.t('news_go')}</button></div>
+    <label class="news-consent"><input name="OPT_IN" type="checkbox" value="1" required> <span>{p.t('news_consent')}</span></label>
+    <input class="sr" name="email_address_check" type="text" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <input type="hidden" name="locale" value="{p.lang}">
+  </form>
+</div></section>"""
+
+
 def search_form(p):
     return f"""<form class="search" id="search" data-target="https://www.aviasales.com/search/" autocomplete="off">
   <div class="field grow"><label for="from">{p.t('search_from')}</label><input id="from" value="{e(p.city('PAR', 'Paris'))} (PAR)" data-code="PAR" required>
@@ -271,6 +287,7 @@ def home(p, cities, offers, updated):
   <div class="head"><h2>{p.t('cheapest')}</h2><a href="{p.root}vols/">{p.t('see_all')}</a></div>
   <ul class="rows">{deals}</ul>
 </div></section>
+{newsletter_block(p)}
 <section class="band wrap">
   <h2>{p.t('budget')}</h2>
   <div class="budgets">{budgets}</div>
@@ -345,8 +362,12 @@ def stay_links(p, name):
         return f'<a class="stay" href="{e(url)}" rel="nofollow sponsored noopener" target="_blank"><strong>{title}</strong><span>{text}</span></a>'
 
     claim = f"https://www.airhelp.com/{p.lang}/"
+    esim = "https://www.airalo.com/" + ("" if p.lang == "en" else p.lang)
+    transfer = f"https://kiwitaxi.com/{p.lang}"
     return (card(tracked(hotel, "hotels"), p.t("stay_hotel"), p.t("stay_hotel_b"))
             + card(tracked(tour, "tours"), p.t("stay_tour"), p.t("stay_tour_b"))
+            + card(tracked(esim, "esim"), p.t("stay_esim"), p.t("stay_esim_b"))
+            + card(tracked(transfer, "transfers"), p.t("stay_transfer"), p.t("stay_transfer_b"))
             + card(tracked(claim, "claims"), p.t("stay_claim"), p.t("stay_claim_b")))
 
 

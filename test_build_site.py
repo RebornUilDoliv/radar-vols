@@ -102,6 +102,8 @@ class BuildTests(unittest.TestCase):
         self.assertIn("tiqets.com%2Fen%2Fsearch%3Fq%3DBarcelona", page)
         self.assertIn("campaign_id=120", page)
         self.assertIn("airhelp.com%2Fen%2F", page)
+        self.assertIn("campaign_id=541", page)
+        self.assertIn("kiwitaxi.com%2Fen", page)
 
     def test_partner_program_wraps_stay_links(self):
         site = dict(SITE, root="/", version="1", hotels_program="111", hotels_campaign="222", url="https://x.test/")
@@ -115,6 +117,15 @@ class BuildTests(unittest.TestCase):
         self.assertTrue((docs / "credits" / "index.html").exists())
         self.assertIn("/credits/", (docs / "index.html").read_text())
         self.assertNotIn("figcaption", (docs / "destinations/barcelone/index.html").read_text())
+
+    def test_newsletter_appears_once_configured(self):
+        p = build_site.Page(dict(SITE, root="/", version="1", newsletter_url=""), "fr")
+        self.assertEqual(build_site.newsletter_block(p), "")
+        p = build_site.Page(dict(SITE, root="/", version="1", newsletter_url="https://form.test/x"), "es")
+        block = build_site.newsletter_block(p)
+        self.assertIn('action="https://form.test/x"', block)
+        self.assertIn("required", block)
+        self.assertIn("darme de baja", block)
 
     def test_slug_removes_accents(self):
         self.assertEqual(build_site.slug("Montréal – Dorval"), "montreal-dorval")

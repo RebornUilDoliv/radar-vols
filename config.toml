@@ -23,6 +23,11 @@ tours_program = "2074"           # Tiqets
 tours_campaign = "89"
 claims_program = "9139"          # AirHelp
 claims_campaign = "120"
+esim_program = "8310"            # Airalo
+esim_campaign = "541"
+transfers_program = "647"        # Kiwitaxi
+transfers_campaign = "1"
+newsletter_url = ""              # adresse d'envoi du formulaire Brevo
 test_api = "https://radar-flight-test.joseluiscardozopintos.workers.dev"                    # adresse du serveur de test ; vide = mode démonstration
 
 [schedule]
