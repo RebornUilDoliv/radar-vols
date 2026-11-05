@@ -22,6 +22,7 @@ async function duffel(path, token, options = {}) {
     ...options,
     headers: {
       "Accept": "application/json",
+      "Accept-Encoding": "gzip",
       "Content-Type": "application/json",
       "Duffel-Version": "v2",
       "Authorization": `Bearer ${token}`,
@@ -30,7 +31,7 @@ async function duffel(path, token, options = {}) {
   const payload = await response.json().catch(() => ({}));
   if (!response.ok) {
     const error = new Error("duffel");
-    error.status = response.status;
+    error.detail = { status: response.status, code: payload.errors?.[0]?.code, title: payload.errors?.[0]?.title };
     throw error;
   }
   if (payload.data?.live_mode === true) throw new Error("live_mode");
@@ -153,8 +154,8 @@ export default {
         return respond(await order(body, token), 200, origin);
       }
       return respond({ error: "introuvable" }, 404, origin);
-    } catch {
-      return respond({ error: "service indisponible" }, 502, origin);
+    } catch (error) {
+      return respond({ error: "service indisponible", detail: error.detail || error.message }, 502, origin);
     }
   },
 };
