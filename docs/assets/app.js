@@ -267,7 +267,24 @@
     if (row) row.classList.add("picked");
   }
 
+  function initNewsletter() {
+    var form = $("newsletter");
+    if (!form) return;
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+      fetch(form.action, { method: "POST", mode: "no-cors", body: new FormData(form) })
+        .then(function () {
+          form.querySelector(".news-row").hidden = true;
+          form.querySelector(".news-consent").hidden = true;
+          $("news-done").textContent = RF.t.news_ok;
+          $("news-done").hidden = false;
+        })
+        .catch(function () { form.submit(); });
+    });
+  }
+
   initSearch();
+  initNewsletter();
   highlightMonth();
   initCharts();
   initFlights();

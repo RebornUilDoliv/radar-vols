@@ -162,7 +162,7 @@ TEXT = {
 SCRIPT_TEXT = {
     "fr": {
         "more": "Afficher plus de vols ({shown} sur {total})", "count_one": "{count} vol", "count_many": "{count} vols", "empty": "Aucun vol avec ces filtres. Essaie un budget plus large ou un autre mois.", "soon": "Les prix arrivent bientôt. Reviens après le prochain relevé.",
-        "pick_from": "Choisis une ville de départ dans la liste.", "pick_to": "Choisis une destination dans la liste.", "same": "Le départ et la destination doivent être différents.",
+        "news_ok": "Merci ! Vérifie ta boîte mail et confirme ton inscription.", "pick_from": "Choisis une ville de départ dans la liste.", "pick_to": "Choisis une destination dans la liste.", "same": "Le départ et la destination doivent être différents.",
         "step": "Étape {n} sur 4", "where": "Où veux-tu aller ?", "back_opt": "Retour (facultatif)", "adults": "Adultes", "see_flights": "Voir les vols", "pick_list": "Choisis les villes dans la liste de suggestions.", "same_city": "Choisis deux villes différentes.", "search_fail": "La recherche n'a pas marché. Réessaie dans un instant.",
         "choose": "Choisis ton vol", "none_test": "Aucun vol de test pour ce trajet.", "pick": "Choisir", "itinerary": "Voir l'itinéraire", "outbound": "Aller", "inbound": "Retour", "trip": "{time} de voyage", "no_detail": "détail indisponible", "stop_at": "Escale à {place}, {time}", "back_step": "Revenir en arrière",
         "who": "Qui voyage ?", "fake": "Garde ces données fictives : c'est un test.", "traveller": "Voyageur {n}", "title": "Civilité", "ms": "Mme", "mr": "M.", "given": "Prénom", "family": "Nom", "born": "Date de naissance", "gender": "Genre", "f": "Femme", "m": "Homme", "email": "E-mail", "phone": "Téléphone", "letters": "Lettres uniquement", "next": "Continuer",
@@ -171,7 +171,7 @@ SCRIPT_TEXT = {
     },
     "en": {
         "more": "Show more flights ({shown} of {total})", "count_one": "{count} flight", "count_many": "{count} flights", "empty": "No flights match these filters. Try a higher budget or another month.", "soon": "Prices are coming soon. Check back after the next update.",
-        "pick_from": "Choose a departure city from the list.", "pick_to": "Choose a destination from the list.", "same": "Departure and destination must be different.",
+        "news_ok": "Thanks! Check your inbox and confirm your subscription.", "pick_from": "Choose a departure city from the list.", "pick_to": "Choose a destination from the list.", "same": "Departure and destination must be different.",
         "step": "Step {n} of 4", "where": "Where do you want to go?", "back_opt": "Return (optional)", "adults": "Adults", "see_flights": "See flights", "pick_list": "Choose the cities from the suggestions.", "same_city": "Choose two different cities.", "search_fail": "The search didn't work. Try again in a moment.",
         "choose": "Choose your flight", "none_test": "No test flight for this route.", "pick": "Choose", "itinerary": "View itinerary", "outbound": "Outbound", "inbound": "Return", "trip": "{time} journey", "no_detail": "details unavailable", "stop_at": "Stop in {place}, {time}", "back_step": "Go back",
         "who": "Who's travelling?", "fake": "Keep this data fictional: it's a test.", "traveller": "Traveller {n}", "title": "Title", "ms": "Ms", "mr": "Mr", "given": "First name", "family": "Last name", "born": "Date of birth", "gender": "Gender", "f": "Female", "m": "Male", "email": "Email", "phone": "Phone", "letters": "Letters only", "next": "Continue",
@@ -180,7 +180,7 @@ SCRIPT_TEXT = {
     },
     "es": {
         "more": "Mostrar más vuelos ({shown} de {total})", "count_one": "{count} vuelo", "count_many": "{count} vuelos", "empty": "Ningún vuelo con estos filtros. Prueba un presupuesto mayor u otro mes.", "soon": "Los precios llegarán pronto. Vuelve tras la próxima revisión.",
-        "pick_from": "Elige una ciudad de origen de la lista.", "pick_to": "Elige un destino de la lista.", "same": "El origen y el destino deben ser diferentes.",
+        "news_ok": "¡Gracias! Revisa tu correo y confirma tu suscripción.", "pick_from": "Elige una ciudad de origen de la lista.", "pick_to": "Elige un destino de la lista.", "same": "El origen y el destino deben ser diferentes.",
         "step": "Paso {n} de 4", "where": "¿A dónde quieres ir?", "back_opt": "Vuelta (opcional)", "adults": "Adultos", "see_flights": "Ver vuelos", "pick_list": "Elige las ciudades de las sugerencias.", "same_city": "Elige dos ciudades diferentes.", "search_fail": "La búsqueda no funcionó. Inténtalo de nuevo en un momento.",
         "choose": "Elige tu vuelo", "none_test": "No hay vuelo de prueba para esta ruta.", "pick": "Elegir", "itinerary": "Ver itinerario", "outbound": "Ida", "inbound": "Vuelta", "trip": "{time} de viaje", "no_detail": "detalle no disponible", "stop_at": "Escala en {place}, {time}", "back_step": "Volver atrás",
         "who": "¿Quién viaja?", "fake": "Deja estos datos ficticios: es una prueba.", "traveller": "Viajero {n}", "title": "Tratamiento", "ms": "Sra.", "mr": "Sr.", "given": "Nombre", "family": "Apellido", "born": "Fecha de nacimiento", "gender": "Género", "f": "Mujer", "m": "Hombre", "email": "Correo", "phone": "Teléfono", "letters": "Solo letras", "next": "Continuar",

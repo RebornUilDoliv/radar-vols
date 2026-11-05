@@ -56,6 +56,8 @@ input:focus, select:focus { background: var(--w); border-color: var(--k); outlin
 .news-row { display: flex; gap: 8px; }
 .news-row input { flex: 1; margin: 0; background: var(--w); }
 .news-row button { min-height: 44px; padding: 8px 18px; color: var(--w); background: var(--k); border: 0; border-radius: 10px; font-family: "Clash Display", "Geist", sans-serif; font-size: 16px; font-weight: 600; cursor: pointer; }
+.news-done { font-weight: 500; color: var(--k) !important; }
+.news-consent[hidden], .news-row[hidden] { display: none; }
 .news-consent { display: flex; gap: 8px; align-items: flex-start; margin-top: 10px; color: var(--g3); font-size: 13px; }
 .news-consent input { width: auto; min-height: 0; margin-top: 3px; }
 .band { margin-top: 72px; }

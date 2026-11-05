@@ -29,7 +29,7 @@ esim_program = "8310"            # Airalo
 esim_campaign = "541"
 transfers_program = "647"        # Kiwitaxi
 transfers_campaign = "1"
-newsletter_url = ""              # adresse d'envoi du formulaire Brevo
+newsletter_url = "https://ab67ba27.sibforms.com/serve/MUIFAM-kHU83B6EgUuJ_iQCwDIAdSkqGaPzD5JsqC1KOFwptmrVOXZCkYHxj64A5Tlzv97_wB1FNlfeCBf2koPxWus803zLxB5UwH2I6fG2W_4iIQaCSQG8C8QbuRaWaRz5AT8KFAdNPxwMO1jje1ls2WDo3RLkRtU3JDpgomWT_3VlaOG5kyu3kUJ9MjieaDIV4ojaPWdTxPlPlrA=="              # adresse d'envoi du formulaire Brevo
 test_api = "https://radar-flight-test.joseluiscardozopintos.workers.dev"                    # adresse du serveur de test ; vide = mode démonstration
 
 [schedule]

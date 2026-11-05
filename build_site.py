@@ -203,12 +203,14 @@ def newsletter_block(p):
         return ""
     return f"""<section class="news"><div class="wrap news-in">
   <div><h2>{p.t('news_title')}</h2><p>{p.t('news_lead')}</p></div>
-  <form action="{e(url)}" method="post" target="_blank">
+  <form id="newsletter" action="{e(url)}" method="post" target="_blank">
     <label class="sr" for="news-email">{p.t('news_email')}</label>
     <div class="news-row"><input id="news-email" name="EMAIL" type="email" placeholder="{e(p.t('news_email'))}" autocomplete="email" required><button type="submit">{p.t('news_go')}</button></div>
-    <label class="news-consent"><input name="OPT_IN" type="checkbox" value="1" required> <span>{p.t('news_consent')}</span></label>
+    <label class="news-consent"><input id="news-consent" type="checkbox" required> <span>{p.t('news_consent')}</span></label>
     <input class="sr" name="email_address_check" type="text" tabindex="-1" autocomplete="off" aria-hidden="true">
     <input type="hidden" name="locale" value="{p.lang}">
+    <input type="hidden" name="html_type" value="simple">
+    <p class="news-done" id="news-done" role="status" hidden></p>
   </form>
 </div></section>"""
 
