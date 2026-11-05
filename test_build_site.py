@@ -199,6 +199,11 @@ class BuildTests(unittest.TestCase):
         self.assertEqual(len(places), 1)
         self.assertEqual(places[0]["routes"][0][0]["code"], "PAR")
 
+    def test_home_presents_site_features(self):
+        page = (self.build(self.deals()) / "index.html").read_text()
+        self.assertIn("Tout ce que tu peux faire sur Eunodia", page)
+        self.assertIn('id="preparer"', page)
+
     def test_slug_removes_accents(self):
         self.assertEqual(build_site.slug("Montréal – Dorval"), "montreal-dorval")
 

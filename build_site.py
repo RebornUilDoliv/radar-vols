@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Génère le site statique multilingue d'Eunodia à partir de docs/prices.json."""
+import hashlib
 import html
 import json
 import re
@@ -176,6 +177,7 @@ def layout(p, title, description, path, body, noindex=False, extra=""):
     <a href="{root}vols/">{p.t('nav_flights')}</a>
     <a href="{root}depuis/">{p.t('nav_world')}</a>
     <a href="{root}destinations/">{p.t('nav_places')}</a>
+    <a href="{root}vols-pas-chers/">{p.t('nav_deals')}</a>
     <a href="{root}a-propos/">{p.t('nav_info')}</a>
   </nav>
   <div class="langs" aria-label="Langue">{switch}</div>
@@ -319,12 +321,13 @@ def home(p, cities, offers, updated, origins=()):
     <p>{e(p.t('hero_sub', start=start, city=p.city(hero_route[1]['to'], hero_route[1]['to']) if hero_route else p.city(best['code'], best['city']), price=p.euro(hero_route[1]['price'] if hero_route else best['price'])))}</p>
   </div>
 </section>
-<div class="wrap search-wrap">{search_form(p)}</div>
+<div class="wrap search-wrap" id="recherche">{search_form(p)}</div>
 <ul class="perks wrap">
   <li><strong>{p.t('perk_1')}</strong><span>{p.t('perk_1b')}</span></li>
   <li><strong>{p.t('perk_2')}</strong><span>{p.t('perk_2b')}</span></li>
   <li><strong>{p.t('perk_3')}</strong><span>{p.t('perk_3b')}</span></li>
 </ul>
+{tools_block(p)}
 {world}
 <section class="band wrap">
   <h2>{p.t('offers')}</h2>
@@ -336,6 +339,11 @@ def home(p, cities, offers, updated, origins=()):
   <ul class="rows">{deals}</ul>
 </div></section>
 {newsletter_block(p)}
+<section class="band wrap" id="preparer">
+  <h2>{p.t('trip_title')}</h2>
+  <p class="sub">{p.t('stay_lead')}</p>
+  <div class="stays">{stay_links(p, "")}</div>
+</section>
 <section class="band wrap">
   <h2>{p.t('budget')}</h2>
   <div class="budgets">{budgets}</div>
@@ -351,6 +359,17 @@ def home(p, cities, offers, updated, origins=()):
 <section class="band wrap">
 </section>"""
     return layout(p, f"{p.site['name']} — {p.t('title_home')}", p.t("meta_home"), "", body)
+
+
+def tools_block(p):
+    """Présente les fonctions du site dès l'accueil."""
+    items = [("vols/", "tools_budget"), ("#recherche", "tools_search"), ("depuis/", "tools_world"), ("destinations/", "tools_places"),
+             ("vols-pas-chers/", "tools_deals"), ("#newsletter", "tools_alert"), ("#preparer", "tools_trip"), ("#preparer", "tools_claim")]
+    cards = "".join(
+        f'<a class="stay" href="{p.root}{target}"><strong>{p.t(key)}</strong><span>{p.t(key + "_b")}</span></a>'
+        for target, key in items
+    )
+    return f'<section class="band wrap"><h2>{p.t("tools_title")}</h2><div class="stays tools">{cards}</div></section>'
 
 
 def flights_page(p, origins=()):
@@ -872,12 +891,22 @@ def build_language(p, data, cities, updated_at, groups, origins=()):
         write(folder / "destinations" / city["slug"] / "index.html", destination_page(p, city, cities))
 
 
+def asset_version():
+    """Change dès qu'un fichier du site change, pour que les navigateurs le rechargent."""
+    digest = hashlib.sha256()
+    for name in ("app.js", "booking.js", "style.css"):
+        path = DOCS / "assets" / name
+        if path.exists():
+            digest.update(path.read_bytes())
+    return digest.hexdigest()[:12]
+
+
 def build(data, site, catalog=None):
     """catalog associe chaque langue à (villes, pays), quand les listes sont disponibles."""
     site = dict(site)
     after = site["url"].split("//", 1)[1]
     site["root"] = "/" + after.split("/", 1)[1] if "/" in after else "/"
-    site["version"] = re.sub(r"\D", "", data.get("updated", ""))[:12] or "1"
+    site["version"] = asset_version()
     offers = data["offers"]
     cities = destinations(offers)
     slugs = {c["code"]: c["slug"] for c in cities}

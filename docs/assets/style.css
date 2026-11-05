@@ -131,6 +131,7 @@ h2 { font-size: 32px; font-weight: 500; }
 .filters input, .filters select { background: var(--w); }
 .count { margin: 18px 0 6px; color: var(--g3); }
 .more { display: flex; width: 100%; margin-top: 18px; }
+.more[hidden] { display: none; }
 .empty { padding: 20px 0; color: var(--g3); }
 .panel { margin-top: 36px; }
 .panel h2 { margin-bottom: 10px; font-size: 24px; }
@@ -152,6 +153,7 @@ td.num, th.num { text-align: right; font-weight: 650; font-variant-numeric: tabu
 .stay span { color: var(--g3); font-size: 14px; }
 .stay:hover { color: var(--w); background: var(--k); }
 .stay:hover span { color: var(--g2); }
+.stays.tools { grid-template-columns: repeat(4, 1fr); margin-top: 18px; }
 .guide { display: grid; gap: 4px; }
 .guide li::before { content: "– "; color: var(--g3); }
 .dest-group { margin-top: 32px; }
@@ -203,6 +205,7 @@ details p { margin-top: 6px; color: var(--g3); }
   .card.big { min-height: 340px; }
   .budgets, .links { grid-template-columns: repeat(2, 1fr); }
   .stays { grid-template-columns: 1fr; }
+  .stays.tools { grid-template-columns: repeat(2, 1fr); }
   .filters { grid-template-columns: repeat(3, 1fr); }
   .two { grid-template-columns: 1fr; }
   .foot-in { grid-template-columns: 1fr; }
@@ -226,7 +229,7 @@ details p { margin-top: 6px; color: var(--g3); }
   .mosaic-side { grid-template-columns: 1fr; }
   .band, .dark { margin-top: 52px; }
   .dark { padding-block: 44px; }
-  .links, .book-form, .book-person, .stays { grid-template-columns: 1fr; }
+  .links, .book-form, .book-person, .stays, .stays.tools { grid-template-columns: 1fr; }
   .filters { grid-template-columns: repeat(2, 1fr); }
   .row { grid-template-columns: 1fr auto; }
   .row-info { grid-column: 1; grid-row: 1; }
