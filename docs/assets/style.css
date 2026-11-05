@@ -72,9 +72,8 @@ h2 { font-size: 28px; }
 .crumb { margin-bottom: 6px; color: var(--soft); font-size: 16px; }
 .notice { margin-top: 16px; padding: 12px 14px; color: var(--soft); background: var(--field); border-left: 3px solid var(--link); font-size: 17px; }
 .notice strong { color: var(--ink); font-weight: 600; }
-tr:target > * { background: var(--field); }
-tr:target > th { box-shadow: inset 3px 0 0 var(--link); padding-left: 8px; }
-[id^="m-"] { scroll-margin-top: 20px; }
+.picked > * { background: var(--field); }
+.picked > th { box-shadow: inset 3px 0 0 var(--link); padding-left: 8px; }
 .page .photo.wide { margin-top: 16px; }
 .filters { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 18px; }
 .filters label { min-width: 0; }

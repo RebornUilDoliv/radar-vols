@@ -53,7 +53,7 @@ class BuildTests(unittest.TestCase):
         home = (docs / "index.html").read_text()
         self.assertNotIn("tp.media", home)
         month = str(TODAY + timedelta(days=30))[:7]
-        self.assertIn(f"destinations/barcelone/#m-{month}", home)
+        self.assertIn(f"destinations/barcelone/?mois={month}", home)
         self.assertIn(f'id="m-{month}"', (docs / "destinations/barcelone/index.html").read_text())
 
     def test_same_city_name_gets_unique_page(self):

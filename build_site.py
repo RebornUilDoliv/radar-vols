@@ -129,7 +129,7 @@ def flight_card(offer, root, city):
     <p>{e(day(offer['depart'], False))} → {e(day(offer['back']))}, {nights(offer)} jours, {e(stops(offer))}</p>
   </div>
   <p class="row-price">{euro(offer['price'])}</p>
-  <a class="go" href="{page}#m-{offer['depart'][:7]}" aria-label="Voir le vol pour {e(offer['city'])}">Voir</a>
+  <a class="go" href="{page}?mois={offer['depart'][:7]}" aria-label="Voir le vol pour {e(offer['city'])}">Voir</a>
 </li>"""
 
 

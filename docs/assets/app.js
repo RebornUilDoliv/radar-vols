@@ -193,7 +193,7 @@
       info.appendChild(title);
       info.appendChild(el("p", "", fmt(o.depart, { day: "numeric", month: "short" }) + " → " + shortDate(o.back) + ", " + days(o) + " jours, " + stops(o)));
       var cta = el("a", "go", "Voir");
-      cta.href = link.href + "#m-" + o.depart.slice(0, 7);
+      cta.href = link.href + "?mois=" + o.depart.slice(0, 7);
       cta.setAttribute("aria-label", "Voir le vol pour " + o.city);
       item.appendChild(info); item.appendChild(el("p", "row-price", euro(o.price))); item.appendChild(cta);
       return item;
@@ -265,7 +265,14 @@
     $("more").addEventListener("click", showMore);
   }
 
+  function highlightMonth() {
+    var month = new URLSearchParams(location.search).get("mois");
+    var row = month && document.getElementById("m-" + month);
+    if (row) row.classList.add("picked");
+  }
+
   initSearch();
+  highlightMonth();
   initCharts();
   initFlights();
 })();
