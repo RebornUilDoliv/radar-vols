@@ -120,16 +120,16 @@ def layout(site, title, description, path, body, scripts=True):
 """
 
 
-def flight_card(offer, root, city=None):
-    label = e(offer["city"])
-    title = f'<a href="{root}destinations/{city["slug"]}/">{label}</a>' if city else label
+def flight_card(offer, root, city):
+    page = f'{root}destinations/{city["slug"]}/'
+    title = f'<a href="{page}">{e(offer["city"])}</a>'
     return f"""<li class="row">
   <div class="row-info">
     <h3>{title}</h3>
     <p>{e(day(offer['depart'], False))} → {e(day(offer['back']))}, {nights(offer)} jours, {e(stops(offer))}</p>
   </div>
   <p class="row-price">{euro(offer['price'])}</p>
-  <a class="go" href="{e(offer['link'])}" rel="nofollow sponsored noopener" target="_blank">Voir</a>
+  <a class="go" href="{page}#m-{offer['depart'][:7]}" aria-label="Voir le vol pour {e(offer['city'])}">Voir</a>
 </li>"""
 
 
@@ -216,7 +216,7 @@ def home(site, cities, offers, updated):
 </section>
 <section class="band wrap">
   <div class="head"><h2>Les moins chers aujourd'hui</h2><a href="{root}vols/">Voir tous les vols</a></div>
-  <p class="sub">Aller-retour par personne. Dernier relevé le {e(updated)}.</p>
+  <p class="sub">Aller-retour par personne. Dernier relevé le {e(updated)}. Ces prix peuvent avoir augmenté depuis.</p>
   <ul class="rows">{deals}</ul>
 </section>
 {photos}
@@ -286,9 +286,9 @@ def destination_page(site, city, cities):
         if key not in months or offer["price"] < months[key]["price"]:
             months[key] = offer
     rows = "".join(
-        f'<tr><th scope="row">{e(month_name(key).capitalize())}</th><td>{e(day(o["depart"]))} → {e(day(o["back"]))}</td>'
+        f'<tr id="m-{key}"><th scope="row">{e(month_name(key).capitalize())}</th><td>{e(day(o["depart"]))} → {e(day(o["back"]))}</td>'
         f'<td>{e(stops(o))}</td><td class="num">{euro(o["price"])}</td>'
-        f'<td><a class="go" href="{e(o["link"])}" rel="nofollow sponsored noopener" target="_blank">Voir</a></td></tr>'
+        f'<td><a class="go" href="{e(o["link"])}" rel="nofollow sponsored noopener" target="_blank">Vérifier le prix</a></td></tr>'
         for key, o in sorted(months.items())
     )
     cheapest_month = month_name(best["depart"][:7])
@@ -312,8 +312,8 @@ def destination_page(site, city, cities):
   <p class="crumb"><a href="{root}destinations/">Destinations</a> › {e(city['region'])}</p>
   <h1>Vols Paris – {name}</h1>
   {cover}
-  <p class="lead">Le prix le plus bas vu en ce moment est <strong>{euro(best['price'])}</strong> l'aller-retour, en {e(cheapest_month)}. À confirmer avant de payer.</p>
-  <a class="hero-go" href="{e(best['link'])}" rel="nofollow sponsored noopener" target="_blank">Voir ce vol</a>
+  <p class="lead">Le prix le plus bas relevé est <strong>{euro(best['price'])}</strong> l'aller-retour, en {e(cheapest_month)}.</p>
+  <aside class="notice"><strong>Pourquoi le prix peut être différent ?</strong> Ces prix viennent de recherches faites récemment par d'autres voyageurs. Quand tu cliques sur « Vérifier le prix », tu quittes ce site pour Aviasales, qui cherche le prix exact en direct. Il peut être plus élevé si les places les moins chères sont parties.</aside>
   <section class="panel"><h2>Le meilleur prix par mois</h2>
     <div class="scroll"><table><thead><tr><th scope="col">Mois</th><th scope="col">Dates</th><th scope="col">Escales</th><th scope="col" class="num">Prix</th><th scope="col"><span class="sr">Lien</span></th></tr></thead><tbody>{rows}</tbody></table></div>
   </section>

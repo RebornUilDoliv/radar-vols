@@ -26,9 +26,6 @@
     if (text !== undefined) node.textContent = text;
     return node;
   };
-  var safeLink = function (url) {
-    try { return new URL(url).hostname === "tp.media" ? url : "#"; } catch (e) { return "#"; }
-  };
   var partner = function (url) {
     return "https://tp.media/r?" + new URLSearchParams({
       marker: "800338", trs: "595480", p: "4114", campaign_id: "100", u: url
@@ -196,9 +193,7 @@
       info.appendChild(title);
       info.appendChild(el("p", "", fmt(o.depart, { day: "numeric", month: "short" }) + " → " + shortDate(o.back) + ", " + days(o) + " jours, " + stops(o)));
       var cta = el("a", "go", "Voir");
-      cta.href = safeLink(o.link);
-      cta.target = "_blank";
-      cta.rel = "nofollow sponsored noopener";
+      cta.href = link.href + "#m-" + o.depart.slice(0, 7);
       cta.setAttribute("aria-label", "Voir le vol pour " + o.city);
       item.appendChild(info); item.appendChild(el("p", "row-price", euro(o.price))); item.appendChild(cta);
       return item;

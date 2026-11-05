@@ -46,7 +46,15 @@ class BuildTests(unittest.TestCase):
     def test_escapes_city_and_links(self):
         docs = self.build([offer("BAD", "<script>x", "Europe", 40, 30)])
         self.assertNotIn("<script>x", (docs / "index.html").read_text())
-        self.assertIn("&amp;y=1", (docs / "index.html").read_text())
+        self.assertIn("&amp;y=1", next((docs / "destinations").glob("*/index.html")).read_text())
+
+    def test_home_links_stay_on_site(self):
+        docs = self.build([offer("BCN", "Barcelone", "Europe", 43, 30)])
+        home = (docs / "index.html").read_text()
+        self.assertNotIn("tp.media", home)
+        month = str(TODAY + timedelta(days=30))[:7]
+        self.assertIn(f"destinations/barcelone/#m-{month}", home)
+        self.assertIn(f'id="m-{month}"', (docs / "destinations/barcelone/index.html").read_text())
 
     def test_same_city_name_gets_unique_page(self):
         docs = self.build([offer("AAA", "Santiago", "Asie", 40, 30), offer("BBB", "Santiago", "Europe", 50, 30)])
