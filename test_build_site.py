@@ -27,8 +27,11 @@ class BuildTests(unittest.TestCase):
         (docs / "destinations" / "ancienne-ville").mkdir(parents=True)
         data = {"updated": "2026-11-04T14:40+00:00", "offers": offers}
         with mock.patch.object(build_site, "DOCS", docs):
-            build_site.build(data, SITE, {"PAR": {"name": "Paris", "country": "FR", "airports": ["CDG"]},
-                                          "ZZZ": {"name": "Sans vol", "country": "FR", "airports": []}}, {"FR": "France"})
+            places = {"PAR": {"name": "Paris", "country": "FR", "airports": ["CDG"]},
+                      "BCN": {"name": "Barcelone", "country": "ES", "airports": ["BCN"]},
+                      "ZZZ": {"name": "Sans vol", "country": "FR", "airports": []}}
+            english = dict(places, BCN={"name": "Barcelona", "country": "ES", "airports": ["BCN"]})
+            build_site.build(data, SITE, {"fr": (places, {"FR": "France"}), "en": (english, {"FR": "France"}), "es": (places, {"FR": "Francia"})})
         return docs
 
     def test_builds_all_pages_and_removes_old_destinations(self):
@@ -45,7 +48,7 @@ class BuildTests(unittest.TestCase):
 
     def test_escapes_city_and_links(self):
         docs = self.build([offer("BAD", "<script>x", "Europe", 40, 30)])
-        self.assertNotIn("<script>x", (docs / "index.html").read_text())
+        self.assertNotIn("<script>x<", (docs / "index.html").read_text())
         self.assertIn("&amp;y=1", next((docs / "destinations").glob("*/index.html")).read_text())
 
     def test_home_links_stay_on_site(self):
@@ -68,7 +71,7 @@ class BuildTests(unittest.TestCase):
 
     def test_city_list_keeps_only_cities_with_airports(self):
         docs = self.build([offer("BCN", "Barcelone", "Europe", 43, 30)])
-        self.assertEqual(json.loads((docs / "assets" / "cities.json").read_text()), [["PAR", "Paris", "France"]])
+        self.assertEqual(json.loads((docs / "assets" / "cities-fr.json").read_text())[-1], ["PAR", "Paris", "France"])
 
     def test_booking_page_is_hidden_from_search(self):
         docs = self.build([offer("BCN", "Barcelone", "Europe", 43, 30)])
@@ -77,6 +80,18 @@ class BuildTests(unittest.TestCase):
         self.assertIn("Aucun vrai vol", page)
         self.assertNotIn("test-reservation", (docs / "sitemap.xml").read_text())
         self.assertIn(">Réservation test<", (docs / "index.html").read_text())
+
+    def test_languages_stay_on_site(self):
+        docs = self.build([offer("BCN", "Barcelone", "Europe", 43, 30)])
+        english = (docs / "en" / "index.html").read_text()
+        self.assertIn('<html lang="en">', english)
+        self.assertIn("Your next flight starts here.", english)
+        self.assertIn("Barcelona", english)
+        self.assertIn("€43", english)
+        self.assertIn('hreflang="es"', english)
+        self.assertIn("Vuelos París – Barcelone", (docs / "es/destinations/barcelone/index.html").read_text())
+        self.assertIn("/en/vols/", (docs / "sitemap.xml").read_text())
+        self.assertEqual(json.loads((docs / "en/prices.json").read_text())["offers"][0]["city"], "Barcelona")
 
     def test_slug_removes_accents(self):
         self.assertEqual(build_site.slug("Montréal – Dorval"), "montreal-dorval")

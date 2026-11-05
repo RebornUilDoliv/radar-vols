@@ -3,7 +3,11 @@
   var box = document.getElementById("booking");
   if (!box) return;
   var API = box.dataset.api || "";
-  var ROOT = document.body.dataset.root || "/";
+  var RF = window.RF;
+  var BASE = RF.base;
+  var say = function (key, values) {
+    return RF.t[key].replace(/\{(\w+)\}/g, function (_, name) { return (values || {})[name]; });
+  };
   var cities = null;
   var loading = null;
   var NAMES = ["Alice", "Bruno", "Chloe", "David", "Emma", "Felix"];
@@ -40,7 +44,7 @@
     return node;
   }
   function loadCities() {
-    loading = loading || fetch(ROOT + "assets/cities.json").then(function (r) { return r.json(); })
+    loading = loading || fetch(BASE + "assets/cities-" + RF.lang + ".json").then(function (r) { return r.json(); })
       .then(function (rows) { cities = rows; }).catch(function () { loading = null; });
     return loading;
   }
@@ -61,7 +65,7 @@
   function cityField(label, name, code) {
     var wrap = el("div", "field");
     var title = el("label", "", label);
-    var text = input("text", name ? name + " (" + code + ")" : "", { placeholder: "Une ville, partout dans le monde", autocomplete: "off" });
+    var text = input("text", name ? name + " (" + code + ")" : "", { placeholder: RF.search_place, autocomplete: "off" });
     var list = el("ul", "suggest");
     list.hidden = true;
     if (code) text.dataset.code = code;
@@ -102,17 +106,17 @@
     return { node: wrap, input: text };
   }
   function money(amount, currency) {
-    return Number(amount).toLocaleString("fr-FR", { style: "currency", currency: currency, maximumFractionDigits: 2 });
+    return Number(amount).toLocaleString(RF.locale, { style: "currency", currency: currency, maximumFractionDigits: 2 });
   }
   function when(iso) {
-    return new Date(iso).toLocaleString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
+    return new Date(iso).toLocaleString(RF.locale, { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
   }
   function dayAhead(days) {
     return new Date(Date.now() + days * 864e5).toISOString().slice(0, 10);
   }
   function show(title, step) {
     box.textContent = "";
-    box.appendChild(el("p", "book-step", "Étape " + step + " sur 4"));
+    box.appendChild(el("p", "book-step", say("step", { n: step })));
     box.appendChild(el("h2", "", title));
     box.focus();
     window.scrollTo(0, 0);
@@ -152,33 +156,33 @@
   }
 
   function stepSearch() {
-    show("Où veux-tu aller ?", 1);
+    show(RF.t.where, 1);
     var form = el("form", "book-form");
-    var from = cityField("Départ", "Paris", "PAR"), to = cityField("Destination", "New York", "NYC");
+    var from = cityField(RF.from_label, RF.from_name, "PAR"), to = cityField(RF.to_label, RF.to_name, "NYC");
     var depart = input("date", dayAhead(30), { min: dayAhead(1) });
     var back = input("date", dayAhead(37), { min: dayAhead(1) });
     back.required = false;
     var adults = select([["1", "1"], ["2", "2"], ["3", "3"]], "1");
-    [from.node, to.node, field("Aller", depart), field("Retour (facultatif)", back), field("Adultes", adults)].forEach(function (node) { form.appendChild(node); });
-    var submit = el("button", "search-go", "Voir les vols");
+    [from.node, to.node, field(RF.out_label, depart), field(RF.t.back_opt, back), field(RF.t.adults, adults)].forEach(function (node) { form.appendChild(node); });
+    var submit = el("button", "search-go", RF.t.see_flights);
     submit.type = "submit";
     form.appendChild(submit);
     form.addEventListener("submit", function (event) {
       event.preventDefault();
       var origin = from.input.dataset.code, destination = to.input.dataset.code;
-      if (!origin || !destination) return problem("Choisis les villes dans la liste de suggestions.");
-      if (origin === destination) return problem("Choisis deux villes différentes.");
+      if (!origin || !destination) return problem(RF.t.pick_list);
+      if (origin === destination) return problem(RF.t.same_city);
       submit.disabled = true;
       state.adults = Number(adults.value);
       call("/search", { from: origin, to: destination, depart: depart.value, back: back.value, adults: state.adults })
         .then(function (data) { stepOffers(data.offers); })
-        .catch(function () { submit.disabled = false; problem("La recherche n'a pas marché. Réessaie dans un instant."); });
+        .catch(function () { submit.disabled = false; problem(RF.t.search_fail); });
     });
     box.appendChild(form);
   }
 
   function clock(iso) {
-    return new Date(iso).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
+    return new Date(iso).toLocaleTimeString(RF.locale, { hour: "2-digit", minute: "2-digit" });
   }
   function duration(value) {
     var match = /^P(?:(\d+)D)?T?(?:(\d+)H)?(?:(\d+)M)?/.exec(value || "");
@@ -195,18 +199,18 @@
   }
   function itinerary(offer) {
     var box = el("details", "route");
-    box.appendChild(el("summary", "", "Voir l'itinéraire"));
+    box.appendChild(el("summary", "", RF.t.itinerary));
     offer.slices.forEach(function (slice, index) {
       var part = el("div", "route-part");
       var total = duration(slice.duration);
-      part.appendChild(el("h4", "", (index ? "Retour" : "Aller") + (total ? ", " + total + " de voyage" : "")));
+      part.appendChild(el("h4", "", (index ? RF.t.inbound : RF.t.outbound) + (total ? ", " + say("trip", { time: total }) : "")));
       if (!slice.segments) {
-        part.appendChild(el("p", "", slice.from + " → " + slice.to + ", détail indisponible"));
+        part.appendChild(el("p", "", slice.from + " → " + slice.to + ", " + RF.t.no_detail));
       }
       var stops = el("ol", "route-steps");
       (slice.segments || []).forEach(function (segment, position) {
         if (position) {
-          var pause = el("li", "route-stop", "Escale à " + airport(segment.from) + ", " + gap(slice.segments[position - 1].arriving, segment.departing));
+          var pause = el("li", "route-stop", say("stop_at", { place: airport(segment.from), time: gap(slice.segments[position - 1].arriving, segment.departing) }));
           stops.appendChild(pause);
         }
         var leg = el("li", "route-leg");
@@ -222,9 +226,9 @@
   }
 
   function stepOffers(offers) {
-    show("Choisis ton vol", 2);
+    show(RF.t.choose, 2);
     if (!offers.length) {
-      box.appendChild(el("p", "sub", "Aucun vol de test pour ce trajet."));
+      box.appendChild(el("p", "sub", RF.t.none_test));
     }
     var list = el("ul", "rows");
     offers.slice().sort(function (a, b) {
@@ -234,9 +238,9 @@
       var info = el("div", "row-info");
       info.appendChild(el("h3", "", offer.airline));
       offer.slices.forEach(function (slice) {
-        info.appendChild(el("p", "", slice.from + " → " + slice.to + ", " + when(slice.departing) + (slice.stops ? ", " + slice.stops + " escale" : ", direct")));
+        info.appendChild(el("p", "", slice.from + " → " + slice.to + ", " + when(slice.departing) + ", " + (slice.stops ? say("stop", { count: slice.stops }) : RF.t.direct)));
       });
-      var pick = el("button", "linkish", "Choisir");
+      var pick = el("button", "linkish", RF.t.pick);
       pick.type = "button";
       pick.addEventListener("click", function () { state.offer = offer; stepPassengers(); });
       row.appendChild(info);
@@ -250,35 +254,35 @@
   }
 
   function backButton(action) {
-    var back = el("button", "linkish book-back", "Revenir en arrière");
+    var back = el("button", "linkish book-back", RF.t.back_step);
     back.type = "button";
     back.addEventListener("click", action);
     return back;
   }
 
   function stepPassengers() {
-    show("Qui voyage ?", 3);
-    box.appendChild(el("p", "sub", "Garde ces données fictives : c'est un test."));
+    show(RF.t.who, 3);
+    box.appendChild(el("p", "sub", RF.t.fake));
     var form = el("form", "book-form");
     var people = state.offer.passengers.map(function (_, index) {
       var person = {
-        title: select([["ms", "Mme"], ["mr", "M."]], "ms"),
-        given_name: input("text", NAMES[index % NAMES.length], { autocomplete: "off", pattern: LETTERS, title: "Lettres uniquement" }),
-        family_name: input("text", "Demo", { autocomplete: "off", pattern: LETTERS, title: "Lettres uniquement" }),
+        title: select([["ms", RF.t.ms], ["mr", RF.t.mr]], "ms"),
+        given_name: input("text", NAMES[index % NAMES.length], { autocomplete: "off", pattern: LETTERS, title: RF.t.letters }),
+        family_name: input("text", "Demo", { autocomplete: "off", pattern: LETTERS, title: RF.t.letters }),
         born_on: input("date", "1990-01-0" + (index + 1), { max: dayAhead(-6600) }),
-        gender: select([["f", "Femme"], ["m", "Homme"]], "f"),
+        gender: select([["f", RF.t.f], ["m", RF.t.m]], "f"),
         email: input("email", "test" + (index + 1) + "@example.com", { autocomplete: "off" }),
         phone_number: input("tel", "+442080160508", { autocomplete: "off", pattern: "\\+[0-9]{6,15}" })
       };
       var group = el("fieldset", "book-person");
-      group.appendChild(el("legend", "", "Voyageur " + (index + 1)));
-      [["Civilité", "title"], ["Prénom", "given_name"], ["Nom", "family_name"], ["Date de naissance", "born_on"], ["Genre", "gender"], ["E-mail", "email"], ["Téléphone", "phone_number"]].forEach(function (item) {
+      group.appendChild(el("legend", "", say("traveller", { n: index + 1 })));
+      [[RF.t.title, "title"], [RF.t.given, "given_name"], [RF.t.family, "family_name"], [RF.t.born, "born_on"], [RF.t.gender, "gender"], [RF.t.email, "email"], [RF.t.phone, "phone_number"]].forEach(function (item) {
         group.appendChild(field(item[0], person[item[1]]));
       });
       form.appendChild(group);
       return person;
     });
-    var submit = el("button", "search-go", "Continuer");
+    var submit = el("button", "search-go", RF.t.next);
     submit.type = "submit";
     form.appendChild(submit);
     form.addEventListener("submit", function (event) {
@@ -295,16 +299,16 @@
   }
 
   function stepPayment() {
-    show("Paiement simulé", 4);
-    box.appendChild(el("p", "lead", state.offer.airline + ", total " + money(state.offer.amount, state.offer.currency)));
-    box.appendChild(el("p", "sub", "Aucune carte n'est demandée et aucun argent n'est débité."));
-    var pay = el("button", "search-go", "Simuler le paiement");
+    show(RF.t.pay, 4);
+    box.appendChild(el("p", "lead", say("total", { airline: state.offer.airline, price: money(state.offer.amount, state.offer.currency) })));
+    box.appendChild(el("p", "sub", RF.t.no_card));
+    var pay = el("button", "search-go", RF.t.pay_go);
     pay.type = "button";
     pay.addEventListener("click", function () {
       pay.disabled = true;
       call("/order", { offer: state.offer.id, passengers: state.passengers })
         .then(stepDone)
-        .catch(function () { pay.disabled = false; problem("La réservation de test a échoué. Le vol n'est peut-être plus disponible."); });
+        .catch(function () { pay.disabled = false; problem(RF.t.order_fail); });
     });
     box.appendChild(pay);
     box.appendChild(backButton(stepPassengers));
@@ -312,10 +316,10 @@
 
   function stepDone(order) {
     box.textContent = "";
-    box.appendChild(el("h2", "", "Réservation de test confirmée"));
-    box.appendChild(el("p", "lead", "Référence : " + order.reference));
-    box.appendChild(el("p", "sub", order.airline + ", " + money(order.amount, order.currency) + ". Ce billet n'existe pas et ne permet pas de voyager."));
-    var again = el("button", "search-go", "Recommencer");
+    box.appendChild(el("h2", "", RF.t.done));
+    box.appendChild(el("p", "lead", say("ref", { ref: order.reference })));
+    box.appendChild(el("p", "sub", say("not_real", { airline: order.airline, price: money(order.amount, order.currency) })));
+    var again = el("button", "search-go", RF.t.again);
     again.type = "button";
     again.addEventListener("click", stepSearch);
     box.appendChild(again);

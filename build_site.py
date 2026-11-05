@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Génère le site statique de Radar Flight à partir de docs/prices.json."""
+"""Génère le site statique multilingue de Radar Flight à partir de docs/prices.json."""
 import html
 import json
 import re
@@ -7,18 +7,17 @@ import shutil
 import sys
 import tomllib
 import unicodedata
-from datetime import date, datetime, timedelta
+from datetime import date, datetime
 from pathlib import Path
 
 import radar
+from site_text import LANG_NAMES, LANGS, LOCALES, MONTHS, REGIONS, SCRIPT_TEXT, SHORT_MONTHS, TEXT
 
 ROOT = Path(__file__).parent
 DOCS = ROOT / "docs"
-MONTHS = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août",
-          "septembre", "octobre", "novembre", "décembre"]
-SHORT_MONTHS = ["janv.", "févr.", "mars", "avr.", "mai", "juin", "juil.", "août", "sept.", "oct.", "nov.", "déc."]
 SOON_DAYS = 45
 AHEAD_DAYS = 150
+HERO_PHOTO = "TYO"
 e = html.escape
 
 
@@ -27,34 +26,61 @@ def slug(text):
     return re.sub(r"[^a-z0-9]+", "-", plain.lower()).strip("-")
 
 
-def euro(value):
-    return f"{value:,.0f}".replace(",", " ") + " €"
+class Page:
+    """Contexte d'une langue : textes, adresses et mise en forme."""
 
+    def __init__(self, site, lang, names=None):
+        self.site, self.lang, self.names = site, lang, names or {}
+        self.base = site["root"]
+        self.root = self.base if lang == "fr" else f"{self.base}{lang}/"
+        self.folder = DOCS if lang == "fr" else DOCS / lang
+        self.prefix = "" if lang == "fr" else f"{lang}/"
 
-def day(iso, year=True):
-    value = date.fromisoformat(iso)
-    label = f"{value.day} {SHORT_MONTHS[value.month - 1]}"
-    return f"{label} {value.year}" if year else label
+    def t(self, key, **values):
+        return TEXT[self.lang][key].format(**values) if values else TEXT[self.lang][key]
 
+    def euro(self, value):
+        number = f"{value:,.0f}"
+        if self.lang == "en":
+            return f"€{number}"
+        return number.replace(",", " ") + " €"
 
-def month_name(key):
-    year, month = key.split("-")
-    return f"{MONTHS[int(month) - 1]} {year}"
+    def day(self, iso, year=True):
+        value = date.fromisoformat(iso)
+        month = SHORT_MONTHS[self.lang][value.month - 1]
+        label = f"{value.day} {month}"
+        return f"{label} {value.year}" if year else label
+
+    def month(self, key):
+        year, month = key.split("-")
+        return f"{MONTHS[self.lang][int(month) - 1]} {year}"
+
+    def city(self, code, fallback):
+        return self.names.get(code, fallback)
+
+    def region(self, name):
+        return REGIONS.get(self.lang, {}).get(name, name)
+
+    def stops(self, offer):
+        count = offer.get("stops")
+        if count is None:
+            return self.t("stops_unknown")
+        if count == 0:
+            return self.t("direct")
+        return self.t("stop" if count == 1 else "stops", count=count)
 
 
 def nights(offer):
     return (date.fromisoformat(offer["back"]) - date.fromisoformat(offer["depart"])).days
 
 
-def stops(offer):
-    count = offer.get("stops")
-    if count is None:
-        return "escales non précisées"
-    return "vol direct" if count == 0 else f"{count} escale{'s' if count > 1 else ''}"
-
-
 def photo_exists(code):
     return (DOCS / "assets" / "photos" / f"{code}.jpg").exists()
+
+
+def load_credits():
+    path = DOCS / "assets" / "photos" / "credits.json"
+    return json.loads(path.read_text()) if path.exists() else {}
 
 
 def destinations(offers):
@@ -73,48 +99,67 @@ def destinations(offers):
     return sorted(cities.values(), key=lambda c: c["best"]["price"])
 
 
-def layout(site, title, description, path, body, scripts=True, noindex=False):
-    base = site["url"]
-    home = base.split("//", 1)[1].split("/", 1)[1] if "/" in base.split("//", 1)[1] else ""
-    root = "/" + home
+def layout(p, title, description, path, body, noindex=False, extra=""):
+    site, base, root = p.site, p.base, p.root
     name = e(site["name"])
-    script = f'<script src="{root}assets/app.js?v={site["version"]}" defer></script>' if scripts else ""
+    links = "".join(
+        f'<link rel="alternate" hreflang="{lang}" href="{e(site["url"] + ("" if lang == "fr" else lang + "/") + path)}">'
+        for lang in LANGS
+    )
+    switch = "".join(
+        f'<a href="{base}{"" if lang == "fr" else lang + "/"}{path}" lang="{lang}" hreflang="{lang}"'
+        f'{" aria-current=\"true\"" if lang == p.lang else ""} title="{LANG_NAMES[lang]}">{lang.upper()}</a>'
+        for lang in LANGS
+    )
+    shared = {key: TEXT[p.lang][key] for key in ("see", "direct", "stop", "stops", "stops_unknown", "days")}
+    script = json.dumps(
+        {"lang": p.lang, "locale": LOCALES[p.lang], "root": root, "base": base, "t": {**SCRIPT_TEXT[p.lang], **shared},
+         "from_label": p.t("search_from"), "to_label": p.t("search_to"), "out_label": p.t("search_out"), "search_place": p.t("search_place"),
+         "from_name": p.city("PAR", "Paris"), "to_name": p.city("NYC", "New York")},
+        ensure_ascii=False, separators=(",", ":"),
+    ).replace("</", "<\\/")
+    version = site["version"]
     return f"""<!doctype html>
-<html lang="fr">
+<html lang="{p.lang}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{e(title)}</title>
 <meta name="description" content="{e(description)}">
-<link rel="canonical" href="{e(base + path)}">
+<link rel="canonical" href="{e(site['url'] + p.prefix + path)}">
+{links}
 {'<meta name="robots" content="noindex, nofollow">' if noindex else ''}
 <meta property="og:title" content="{e(title)}">
 <meta property="og:description" content="{e(description)}">
 <meta property="og:type" content="website">
-<link rel="icon" href="{root}assets/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="{root}assets/style.css?v={site['version']}-6">
-{script}
+<link rel="icon" href="{base}assets/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="{base}assets/style.css?v={version}">
+<script>window.RF={script}</script>
+<script src="{base}assets/app.js?v={version}" defer></script>
+{extra}
 </head>
-<body data-root="{root}">
-<a class="skip" href="#contenu">Aller au contenu</a>
+<body>
 <header class="nav">
   <a class="logo" href="{root}">{name}</a>
-  <nav aria-label="Navigation principale">
-    <a href="{root}vols/">Les vols</a>
-    <a href="{root}destinations/">Destinations</a>
-    <a href="{root}a-propos/">Infos</a>
-    <a class="nav-test" href="{root}test-reservation/">Réservation test</a>
+  <nav aria-label="Menu">
+    <a href="{root}vols/">{p.t('nav_flights')}</a>
+    <a href="{root}destinations/">{p.t('nav_places')}</a>
+    <a href="{root}a-propos/">{p.t('nav_info')}</a>
+    <a class="nav-test" href="{root}test-reservation/">{p.t('nav_test')}</a>
   </nav>
+  <div class="langs" aria-label="Langue">{switch}</div>
 </header>
-<main id="contenu">
+<main>
 {body}
 </main>
 <footer class="foot">
-  <div class="wrap">
+  <div class="wrap foot-in">
     <p class="foot-brand">{name}</p>
-    <p>Les prix viennent de recherches récentes et peuvent changer vite. Vérifie toujours le prix final, les bagages et les options avant de payer.</p>
-    <p>{name} ne vend pas de billets. Les liens vers les vols sont affiliés : si tu réserves, le site peut toucher une commission, sans frais pour toi.</p>
-    <p><a href="{root}a-propos/">Infos</a> · <a href="{root}destinations/">Destinations</a></p>
+    <div>
+      <p>{p.t('foot_1')}</p>
+      <p>{p.t('foot_2', name=name)}</p>
+    </div>
+    <p class="foot-links"><a href="{root}vols/">{p.t('nav_flights')}</a><a href="{root}destinations/">{p.t('nav_places')}</a><a href="{root}a-propos/">{p.t('nav_info')}</a></p>
   </div>
 </footer>
 </body>
@@ -122,73 +167,67 @@ def layout(site, title, description, path, body, scripts=True, noindex=False):
 """
 
 
-def flight_card(offer, root, city):
-    page = f'{root}destinations/{city["slug"]}/'
-    title = f'<a href="{page}">{e(offer["city"])}</a>'
+def flight_row(p, offer, city):
+    page = f'{p.root}destinations/{city["slug"]}/'
+    name = e(p.city(offer["code"], offer["city"]))
+    label = e(p.t("see_flight", city=p.city(offer["code"], offer["city"])))
     return f"""<li class="row">
   <div class="row-info">
-    <h3>{title}</h3>
-    <p>{e(day(offer['depart'], False))} → {e(day(offer['back']))}, {nights(offer)} jours, {e(stops(offer))}</p>
+    <h3><a href="{page}">{name}</a></h3>
+    <p>{e(p.day(offer['depart'], False))} → {e(p.day(offer['back']))} · {e(p.t('days', count=nights(offer)))} · {e(p.stops(offer))}</p>
   </div>
-  <p class="row-price">{euro(offer['price'])}</p>
-  <a class="go" href="{page}?mois={offer['depart'][:7]}" aria-label="Voir le vol pour {e(offer['city'])}">Voir</a>
+  <p class="row-price">{p.euro(offer['price'])}</p>
+  <a class="go" href="{page}?mois={offer['depart'][:7]}" aria-label="{label}">{p.t('see')}</a>
 </li>"""
 
 
-def load_credits():
-    path = DOCS / "assets" / "photos" / "credits.json"
-    return json.loads(path.read_text()) if path.exists() else {}
-
-
-def photo_credit(credit):
+def photo_credit(p, credit):
     license_name = e(credit["license"])
     if credit.get("license_url"):
         license_name = f'<a href="{e(credit["license_url"])}" rel="noopener">{license_name}</a>'
-    return f'Photo : <a href="{e(credit["source"])}" rel="noopener">{e(credit["artist"])}</a>, {license_name}, redimensionnée'
+    return f'{p.t("photo")} : <a href="{e(credit["source"])}" rel="noopener">{e(credit["artist"])}</a>, {license_name}, {p.t("resized")}'
 
 
-def photo_figure(site, city, credit, wide=False):
-    root = site["root"]
-    best = city["best"]
-    return f"""<figure class="photo{' wide' if wide else ''}">
-  <a href="{root}destinations/{city['slug']}/"><img src="{root}assets/photos/{city['code']}.jpg" alt="{e(city['city'])}" loading="lazy" width="1280" height="720"></a>
-  <figcaption><a href="{root}destinations/{city['slug']}/"><strong>{e(city['city'])}</strong> dès {euro(best['price'])}</a><small>{photo_credit(credit)}</small></figcaption>
-</figure>"""
+def photo_card(p, city, big=False):
+    name = e(p.city(city["code"], city["city"]))
+    return f"""<a class="card{' big' if big else ''}" href="{p.root}destinations/{city['slug']}/">
+  <img src="{p.base}assets/photos/{city['code']}.jpg" alt="{name}" loading="lazy">
+  <span class="card-label"><strong>{name}</strong><span>{p.t('from_price', price=p.euro(city['best']['price']))}</span></span>
+</a>"""
 
 
-def search_form(root):
+def search_form(p):
     return f"""<form class="search" id="search" data-target="https://www.aviasales.com/search/" autocomplete="off">
-  <div class="field grow"><label for="from">Départ</label><input id="from" value="Paris (PAR)" data-code="PAR" placeholder="Ville ou aéroport" required>
+  <div class="field grow"><label for="from">{p.t('search_from')}</label><input id="from" value="{e(p.city('PAR', 'Paris'))} (PAR)" data-code="PAR" required>
     <ul class="suggest" hidden></ul></div>
-  <button class="swap" id="swap" type="button" aria-label="Inverser départ et destination">⇄</button>
-  <div class="field grow"><label for="to">Destination</label><input id="to" placeholder="Une ville, partout dans le monde" required>
+  <div class="field grow"><label for="to">{p.t('search_to')}</label><input id="to" placeholder="{e(p.t('search_place'))}" required>
     <ul class="suggest" hidden></ul></div>
-  <div class="field"><label for="out">Aller</label><input id="out" type="date" required></div>
-  <div class="field"><label for="back">Retour</label><input id="back" type="date"></div>
-  <div class="field small"><label for="pax">Voyageurs</label><select id="pax"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></div>
-  <button class="search-go" type="submit">Chercher</button>
+  <div class="field"><label for="out">{p.t('search_out')}</label><input id="out" type="date" required></div>
+  <div class="field"><label for="back">{p.t('search_back')}</label><input id="back" type="date"></div>
+  <div class="field small"><label for="pax">{p.t('search_pax')}</label><select id="pax"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></div>
+  <button class="search-go" type="submit">{p.t('search_go')}</button>
   <p class="form-error" id="search-error" role="alert" hidden></p>
 </form>"""
 
 
-def home(site, cities, offers, updated):
-    root = site["root"]
+def home(p, cities, offers, updated):
     today = date.today()
     by_code = {c["code"]: c for c in cities}
     credits = load_credits()
     pictured = [c for c in cities if c["code"] in credits and photo_exists(c["code"])]
-    photos = ""
+    best = cities[0]["best"]
+    hero_code = HERO_PHOTO if photo_exists(HERO_PHOTO) else (pictured[0]["code"] if pictured else "")
+    hero_image = f'<img class="hero-img" src="{p.base}assets/photos/{hero_code}.jpg" alt="">' if hero_code else ""
+    mosaic = ""
     if pictured:
-        cover = max(pictured, key=lambda c: c["code"] == "PRG")
-        rest = [c for c in pictured if c is not cover][:3]
-        photos = f"""<section class="band wrap">
-  <h2>Quelques idées</h2>
-  {photo_figure(site, cover, credits[cover['code']], wide=True)}
-  <div class="photos">{''.join(photo_figure(site, c, credits[c['code']]) for c in rest)}</div>
-</section>"""
-    deals = "".join(flight_card(c["best"], root, c) for c in cities[:10])
-    soon_list = sorted((o for o in offers if (date.fromisoformat(o["depart"]) - today).days <= SOON_DAYS), key=lambda o: o["price"])
-    ahead_list = sorted((o for o in offers if (date.fromisoformat(o["depart"]) - today).days >= AHEAD_DAYS), key=lambda o: o["price"])
+        first, *others = pictured[:5]
+        shown = [c["code"] for c in pictured[:5]]
+        if hero_code and hero_code not in shown:
+            shown.append(hero_code)
+        notes = " · ".join(f'{e(p.city(code, credits[code]["city"]))} : {photo_credit(p, credits[code])}' for code in shown if code in credits)
+        mosaic = f"""<div class="mosaic">{photo_card(p, first, big=True)}<div class="mosaic-side">{''.join(photo_card(p, c) for c in others)}</div></div>
+  <p class="credits">{notes}</p>"""
+    deals = "".join(flight_row(p, c["best"], c) for c in cities[:8])
 
     def unique(items):
         seen, out = set(), []
@@ -198,78 +237,97 @@ def home(site, cities, offers, updated):
                 out.append(item)
         return out[:4]
 
-    soon = "".join(flight_card(o, root, by_code[o["code"]]) for o in unique(soon_list))
-    ahead = "".join(flight_card(o, root, by_code[o["code"]]) for o in unique(ahead_list))
+    soon_list = sorted((o for o in offers if (date.fromisoformat(o["depart"]) - today).days <= SOON_DAYS), key=lambda o: o["price"])
+    ahead_list = sorted((o for o in offers if (date.fromisoformat(o["depart"]) - today).days >= AHEAD_DAYS), key=lambda o: o["price"])
+    soon = "".join(flight_row(p, o, by_code[o["code"]]) for o in unique(soon_list))
+    ahead = "".join(flight_row(p, o, by_code[o["code"]]) for o in unique(ahead_list))
     regions = {}
     for offer in offers:
         regions[offer["region"]] = min(offer["price"], regions.get(offer["region"], 10**9))
     region_links = "".join(
-        f'<li><a href="{root}vols/?region={e(name)}">{e(name)}</a>, dès {euro(price)}</li>'
+        f'<a class="pill" href="{p.root}vols/?region={e(p.region(name))}">{e(p.region(name))}<span>{p.t("from_price", price=p.euro(price))}</span></a>'
         for name, price in sorted(regions.items(), key=lambda kv: kv[1])
     )
-    budget_links = "".join(
-        f'<li><a href="{root}vols/?budget={value}">Moins de {euro(value)}</a>, {sum(1 for c in cities if c["best"]["price"] <= value)} destinations</li>'
+    budgets = "".join(
+        f'<a class="budget" href="{p.root}vols/?budget={value}"><strong>{p.t("under", price=p.euro(value))}</strong><span>{p.t("places_count", count=sum(1 for c in cities if c["best"]["price"] <= value))}</span></a>'
         for value in (100, 300, 600, 1000)
     )
-    body = f"""<section class="intro wrap">
-  <h1>Les vols pas chers du moment, depuis Paris.</h1>
-  <p class="lead">La liste est mise à jour deux fois par jour. Les prix bougent vite, alors vérifie toujours avant de payer.</p>
-  {search_form(root)}
-  <a class="test-cta" href="{root}test-reservation/"><strong>Essayer la réservation test</strong><span>Aucun vrai vol, aucun paiement</span></a>
+    nothing = f'<li class="empty">{p.t("nothing")}</li>'
+    body = f"""<section class="hero">
+  {hero_image}
+  <div class="hero-in">
+    <h1>{p.t('hero')}</h1>
+    <p>{e(p.t('hero_sub', city=p.city(best['code'], best['city']), price=p.euro(best['price'])))}</p>
+  </div>
+</section>
+<div class="wrap search-wrap">{search_form(p)}</div>
+<ul class="perks wrap">
+  <li><strong>{p.t('perk_1')}</strong><span>{p.t('perk_1b')}</span></li>
+  <li><strong>{p.t('perk_2')}</strong><span>{p.t('perk_2b')}</span></li>
+  <li><strong>{p.t('perk_3')}</strong><span>{p.t('perk_3b')}</span></li>
+</ul>
+<section class="band wrap">
+  <h2>{p.t('offers')}</h2>
+  <p class="sub">{e(p.t('offers_sub', date=updated))}</p>
+  {mosaic}
+</section>
+<section class="dark"><div class="wrap">
+  <div class="head"><h2>{p.t('cheapest')}</h2><a href="{p.root}vols/">{p.t('see_all')}</a></div>
+  <ul class="rows">{deals}</ul>
+</div></section>
+<section class="band wrap">
+  <h2>{p.t('budget')}</h2>
+  <div class="budgets">{budgets}</div>
+</section>
+<section class="band wrap two">
+  <div><h2>{p.t('soon')}</h2><p class="sub">{p.t('soon_sub', days=SOON_DAYS)}</p><ul class="rows">{soon or nothing}</ul></div>
+  <div><h2>{p.t('ahead')}</h2><p class="sub">{p.t('ahead_sub')}</p><ul class="rows">{ahead or nothing}</ul></div>
 </section>
 <section class="band wrap">
-  <div class="head"><h2>Les moins chers aujourd'hui</h2><a href="{root}vols/">Voir tous les vols</a></div>
-  <p class="sub">Aller-retour par personne. Dernier relevé le {e(updated)}. Ces prix peuvent avoir augmenté depuis.</p>
-  <ul class="rows">{deals}</ul>
+  <h2>{p.t('regions')}</h2>
+  <div class="pills">{region_links}</div>
 </section>
-{photos}
-<section class="band wrap two">
-  <div><h2>Partir bientôt</h2><p class="sub">Moins de {SOON_DAYS} jours avant le départ. La dernière minute coûte souvent plus cher, donc il y a moins de bonnes surprises.</p><ul class="rows">{soon or '<li class="empty">Rien d\'intéressant en ce moment.</li>'}</ul></div>
-  <div><h2>Réserver à l'avance</h2><p class="sub">Plus de 5 mois avant le départ.</p><ul class="rows">{ahead or '<li class="empty">Rien d\'intéressant en ce moment.</li>'}</ul></div>
-</section>
-<section class="band wrap two">
-  <div><h2>Selon ton budget</h2><ul class="plain">{budget_links}</ul></div>
-  <div><h2>Par région</h2><ul class="plain">{region_links}</ul></div>
+<section class="band wrap">
+  <a class="test-cta" href="{p.root}test-reservation/"><strong>{p.t('test_cta')}</strong><span>{p.t('test_cta_b')}</span></a>
 </section>"""
-    return layout(site, f"{site['name']} — vols pas chers depuis Paris",
-                  "Les vols les moins chers repérés au départ de Paris, et une recherche pour partir de partout vers partout.", "", body)
+    return layout(p, f"{p.site['name']} — {p.t('title_home')}", p.t("meta_home"), "", body)
 
 
-def flights_page(site):
-    body = """<section class="page wrap">
-  <h1>Tous les vols depuis Paris</h1>
-  <p class="lead">Tu peux filtrer par région, mois, budget ou durée.</p>
-  <form class="filters" id="filters" aria-label="Filtrer les vols">
-    <label>Rechercher<input id="q" type="search" placeholder="Une ville"></label>
-    <label>Région<select id="region"><option value="">Toutes</option></select></label>
-    <label>Mois<select id="month"><option value="">Tous</option></select></label>
-    <label>Budget<select id="budget"><option value="">Sans limite</option><option value="50">50 €</option><option value="100">100 €</option><option value="200">200 €</option><option value="300">300 €</option><option value="400">400 €</option><option value="600">600 €</option><option value="1000">1 000 €</option></select></label>
-    <label>Durée<select id="length"><option value="">Toutes</option><option value="0-7">Moins d'une semaine</option><option value="8-21">1 à 3 semaines</option><option value="22-999">Plus de 3 semaines</option></select></label>
-    <label>Trier<select id="sort"><option value="price">Prix</option><option value="depart">Date de départ</option></select></label>
+def flights_page(p):
+    options = "".join(f'<option value="{v}">{p.euro(v)}</option>' for v in (50, 100, 200, 300, 400, 600, 1000))
+    body = f"""<section class="page wrap">
+  <h1>{p.t('flights_title')}</h1>
+  <p class="lead">{p.t('flights_lead')}</p>
+  <form class="filters" id="filters">
+    <label>{p.t('f_search')}<input id="q" type="search" placeholder="{p.t('f_city')}"></label>
+    <label>{p.t('f_region')}<select id="region"><option value="">{p.t('f_all_f')}</option></select></label>
+    <label>{p.t('f_month')}<select id="month"><option value="">{p.t('f_all_m')}</option></select></label>
+    <label>{p.t('f_budget')}<select id="budget"><option value="">{p.t('f_nolimit')}</option>{options}</select></label>
+    <label>{p.t('f_length')}<select id="length"><option value="">{p.t('f_all_f')}</option><option value="0-7">{p.t('f_week')}</option><option value="8-21">{p.t('f_weeks')}</option><option value="22-999">{p.t('f_long')}</option></select></label>
+    <label>{p.t('f_sort')}<select id="sort"><option value="price">{p.t('f_price')}</option><option value="depart">{p.t('f_date')}</option></select></label>
   </form>
   <p class="count" id="count" role="status"></p>
   <ul class="rows" id="offers"></ul>
-  <button class="more" id="more" type="button" hidden>Afficher plus de vols</button>
+  <button class="more" id="more" type="button" hidden></button>
 </section>"""
-    return layout(site, f"Tous les vols pas chers depuis Paris | {site['name']}",
-                  "Tous les vols aller-retour repérés au départ de Paris, à filtrer par région, mois, budget et durée.", "vols/", body)
+    return layout(p, f"{p.t('flights_title')} | {p.site['name']}", p.t("flights_lead"), "vols/", body)
 
 
-def destinations_index(site, cities):
-    root = site["root"]
+def destinations_index(p, cities):
     groups = {}
     for city in cities:
         groups.setdefault(city["region"], []).append(city)
     blocks = ""
     for region in sorted(groups, key=lambda r: groups[r][0]["best"]["price"]):
+        ordered = sorted(groups[region], key=lambda c: p.city(c["code"], c["city"]))
         links = "".join(
-            f'<li><a href="{root}destinations/{c["slug"]}/"><span>{e(c["city"])}</span><span>dès {euro(c["best"]["price"])}</span></a></li>'
-            for c in sorted(groups[region], key=lambda c: c["city"])
+            f'<li><a href="{p.root}destinations/{c["slug"]}/"><span>{e(p.city(c["code"], c["city"]))}</span><span>{p.t("from_price", price=p.euro(c["best"]["price"]))}</span></a></li>'
+            for c in ordered
         )
-        blocks += f'<section class="dest-group"><h2>{e(region)}</h2><ul class="links">{links}</ul></section>'
-    body = f'<section class="page wrap"><h1>Toutes les destinations</h1><p class="lead">{len(cities)} villes surveillées au départ de Paris.</p>{blocks}</section>'
-    return layout(site, f"Destinations au départ de Paris | {site['name']}",
-                  f"{len(cities)} destinations surveillées au départ de Paris, du moins cher au plus cher.", "destinations/", body)
+        blocks += f'<section class="dest-group"><h2>{e(p.region(region))}</h2><ul class="links">{links}</ul></section>'
+    lead = p.t("places_lead", count=len(cities))
+    body = f'<section class="page wrap"><h1>{p.t("places_title")}</h1><p class="lead">{lead}</p>{blocks}</section>'
+    return layout(p, f"{p.t('places_title')} | {p.site['name']}", lead, "destinations/", body)
 
 
 def merged_history(city):
@@ -280,8 +338,7 @@ def merged_history(city):
     return [[when, days[when]] for when in sorted(days)]
 
 
-def destination_page(site, city, cities):
-    root = site["root"]
+def destination_page(p, city, cities):
     best = city["best"]
     months = {}
     for offer in city["offers"]:
@@ -289,71 +346,62 @@ def destination_page(site, city, cities):
         if key not in months or offer["price"] < months[key]["price"]:
             months[key] = offer
     rows = "".join(
-        f'<tr id="m-{key}"><th scope="row">{e(month_name(key).capitalize())}</th><td>{e(day(o["depart"]))} → {e(day(o["back"]))}</td>'
-        f'<td>{e(stops(o))}</td><td class="num">{euro(o["price"])}</td>'
-        f'<td><a class="go" href="{e(o["link"])}" rel="nofollow sponsored noopener" target="_blank">Vérifier le prix</a></td></tr>'
+        f'<tr id="m-{key}"><th scope="row">{e(p.month(key).capitalize())}</th><td>{e(p.day(o["depart"]))} → {e(p.day(o["back"]))}</td>'
+        f'<td>{e(p.stops(o))}</td><td class="num">{p.euro(o["price"])}</td>'
+        f'<td><a class="go" href="{e(o["link"])}" rel="nofollow sponsored noopener" target="_blank">{p.t("check")}</a></td></tr>'
         for key, o in sorted(months.items())
     )
-    cheapest_month = month_name(best["depart"][:7])
     history = merged_history(city)
     chart = ""
     if len(history) >= 3:
         data = e(json.dumps(history, separators=(",", ":")))
-        chart = f'<section class="panel"><h2>Évolution du prix le plus bas relevé</h2><div class="chart" data-history="{data}"></div></section>'
+        chart = f'<section class="panel"><h2>{p.t("history")}</h2><div class="chart" data-history="{data}"></div></section>'
     others = [c for c in cities if c["region"] == city["region"] and c["code"] != city["code"]][:6]
     related = "".join(
-        f'<li><a href="{root}destinations/{c["slug"]}/"><span>{e(c["city"])}</span><span>dès {euro(c["best"]["price"])}</span></a></li>'
+        f'<li><a href="{p.root}destinations/{c["slug"]}/"><span>{e(p.city(c["code"], c["city"]))}</span><span>{p.t("from_price", price=p.euro(c["best"]["price"]))}</span></a></li>'
         for c in others
     )
-    related_block = f'<section class="panel"><h2>Autres idées : {e(city["region"])}</h2><ul class="links">{related}</ul></section>' if others else ""
-    name = e(city["city"])
+    related_block = f'<section class="panel"><h2>{e(p.t("others", region=p.region(city["region"])))}</h2><ul class="links">{related}</ul></section>' if others else ""
+    name = e(p.city(city["code"], city["city"]))
     credits = load_credits()
     cover = ""
     if city["code"] in credits and photo_exists(city["code"]):
-        cover = f"""<figure class="photo wide"><img src="{root}assets/photos/{city['code']}.jpg" alt="{name}" width="1280" height="720"><figcaption><small>{photo_credit(credits[city['code']])}</small></figcaption></figure>"""
+        cover = f'<figure class="cover"><img src="{p.base}assets/photos/{city["code"]}.jpg" alt="{name}"><figcaption>{photo_credit(p, credits[city["code"]])}</figcaption></figure>'
     body = f"""<section class="page wrap">
-  <p class="crumb"><a href="{root}destinations/">Destinations</a> › {e(city['region'])}</p>
-  <h1>Vols Paris – {name}</h1>
+  <p class="crumb"><a href="{p.root}destinations/">{p.t('nav_places')}</a> › {e(p.region(city['region']))}</p>
+  <h1>{e(p.t('dest_title', city=p.city(city['code'], city['city'])))}</h1>
   {cover}
-  <p class="lead">Le prix le plus bas relevé est <strong>{euro(best['price'])}</strong> l'aller-retour, en {e(cheapest_month)}.</p>
-  <aside class="notice"><strong>Pourquoi le prix peut être différent ?</strong> Ces prix viennent de recherches faites récemment par d'autres voyageurs. Quand tu cliques sur « Vérifier le prix », tu quittes ce site pour Aviasales, qui cherche le prix exact en direct. Il peut être plus élevé si les places les moins chères sont parties.</aside>
-  <section class="panel"><h2>Le meilleur prix par mois</h2>
-    <div class="scroll"><table><thead><tr><th scope="col">Mois</th><th scope="col">Dates</th><th scope="col">Escales</th><th scope="col" class="num">Prix</th><th scope="col"><span class="sr">Lien</span></th></tr></thead><tbody>{rows}</tbody></table></div>
+  <p class="lead">{p.t('dest_lead', price=p.euro(best['price']), month=e(p.month(best['depart'][:7])))}</p>
+  <aside class="notice"><strong>{p.t('dest_why')}</strong> {p.t('dest_why_b')}</aside>
+  <section class="panel"><h2>{p.t('best_month')}</h2>
+    <div class="scroll"><table><thead><tr><th scope="col">{p.t('t_month')}</th><th scope="col">{p.t('t_dates')}</th><th scope="col">{p.t('t_stops')}</th><th scope="col" class="num">{p.t('t_price')}</th><th scope="col"><span class="sr">{p.t('t_link')}</span></th></tr></thead><tbody>{rows}</tbody></table></div>
   </section>
   {chart}
   {related_block}
 </section>"""
-    return layout(site, f"Vols Paris – {city['city']} dès {euro(best['price'])} | {site['name']}",
-                  f"Le prix le plus bas relevé pour un vol Paris – {city['city']}, mois par mois.",
-                  f"destinations/{city['slug']}/", body)
+    title = f"{p.t('dest_title', city=p.city(city['code'], city['city']))} | {p.site['name']}"
+    return layout(p, title, p.t("dest_meta", city=p.city(city["code"], city["city"])), f"destinations/{city['slug']}/", body)
 
 
-def about_page(site):
-    name = e(site["name"])
-    root = site["root"]
-    faq = [
-        ("D'où viennent les prix ?", f"{name} utilise les prix trouvés récemment par d'autres voyageurs sur un comparateur partenaire. Ils sont relevés deux fois par jour et peuvent avoir changé entre-temps : ils servent à repérer une bonne idée, pas à garantir un tarif."),
-        ("Pourquoi un prix peut-il être différent sur le site de réservation ?", "Les places à petit prix partent vite, et un bagage ou une option peut s'ajouter. Quand un contrôle montre qu'un prix n'existe plus, le vol est retiré de la liste, mais tous les vols ne peuvent pas être contrôlés."),
-        ("La dernière minute est-elle moins chère ?", "En général, non : les prix ont plutôt tendance à monter à l'approche du départ, même s'il existe des exceptions selon les trajets. C'est pour cela que la section « Partir bientôt » montre seulement ce qui reste intéressant."),
-        ("Puis-je chercher un vol depuis une autre ville ?", "Oui. Le moteur de recherche de la page d'accueil fonctionne pour des vols partout dans le monde. Les occasions repérées par le radar sont, pour l'instant, au départ de Paris."),
-        (f"Comment {name} gagne-t-il de l'argent ?", "Les liens vers les vols sont affiliés. Si tu réserves après avoir cliqué, le site peut toucher une commission, sans frais supplémentaires pour toi."),
-        ("D'où viennent les photos ?", "Elles viennent de Wikimedia Commons. Le photographe et la licence sont indiqués sous chaque photo."),
-        ("Puis-je réserver directement ici ?", f"Non. {name} ne vend pas de billets. La réservation et le paiement se font sur le site du partenaire, qui gère aussi les modifications et les remboursements."),
-    ]
-    items = "".join(f"<details><summary>{e(q)}</summary><p>{a}</p></details>" for q, a in faq)
-    body = f'<section class="page wrap narrow"><h1>Comment ça marche</h1><p class="lead">Tout ce qu\'il faut savoir avant de cliquer.</p><div class="faq">{items}</div><p><a class="hero-go" href="{root}">Chercher un vol</a></p></section>'
-    return layout(site, f"Infos | {site['name']}", f"D'où viennent les prix de {site['name']} et comment fonctionne le site.", "a-propos/", body)
+def about_page(p):
+    items = "".join(f"<details><summary>{e(q)}</summary><p>{e(a)}</p></details>" for q, a in TEXT[p.lang]["faq"])
+    body = f'<section class="page wrap narrow"><h1>{p.t("info_title")}</h1><p class="lead">{p.t("info_lead")}</p><div class="faq">{items}</div><a class="search-go" href="{p.root}">{p.t("info_go")}</a></section>'
+    return layout(p, f"{p.t('info_title')} | {p.site['name']}", p.t("info_meta"), "a-propos/", body)
 
 
-def test_booking_page(site):
-    root = site["root"]
-    mode = "serveur de test Duffel" if site.get("test_api") else "démonstration"
+def missing_page(p):
+    body = f'<section class="page wrap narrow"><h1>{p.t("missing")}</h1><p class="lead">{p.t("missing_lead")}</p><a class="search-go" href="{p.root}">{p.t("back_home")}</a></section>'
+    return layout(p, f"{p.t('missing')} | {p.site['name']}", p.t("missing_lead"), "404.html", body)
+
+
+def test_booking_page(p):
+    mode = p.t("test_server") if p.site.get("test_api") else p.t("test_demo")
     body = f"""<section class="page wrap narrow">
-  <p class="test-banner"><strong>Version de test ({mode}).</strong> Aucun vrai vol, aucun vrai billet, aucun paiement.</p>
-  <div id="booking" tabindex="-1" data-api="{e(site.get('test_api', ''))}"></div>
-  <script src="{root}assets/booking.js?v={site['version']}-5" defer></script>
+  <p class="notice"><strong>{p.t('test_banner', mode=mode)}</strong> {p.t('test_banner_b')}</p>
+  <div id="booking" tabindex="-1" data-api="{e(p.site.get('test_api', ''))}"></div>
 </section>"""
-    return layout(site, f"Réservation de test | {site['name']}", "Page de test.", "test-reservation/", body, noindex=True)
+    extra = f'<script src="{p.base}assets/booking.js?v={p.site["version"]}" defer></script>'
+    return layout(p, f"{p.t('test_title')} | {p.site['name']}", p.t("test_meta"), "test-reservation/", body, noindex=True, extra=extra)
 
 
 def write(path, content):
@@ -369,45 +417,70 @@ def city_index(places, countries):
     return sorted(rows, key=lambda row: row[1])
 
 
-def build(data, site, places=None, countries=None):
+def build_language(p, data, cities, updated_at):
+    lang, folder = p.lang, p.folder
+    updated = f"{updated_at.day} {MONTHS[lang][updated_at.month - 1]}, {updated_at:%H:%M} UTC"
+    offers = data["offers"]
+    translated = [
+        {**offer, "city": p.city(offer["code"], offer["city"]), "region": p.region(offer["region"]), "region_key": offer["region"]}
+        for offer in offers
+    ]
+    if lang != "fr":
+        write(folder / "prices.json", json.dumps({**data, "offers": translated}, ensure_ascii=False, separators=(",", ":")) + "\n")
+    write(folder / "index.html", home(p, cities, offers, updated))
+    write(folder / "vols" / "index.html", flights_page(p))
+    write(folder / "destinations" / "index.html", destinations_index(p, cities))
+    write(folder / "a-propos" / "index.html", about_page(p))
+    write(folder / "test-reservation" / "index.html", test_booking_page(p))
+    keep = {c["slug"] for c in cities}
+    for child in (folder / "destinations").iterdir():
+        if child.is_dir() and child.name not in keep:
+            shutil.rmtree(child)
+    for city in cities:
+        write(folder / "destinations" / city["slug"] / "index.html", destination_page(p, city, cities))
+
+
+def build(data, site, catalog=None):
+    """catalog associe chaque langue à (villes, pays), quand les listes sont disponibles."""
     site = dict(site)
-    site["root"] = "/" + site["url"].split("//", 1)[1].split("/", 1)[1] if "/" in site["url"].split("//", 1)[1] else "/"
+    after = site["url"].split("//", 1)[1]
+    site["root"] = "/" + after.split("/", 1)[1] if "/" in after else "/"
     site["version"] = re.sub(r"\D", "", data.get("updated", ""))[:12] or "1"
     offers = data["offers"]
     cities = destinations(offers)
-    updated_at = datetime.fromisoformat(data["updated"])
-    updated = f"{updated_at.day} {MONTHS[updated_at.month - 1]} à {updated_at:%H:%M} UTC"
     slugs = {c["code"]: c["slug"] for c in cities}
     for offer in offers:
         offer["slug"] = slugs[offer["code"]]
-    (DOCS / "prices.json").write_text(json.dumps(data, ensure_ascii=False, separators=(",", ":")) + "\n")
-    write(DOCS / "index.html", home(site, cities, offers, updated))
-    write(DOCS / "vols" / "index.html", flights_page(site))
-    write(DOCS / "destinations" / "index.html", destinations_index(site, cities))
-    write(DOCS / "a-propos" / "index.html", about_page(site))
-    write(DOCS / "test-reservation" / "index.html", test_booking_page(site))
-    write(DOCS / "404.html", layout(site, f"Page introuvable | {site['name']}", "Cette page n'existe pas.", "404.html",
-                                    f'<section class="page wrap narrow"><h1>Cette page n\'existe pas</h1><p class="lead">Elle a peut-être changé d\'adresse.</p><a class="hero-go" href="{site["root"]}">Retour à l\'accueil</a></section>', scripts=False))
-    shutil.rmtree(DOCS / "destinations" / "_tmp", ignore_errors=True)
-    keep = {c["slug"] for c in cities}
-    for folder in (DOCS / "destinations").iterdir():
-        if folder.is_dir() and folder.name not in keep:
-            shutil.rmtree(folder)
-    for city in cities:
-        write(DOCS / "destinations" / city["slug"] / "index.html", destination_page(site, city, cities))
+    updated_at = datetime.fromisoformat(data["updated"])
+    write(DOCS / "prices.json", json.dumps(data, ensure_ascii=False, separators=(",", ":")) + "\n")
+    names_path = DOCS / "assets" / "names.json"
+    names = json.loads(names_path.read_text()) if names_path.exists() else {}
+    for lang, (places, countries) in (catalog or {}).items():
+        names[lang] = {code: place["name"] for code, place in places.items() if place["airports"]}
+        rows = city_index(places, countries)
+        write(DOCS / "assets" / f"cities-{lang}.json", json.dumps(rows, ensure_ascii=False, separators=(",", ":")))
+    if catalog:
+        write(names_path, json.dumps(names, ensure_ascii=False, separators=(",", ":")))
+    for lang in LANGS:
+        build_language(Page(site, lang, names.get(lang)), data, cities, updated_at)
+    write(DOCS / "404.html", missing_page(Page(site, "fr", names.get("fr"))))
     pages = ["", "vols/", "destinations/", "a-propos/"] + [f"destinations/{c['slug']}/" for c in cities]
-    urls = "".join(f"<url><loc>{e(site['url'] + page)}</loc></url>" for page in pages)
+    urls = "".join(
+        f"<url><loc>{e(site['url'] + ('' if lang == 'fr' else lang + '/') + page)}</loc></url>"
+        for lang in LANGS for page in pages
+    )
     write(DOCS / "sitemap.xml", f'<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{urls}</urlset>\n')
     write(DOCS / "robots.txt", f"User-agent: *\nAllow: /\nSitemap: {site['url']}sitemap.xml\n")
-    if places:
-        rows = city_index(places, countries or {})
-        write(DOCS / "assets" / "cities.json", json.dumps(rows, ensure_ascii=False, separators=(",", ":")))
     return len(cities)
 
 
-def load_countries():
-    rows = radar.http_json(f"{radar.TP_BASE}/data/fr/countries.json")
-    return {row["code"]: row.get("name") or row["code"] for row in rows}
+def load_catalog():
+    catalog = {}
+    for lang in LANGS:
+        places = radar.load_places(lang)
+        rows = radar.http_json(f"{radar.TP_BASE}/data/{lang}/countries.json")
+        catalog[lang] = (places, {row["code"]: row.get("name") or row["code"] for row in rows})
+    return catalog
 
 
 def main():
@@ -418,12 +491,12 @@ def main():
         return 1
     data = json.loads(path.read_text())
     try:
-        places, countries = radar.load_places(), load_countries()
+        catalog = load_catalog()
     except RuntimeError as error:
-        print(f"Liste des villes non mise à jour : {error}", file=sys.stderr)
-        places, countries = None, None
-    count = build(data, config["site"], places, countries)
-    print(f"{count} pages destination générées.")
+        print(f"Listes des villes non mises à jour : {error}", file=sys.stderr)
+        catalog = None
+    count = build(data, config["site"], catalog)
+    print(f"{count} destinations générées en {len(LANGS)} langues.")
     return 0
 
 

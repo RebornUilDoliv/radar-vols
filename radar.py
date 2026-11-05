@@ -139,8 +139,8 @@ class Travelpayouts:
         return [offer for row in rows or [] if (offer := to_offer(row, destination))]
 
 
-def load_places():
-    cities = http_json(f"{TP_BASE}/data/fr/cities.json")
+def load_places(lang="fr"):
+    cities = http_json(f"{TP_BASE}/data/{lang}/cities.json")
     airports = http_json(f"{TP_BASE}/data/en/airports.json")
     by_city = {}
     for airport in airports:

@@ -1,18 +1,24 @@
 (function () {
   "use strict";
-  var ROOT = document.body.dataset.root || "/";
+  var RF = window.RF;
+  var ROOT = RF.root;
+  var BASE = RF.base;
+  var say = function (key, values) {
+    return RF.t[key].replace(/\{(\w+)\}/g, function (_, name) { return values[name]; });
+  };
   var PAGE = 40;
   var $ = function (id) { return document.getElementById(id); };
-  var euro = function (n) { return Math.round(n).toLocaleString("fr-FR").replace(/ /g, " ") + " €"; };
+  var euro = function (n) { return Math.round(n).toLocaleString(RF.locale, { style: "currency", currency: "EUR", maximumFractionDigits: 0 }); };
   var dateOf = function (iso) { return new Date(iso + "T12:00:00Z"); };
   var fmt = function (iso, options) {
-    return dateOf(iso).toLocaleDateString("fr-FR", Object.assign({ timeZone: "UTC" }, options));
+    return dateOf(iso).toLocaleDateString(RF.locale, Object.assign({ timeZone: "UTC" }, options));
   };
   var shortDate = function (iso) { return fmt(iso, { day: "numeric", month: "short", year: "numeric" }); };
   var days = function (o) { return Math.round((dateOf(o.back) - dateOf(o.depart)) / 864e5); };
   var stops = function (o) {
-    if (o.stops === null || o.stops === undefined) return "escales non précisées";
-    return o.stops === 0 ? "vol direct" : o.stops + " escale" + (o.stops > 1 ? "s" : "");
+    if (o.stops === null || o.stops === undefined) return RF.t.stops_unknown;
+    if (o.stops === 0) return RF.t.direct;
+    return say(o.stops > 1 ? "stops" : "stop", { count: o.stops });
   };
   var el = function (tag, className, text) {
     var node = document.createElement(tag);
@@ -39,7 +45,7 @@
     var cities = null;
     var loading = null;
     var load = function () {
-      loading = loading || fetch(ROOT + "assets/cities.json").then(function (r) { return r.json(); })
+      loading = loading || fetch(BASE + "assets/cities-" + RF.lang + ".json").then(function (r) { return r.json(); })
         .then(function (rows) { cities = rows; }).catch(function () { loading = null; });
       return loading;
     };
@@ -94,13 +100,6 @@
         }
       });
     });
-    $("swap").addEventListener("click", function () {
-      var a = $("from"), b = $("to");
-      var value = a.value, code = a.dataset.code;
-      a.value = b.value; b.value = value;
-      if (b.dataset.code) a.dataset.code = b.dataset.code; else delete a.dataset.code;
-      if (code) b.dataset.code = code; else delete b.dataset.code;
-    });
     var today = new Date().toISOString().slice(0, 10);
     $("out").min = today; $("back").min = today;
     $("out").addEventListener("change", function () {
@@ -111,9 +110,7 @@
       event.preventDefault();
       var error = $("search-error");
       var from = $("from").dataset.code, to = $("to").dataset.code;
-      var problem = !from ? "Choisis une ville de départ dans la liste." :
-        !to ? "Choisis une destination dans la liste." :
-        from === to ? "Le départ et la destination doivent être différents." : "";
+      var problem = !from ? RF.t.pick_from : !to ? RF.t.pick_to : from === to ? RF.t.same : "";
       error.textContent = problem;
       error.hidden = !problem;
       if (problem) return;
@@ -191,10 +188,9 @@
       link.href = ROOT + "destinations/" + o.slug + "/";
       title.appendChild(link);
       info.appendChild(title);
-      info.appendChild(el("p", "", fmt(o.depart, { day: "numeric", month: "short" }) + " → " + shortDate(o.back) + ", " + days(o) + " jours, " + stops(o)));
-      var cta = el("a", "go", "Voir");
+      info.appendChild(el("p", "", fmt(o.depart, { day: "numeric", month: "short" }) + " → " + shortDate(o.back) + " · " + say("days", { count: days(o) }) + " · " + stops(o)));
+      var cta = el("a", "go", RF.t.see);
       cta.href = link.href + "?mois=" + o.depart.slice(0, 7);
-      cta.setAttribute("aria-label", "Voir le vol pour " + o.city);
       item.appendChild(info); item.appendChild(el("p", "row-price", euro(o.price))); item.appendChild(cta);
       return item;
     }
@@ -214,7 +210,7 @@
 
     function updateMore() {
       $("more").hidden = current.length <= shown;
-      $("more").textContent = "Afficher plus de vols (" + Math.min(shown, current.length) + " sur " + current.length + ")";
+      $("more").textContent = say("more", { shown: Math.min(shown, current.length), total: current.length });
     }
 
     function render() {
@@ -222,9 +218,9 @@
       shown = PAGE;
       var box = $("offers");
       box.textContent = "";
-      if (!current.length) box.appendChild(el("li", "empty", "Aucun vol avec ces filtres. Essaie un budget plus large ou un autre mois."));
+      if (!current.length) box.appendChild(el("li", "empty", RF.t.empty));
       current.slice(0, shown).forEach(function (o) { box.appendChild(card(o)); });
-      $("count").textContent = current.length + " vol" + (current.length > 1 ? "s" : "");
+      $("count").textContent = say(current.length > 1 ? "count_many" : "count_one", { count: current.length });
       updateMore();
     }
 
@@ -258,7 +254,7 @@
         render();
       })
       .catch(function () {
-        $("offers").appendChild(el("li", "empty", "Les prix arrivent bientôt. Reviens après le prochain relevé."));
+        $("offers").appendChild(el("li", "empty", RF.t.soon));
       });
     $("filters").addEventListener("input", render);
     $("filters").addEventListener("submit", function (event) { event.preventDefault(); });
