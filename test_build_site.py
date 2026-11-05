@@ -127,6 +127,14 @@ class BuildTests(unittest.TestCase):
         self.assertIn("required", block)
         self.assertIn("darme de baja", block)
 
+    def test_guide_uses_measured_prices(self):
+        docs = self.build([offer("BCN", "Barcelone", "Europe", 43, 30), offer("BCN", "Barcelone", "Europe", 90, 90)])
+        page = (docs / "destinations/barcelone/index.html").read_text()
+        self.assertIn("Quand partir à Barcelone", page)
+        self.assertIn("43 €", page)
+        self.assertIn("90 €", page)
+        self.assertIn("campaign_id=87", page)
+
     def test_slug_removes_accents(self):
         self.assertEqual(build_site.slug("Montréal – Dorval"), "montreal-dorval")
 

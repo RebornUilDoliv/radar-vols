@@ -148,6 +148,8 @@ td.num, th.num { text-align: right; font-weight: 650; font-variant-numeric: tabu
 .stay span { color: var(--g3); font-size: 14px; }
 .stay:hover { color: var(--w); background: var(--k); }
 .stay:hover span { color: var(--g2); }
+.guide { display: grid; gap: 4px; }
+.guide li::before { content: "– "; color: var(--g3); }
 .dest-group { margin-top: 32px; }
 .dest-group h2 { margin-bottom: 8px; font-size: 24px; }
 .chart { position: relative; }

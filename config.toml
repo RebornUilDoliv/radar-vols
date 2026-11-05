@@ -23,6 +23,8 @@ tours_program = "2074"           # Tiqets
 tours_campaign = "89"
 claims_program = "9139"          # AirHelp
 claims_campaign = "120"
+cars_program = "2043"            # Localrent
+cars_campaign = "87"
 esim_program = "8310"            # Airalo
 esim_campaign = "541"
 transfers_program = "647"        # Kiwitaxi
@@ -39,6 +41,7 @@ min_history_days = 6             # jours d'historique requis avant de juger un p
 realert_days = 7                 # ne répète pas la même alerte pendant 7 jours...
 realert_drop = 0.05              # ...sauf si le prix baisse encore de 5 %
 max_per_email = 10
+email_every_days = 2             # une alerte par e-mail au maximum tous les deux jours
 
 [serpapi]
 monthly_limit = 240              # l'offre gratuite donne 250 recherches, on garde une marge

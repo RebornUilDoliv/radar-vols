@@ -364,11 +364,32 @@ def stay_links(p, name):
     claim = f"https://www.airhelp.com/{p.lang}/"
     esim = "https://www.airalo.com/" + ("" if p.lang == "en" else p.lang)
     transfer = f"https://kiwitaxi.com/{p.lang}"
+    car = f"https://localrent.com/{p.lang}/"
     return (card(tracked(hotel, "hotels"), p.t("stay_hotel"), p.t("stay_hotel_b"))
             + card(tracked(tour, "tours"), p.t("stay_tour"), p.t("stay_tour_b"))
+            + card(tracked(car, "cars"), p.t("stay_car"), p.t("stay_car_b"))
             + card(tracked(esim, "esim"), p.t("stay_esim"), p.t("stay_esim_b"))
             + card(tracked(transfer, "transfers"), p.t("stay_transfer"), p.t("stay_transfer_b"))
             + card(tracked(claim, "claims"), p.t("stay_claim"), p.t("stay_claim_b")))
+
+
+def guide_block(p, city, months):
+    """Repères calculés à partir des prix relevés, sans texte inventé."""
+    if len(months) < 2:
+        return ""
+    ordered = sorted(months.items(), key=lambda item: item[1]["price"])
+    low_key, low = ordered[0]
+    high_key, high = ordered[-1]
+    direct = sum(1 for offer in months.values() if offer.get("stops") == 0)
+    name = p.city(city["code"], city["city"])
+    points = [
+        p.t("guide_best", month=p.month(low_key), price=p.euro(low["price"])),
+        p.t("guide_high", month=p.month(high_key), price=p.euro(high["price"])),
+    ]
+    if direct:
+        points.append(p.t("guide_direct", count=direct, total=len(months)))
+    items = "".join(f"<li>{e(point)}</li>" for point in points)
+    return f'<section class="panel"><h2>{e(p.t("guide_title", city=name))}</h2><ul class="guide">{items}</ul><p class="sub">{p.t("guide_note")}</p></section>'
 
 
 def merged_history(city):
@@ -417,6 +438,7 @@ def destination_page(p, city, cities):
   <section class="panel"><h2>{p.t('best_month')}</h2>
     <div class="scroll"><table><thead><tr><th scope="col">{p.t('t_month')}</th><th scope="col">{p.t('t_dates')}</th><th scope="col">{p.t('t_stops')}</th><th scope="col" class="num">{p.t('t_price')}</th><th scope="col"><span class="sr">{p.t('t_link')}</span></th></tr></thead><tbody>{rows}</tbody></table></div>
   </section>
+  {guide_block(p, city, months)}
   <section class="panel"><h2>{e(p.t('stay_title', city=p.city(city['code'], city['city'])))}</h2><p class="sub">{p.t('stay_lead')}</p><div class="stays">{stay_links(p, p.city(city['code'], city['city']))}</div></section>
   {chart}
   {related_block}

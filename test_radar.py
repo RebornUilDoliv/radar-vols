@@ -273,6 +273,14 @@ class PartnerLinkTests(unittest.TestCase):
 class ScheduleTests(unittest.TestCase):
     NOW = radar.datetime(2026, 11, 5, 12, tzinfo=radar.timezone.utc)
 
+    def test_email_waits_two_days(self):
+        self.assertFalse(radar.email_is_due({"last_email": "2026-11-05T01:00+00:00"}, 2, self.NOW))
+        self.assertFalse(radar.email_is_due({"last_email": "2026-11-04T01:00+00:00"}, 2, self.NOW))
+        self.assertTrue(radar.email_is_due({"last_email": "2026-11-03T12:00+00:00"}, 2, self.NOW))
+
+    def test_first_email_is_allowed(self):
+        self.assertTrue(radar.email_is_due({}, 2, self.NOW))
+
     def test_skips_recent_run(self):
         state = {"last_run": "2026-11-05T05:00+00:00"}
         self.assertTrue(radar.run_is_recent(state, 10, self.NOW))

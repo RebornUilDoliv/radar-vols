@@ -459,6 +459,11 @@ def demo_offers():
     ]
 
 
+def email_is_due(state, days, now):
+    last = state.get("last_email")
+    return not last or now - datetime.fromisoformat(last) >= timedelta(days=days) - timedelta(hours=2)
+
+
 def run_is_recent(state, min_hours, now):
     last = state.get("last_run")
     return bool(last) and now - datetime.fromisoformat(last) < timedelta(hours=min_hours)
@@ -538,8 +543,11 @@ def main():
                 print(f"{offer.city_name} {offer.price:.0f} € {offer.depart} → {offer.back} ({offer.reason})")
             return 0
         save_state(args.state, state)
-        if found:
+        if found and not email_is_due(state, config["alerts"]["email_every_days"], now):
+            print("E-mail non envoyé : la dernière alerte est trop récente.")
+        elif found:
             send_email(build_email(found, config["search"]))
+            state["last_email"] = now.isoformat(timespec="minutes")
             for offer in found:
                 state.setdefault("alerted", {})[offer.key] = {"price": offer.price, "date": today.isoformat()}
             save_state(args.state, state)
