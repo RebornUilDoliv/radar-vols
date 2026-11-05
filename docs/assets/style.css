@@ -113,6 +113,7 @@ details p { margin-top: 6px; color: var(--soft); }
 #booking h2 { margin-bottom: 10px; }
 .book-step { color: var(--soft); font-size: 15px; }
 .book-form { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 8px; }
+.book-form .field label { display: block; margin: 0; }
 .book-field { display: block; color: var(--soft); font-size: 15px; }
 .book-form .search-go { grid-column: 1 / -1; justify-self: start; }
 .book-person { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 12px; border: 1px solid var(--line); border-radius: 4px; }

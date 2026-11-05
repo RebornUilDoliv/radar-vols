@@ -3,7 +3,9 @@
   var box = document.getElementById("booking");
   if (!box) return;
   var API = box.dataset.api || "";
-  var AIRPORTS = [["CDG", "Paris Charles-de-Gaulle"], ["ORY", "Paris Orly"], ["LHR", "Londres Heathrow"], ["JFK", "New York JFK"], ["BCN", "Barcelone"], ["LIS", "Lisbonne"], ["FCO", "Rome Fiumicino"], ["BKK", "Bangkok"]];
+  var ROOT = document.body.dataset.root || "/";
+  var cities = null;
+  var loading = null;
   var NAMES = ["Alice", "Bruno", "Chloe", "David", "Emma", "Felix"];
   var LETTERS = "[A-Za-zÀ-ÿ' \\-]+";
   var state = {};
@@ -36,6 +38,68 @@
     });
     node.value = value;
     return node;
+  }
+  function loadCities() {
+    loading = loading || fetch(ROOT + "assets/cities.json").then(function (r) { return r.json(); })
+      .then(function (rows) { cities = rows; }).catch(function () { loading = null; });
+    return loading;
+  }
+  function clean(text) {
+    return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+  }
+  function matches(term) {
+    var wanted = clean(term);
+    if (!wanted || !cities) return [];
+    var starts = [], inside = [];
+    cities.forEach(function (row) {
+      var name = clean(row[1]);
+      if (row[0].toLowerCase() === wanted || name.indexOf(wanted) === 0) starts.push(row);
+      else if (name.indexOf(wanted) > 0 || clean(row[2]).indexOf(wanted) === 0) inside.push(row);
+    });
+    return starts.concat(inside).slice(0, 8);
+  }
+  function cityField(label, name, code) {
+    var wrap = el("div", "field");
+    var title = el("label", "", label);
+    var text = input("text", name ? name + " (" + code + ")" : "", { placeholder: "Une ville, partout dans le monde", autocomplete: "off" });
+    var list = el("ul", "suggest");
+    list.hidden = true;
+    if (code) text.dataset.code = code;
+    title.appendChild(text);
+    wrap.appendChild(title);
+    wrap.appendChild(list);
+    function close() { list.hidden = true; list.textContent = ""; }
+    function pick(row) {
+      text.value = row[1] + " (" + row[0] + ")";
+      text.dataset.code = row[0];
+      close();
+    }
+    function suggest() {
+      var found = matches(text.value);
+      list.textContent = "";
+      list.hidden = !found.length;
+      found.forEach(function (row) {
+        var option = el("button", "", row[1] + " (" + row[0] + ")");
+        option.type = "button";
+        if (row[2]) option.appendChild(el("small", "", " · " + row[2]));
+        option.addEventListener("mousedown", function (event) { event.preventDefault(); pick(row); });
+        option.addEventListener("click", function () { pick(row); });
+        var item = el("li");
+        item.appendChild(option);
+        list.appendChild(item);
+      });
+    }
+    text.addEventListener("focus", loadCities);
+    text.addEventListener("input", function () { delete text.dataset.code; loadCities().then(suggest); });
+    text.addEventListener("blur", function () { setTimeout(close, 120); });
+    text.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") close();
+      if (event.key === "Enter" && !list.hidden && list.querySelector("button")) {
+        event.preventDefault();
+        list.querySelector("button").click();
+      }
+    });
+    return { node: wrap, input: text };
   }
   function money(amount, currency) {
     return Number(amount).toLocaleString("fr-FR", { style: "currency", currency: currency, maximumFractionDigits: 2 });
@@ -90,21 +154,23 @@
   function stepSearch() {
     show("Où veux-tu aller ?", 1);
     var form = el("form", "book-form");
-    var from = select(AIRPORTS, "LHR"), to = select(AIRPORTS, "JFK");
+    var from = cityField("Départ", "Paris", "PAR"), to = cityField("Destination", "New York", "NYC");
     var depart = input("date", dayAhead(30), { min: dayAhead(1) });
     var back = input("date", dayAhead(37), { min: dayAhead(1) });
     back.required = false;
     var adults = select([["1", "1"], ["2", "2"], ["3", "3"]], "1");
-    [field("Départ", from), field("Destination", to), field("Aller", depart), field("Retour (facultatif)", back), field("Adultes", adults)].forEach(function (node) { form.appendChild(node); });
+    [from.node, to.node, field("Aller", depart), field("Retour (facultatif)", back), field("Adultes", adults)].forEach(function (node) { form.appendChild(node); });
     var submit = el("button", "search-go", "Voir les vols");
     submit.type = "submit";
     form.appendChild(submit);
     form.addEventListener("submit", function (event) {
       event.preventDefault();
-      if (from.value === to.value) return problem("Choisis deux aéroports différents.");
+      var origin = from.input.dataset.code, destination = to.input.dataset.code;
+      if (!origin || !destination) return problem("Choisis les villes dans la liste de suggestions.");
+      if (origin === destination) return problem("Choisis deux villes différentes.");
       submit.disabled = true;
       state.adults = Number(adults.value);
-      call("/search", { from: from.value, to: to.value, depart: depart.value, back: back.value, adults: state.adults })
+      call("/search", { from: origin, to: destination, depart: depart.value, back: back.value, adults: state.adults })
         .then(function (data) { stepOffers(data.offers); })
         .catch(function () { submit.disabled = false; problem("La recherche n'a pas marché. Réessaie dans un instant."); });
     });

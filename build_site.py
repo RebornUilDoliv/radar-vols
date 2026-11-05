@@ -349,7 +349,7 @@ def test_booking_page(site):
     body = f"""<section class="page wrap narrow">
   <p class="test-banner"><strong>Version de test ({mode}).</strong> Aucun vrai vol, aucun vrai billet, aucun paiement.</p>
   <div id="booking" tabindex="-1" data-api="{e(site.get('test_api', ''))}"></div>
-  <script src="{root}assets/booking.js?v={site['version']}-3" defer></script>
+  <script src="{root}assets/booking.js?v={site['version']}-4" defer></script>
 </section>"""
     return layout(site, f"Réservation de test | {site['name']}", "Page de test.", "test-reservation/", body, noindex=True)
 
