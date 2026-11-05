@@ -160,7 +160,7 @@ def layout(p, title, description, path, body, noindex=False, extra=""):
       <p>{p.t('foot_1')}</p>
       <p>{p.t('foot_2', name=name)}</p>
     </div>
-    <p class="foot-links"><a href="{root}vols/">{p.t('nav_flights')}</a><a href="{root}destinations/">{p.t('nav_places')}</a><a href="{root}a-propos/">{p.t('nav_info')}</a></p>
+    <p class="foot-links"><a href="{root}vols/">{p.t('nav_flights')}</a><a href="{root}destinations/">{p.t('nav_places')}</a><a href="{root}a-propos/">{p.t('nav_info')}</a><a href="{root}credits/">{p.t('credits')}</a></p>
   </div>
 </footer>
 </body>
@@ -222,12 +222,7 @@ def home(p, cities, offers, updated):
     mosaic = ""
     if pictured:
         first, *others = pictured[:5]
-        shown = [c["code"] for c in pictured[:5]]
-        if hero_code and hero_code not in shown:
-            shown.append(hero_code)
-        notes = " · ".join(f'{e(p.city(code, credits[code]["city"]))} : {photo_credit(p, credits[code])}' for code in shown if code in credits)
-        mosaic = f"""<div class="mosaic">{photo_card(p, first, big=True)}<div class="mosaic-side">{''.join(photo_card(p, c) for c in others)}</div></div>
-  <p class="credits">{notes}</p>"""
+        mosaic = f"""<div class="mosaic">{photo_card(p, first, big=True)}<div class="mosaic-side">{''.join(photo_card(p, c) for c in others)}</div></div>"""
     deals = "".join(flight_row(p, c["best"], c) for c in cities[:8])
 
     def unique(items):
@@ -391,7 +386,7 @@ def destination_page(p, city, cities):
     credits = load_credits()
     cover = ""
     if city["code"] in credits and photo_exists(city["code"]):
-        cover = f'<figure class="cover"><img src="{p.base}assets/photos/{city["code"]}.jpg" alt="{name}"><figcaption>{photo_credit(p, credits[city["code"]])}</figcaption></figure>'
+        cover = f'<figure class="cover"><img src="{p.base}assets/photos/{city["code"]}.jpg" alt="{name}"></figure>'
     body = f"""<section class="page wrap">
   <p class="crumb"><a href="{p.root}destinations/">{p.t('nav_places')}</a> › {e(p.region(city['region']))}</p>
   <h1>{e(p.t('dest_title', city=p.city(city['code'], city['city'])))}</h1>
@@ -413,6 +408,16 @@ def about_page(p):
     items = "".join(f"<details><summary>{e(q)}</summary><p>{e(a)}</p></details>" for q, a in TEXT[p.lang]["faq"])
     body = f'<section class="page wrap narrow"><h1>{p.t("info_title")}</h1><p class="lead">{p.t("info_lead")}</p><div class="faq">{items}</div><a class="search-go" href="{p.root}">{p.t("info_go")}</a></section>'
     return layout(p, f"{p.t('info_title')} | {p.site['name']}", p.t("info_meta"), "a-propos/", body)
+
+
+def credits_page(p):
+    credits = load_credits()
+    rows = "".join(
+        f'<li><strong>{e(p.city(code, credit["city"]))}</strong><br>{photo_credit(p, credit)}</li>'
+        for code, credit in sorted(credits.items(), key=lambda item: item[1]["city"]) if photo_exists(code)
+    )
+    body = f'<section class="page wrap narrow"><h1>{p.t("credits")}</h1><p class="lead">{p.t("credits_lead")}</p><ul class="credit-list">{rows}</ul></section>'
+    return layout(p, f"{p.t('credits')} | {p.site['name']}", p.t("credits_lead"), "credits/", body)
 
 
 def missing_page(p):
@@ -458,6 +463,7 @@ def build_language(p, data, cities, updated_at):
     write(folder / "destinations" / "index.html", destinations_index(p, cities))
     write(folder / "a-propos" / "index.html", about_page(p))
     write(folder / "test-reservation" / "index.html", test_booking_page(p))
+    write(folder / "credits" / "index.html", credits_page(p))
     keep = {c["slug"] for c in cities}
     for child in (folder / "destinations").iterdir():
         if child.is_dir() and child.name not in keep:

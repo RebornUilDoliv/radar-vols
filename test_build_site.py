@@ -110,6 +110,12 @@ class BuildTests(unittest.TestCase):
         self.assertIn("p=111", html)
         self.assertIn("campaign_id=222", html)
 
+    def test_photo_credits_live_on_their_own_page(self):
+        docs = self.build([offer("BCN", "Barcelone", "Europe", 43, 30)])
+        self.assertTrue((docs / "credits" / "index.html").exists())
+        self.assertIn("/credits/", (docs / "index.html").read_text())
+        self.assertNotIn("figcaption", (docs / "destinations/barcelone/index.html").read_text())
+
     def test_slug_removes_accents(self):
         self.assertEqual(build_site.slug("Montréal – Dorval"), "montreal-dorval")
 

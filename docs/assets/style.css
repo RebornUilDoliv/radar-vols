@@ -68,8 +68,9 @@ h2 { font-size: 32px; font-weight: 500; }
 .card.big .card-label strong { font-size: 24px; line-height: 1.2; }
 .card-label span { font-size: 14px; }
 
-.credits { margin-top: 10px; color: var(--g3); font-size: 12px; line-height: 1.5; }
-.credits a { color: inherit; }
+.credit-list { margin-top: 22px; border-top: 1px solid var(--g2); }
+.credit-list li { padding: 12px 0; color: var(--g3); font-size: 14px; border-bottom: 1px solid var(--g2); }
+.credit-list strong { color: var(--k); font-weight: 600; }
 .dark { margin-top: 72px; padding-block: 64px; color: var(--w); background: var(--k); }
 .dark .row { border-color: #333; }
 .dark .rows { border-color: #333; }
