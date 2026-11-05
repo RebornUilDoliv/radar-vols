@@ -166,6 +166,22 @@ class BuildTests(unittest.TestCase):
         docs = self.build(self.deals())
         self.assertNotIn("cloudflareinsights", (docs / "index.html").read_text())
 
+    def test_world_pages_only_for_popular_routes(self):
+        names = {"LON": "Londres", "PAR": "Paris", "TYO": "Tokyo", "LIS": "Lisbonne"}
+        rows = [{"from": o, "to": t, "price": 100, "depart": "2027-01-01", "back": "2027-01-05", "stops": 0, "link": "https://tp.media/r"}
+                for o, t in (("LON", "TYO"), ("PAR", "TYO"), ("LON", "LIS"))]
+        with tempfile.TemporaryDirectory() as folder, mock.patch.object(build_site, "DOCS", Path(folder)), mock.patch.object(build_site, "POPULAR_ORIGINS", 2):
+            (Path(folder) / "world.json").write_text(json.dumps({"updated": "x", "routes": rows}))
+            origins = build_site.load_world(names)
+        london = next(o for o in origins if o["code"] == "LON")
+        self.assertEqual(len(london["routes"]), 2)
+        self.assertEqual([r["to"] for r in london["pages"]], ["TYO"])
+
+    def test_clean_names_fixes_source_errors(self):
+        names = build_site.clean_names({"fr": {"ACE": "ACE", "MAD": "Ville de Madrid", "BUD": "Buda"},
+                                        "en": {"ACE": "Arrecife", "MAD": "Madrid", "BUD": "Budapest"}})
+        self.assertEqual(names["fr"], {"ACE": "Arrecife", "MAD": "Madrid", "BUD": "Budapest"})
+
     def test_slug_removes_accents(self):
         self.assertEqual(build_site.slug("Montréal – Dorval"), "montreal-dorval")
 

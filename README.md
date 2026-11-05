@@ -99,6 +99,8 @@ Les pages `/vols-pas-chers/` regroupent les prix par mois, par région et par bu
 
 Pour mesurer l'audience sans cookie, indique l'identifiant public de Cloudflare Web Analytics dans `analytics_token` de `config.toml`.
 
+Le relevé mondial (`world.py`) cherche les prix depuis les villes de `[world]` dans `config.toml`, au plus une fois par jour. Le site publie une page par ville de départ, et une page par route pour les destinations les plus desservies.
+
 Le nom et l'adresse du site se changent dans la section `[site]` de `config.toml`.
 
 ## La version de test de réservation
