@@ -1,4 +1,4 @@
-# Radar de vols pas chers
+# Eunodia, le radar de vols pas chers
 
 Deux fois par jour, cet outil surveille les vols aller-retour au départ de Paris et t'envoie un e-mail quand il trouve un bon prix. Il est prévu pour rester gratuit.
 

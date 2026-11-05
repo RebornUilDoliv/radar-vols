@@ -11,7 +11,7 @@ min_days_ahead = 14              # ignore les départs trop proches
 adults = 1
 
 [site]
-name = "Radar Flight"
+name = "Eunodia"
 url = "https://rebornuildoliv.github.io/radar-vols/"   # à remplacer par le vrai domaine
 marker = "800338"                # identifiant partenaire Travelpayouts
 project = "595480"

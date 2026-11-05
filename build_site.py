@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Génère le site statique multilingue de Radar Flight à partir de docs/prices.json."""
+"""Génère le site statique multilingue d'Eunodia à partir de docs/prices.json."""
 import html
 import json
 import re
