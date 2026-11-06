@@ -188,6 +188,17 @@ td.num, th.num { text-align: right; font-weight: 650; font-variant-numeric: tabu
 .stay span { color: var(--g3); font-size: 14px; }
 .stay:hover { color: var(--w); background: var(--k); }
 .stay:hover span { color: var(--g2); }
+.stay-icon { width: 28px; height: 28px; margin-bottom: 8px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.trip { position: relative; overflow: hidden; margin: 72px 12px 0; color: var(--w); background: var(--k); border-radius: 22px; }
+.trip::after { content: ""; position: absolute; inset: 0; background: rgba(0, 0, 0, .5); pointer-events: none; }
+.trip-in { position: relative; z-index: 1; padding-block: 72px; }
+.trip-in h2 { font-size: 40px; font-weight: 600; }
+.trip-in > p { margin-top: 8px; font-size: 18px; }
+.trip .stays { margin-top: 28px; gap: 14px; }
+.trip .stay { padding: 22px; color: var(--k); background: var(--w); }
+.trip .stay span { color: var(--g3); }
+.trip .stay:hover { color: var(--w); background: var(--k); }
+.trip .stay:hover span { color: var(--g2); }
 .stays.tools { grid-template-columns: repeat(4, 1fr); margin-top: 18px; }
 .guide { display: grid; gap: 4px; }
 .guide li::before { content: "– "; color: var(--g3); }
@@ -308,6 +319,14 @@ details p { margin-top: 6px; color: var(--g3); }
   .foot-links a { display: flex; align-items: center; min-height: 44px; }
   .news-consent input { width: 24px; height: 24px; flex: none; }
   .news-consent { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; }
+  .trip { margin: 52px 6px 0; border-radius: 16px; }
+  .trip-in { padding: 40px 14px; }
+  .trip-in h2 { font-size: 26px; }
+  .trip-in > p { font-size: 16px; }
+  .trip .stays { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .trip .stay { padding: 14px; }
+  .trip .stay strong { font-size: 16px; line-height: 1.2; }
+  .trip .stay span { display: none; }
   /* Filtres */
   .filters { position: relative; padding: 12px; }
   .filters:not(.all) .adv { display: none; }

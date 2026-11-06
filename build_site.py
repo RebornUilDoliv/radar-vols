@@ -370,6 +370,14 @@ def home(p, cities, offers, updated, origins=()):
 </ul>
 {tools_block(p)}
 {world}
+<section class="trip" id="preparer">
+  <img class="hero-img" {photo_set(p, "BKK" if photo_exists("BKK") else hero_code, "100vw")} alt="" loading="lazy">
+  <div class="trip-in wrap">
+    <h2>{p.t('trip_title')}</h2>
+    <p>{p.t('stay_lead')}</p>
+    <div class="stays">{stay_links(p, "")}</div>
+  </div>
+</section>
 <section class="band wrap">
   <h2>{p.t('offers')}</h2>
   <p class="sub">{e(p.t('offers_sub', date=updated))}</p>
@@ -380,11 +388,6 @@ def home(p, cities, offers, updated, origins=()):
   <ul class="rows">{deals}</ul>
 </div></section>
 {newsletter_block(p)}
-<section class="band wrap" id="preparer">
-  <h2>{p.t('trip_title')}</h2>
-  <p class="sub">{p.t('stay_lead')}</p>
-  <div class="stays">{stay_links(p, "")}</div>
-</section>
 <section class="band wrap">
   <h2>{p.t('budget')}</h2>
   <div class="budgets">{budgets}</div>
@@ -770,6 +773,16 @@ def route_page(p, origin, route, origins, updated):
 
 
 
+STAY_ICONS = {
+    "hotel": '<path d="M3 18V6m0 8h18v4m0-4v-1a3 3 0 0 0-3-3h-7v4M7.5 11.5h.01"/>',
+    "tour": '<path d="M4 8h16v3a2 2 0 0 0 0 3v3H4v-3a2 2 0 0 0 0-3zM14 8v9"/>',
+    "car": '<path d="M4 16v-3l2-5h12l2 5v3zM4 13h16M7 16v2M17 16v2"/>',
+    "esim": '<path d="M7 3h7l4 4v14H7zM10 12h5v5h-5z"/>',
+    "transfer": '<path d="M4 17V7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10zM4 12h16M8 17v2M16 17v2"/>',
+    "claim": '<path d="M12 4 3 20h18zM12 10v4M12 17h.01"/>',
+}
+
+
 def stay_links(p, name):
     """Liens vers les partenaires, suivis dès que le programme est renseigné dans config.toml."""
     query = urllib.parse.quote(name)
@@ -783,19 +796,20 @@ def stay_links(p, name):
             return url
         return radar.partner_link(url, {**p.site, "program": program, "campaign": p.site[f"{kind}_campaign"]})
 
-    def card(url, title, text):
-        return f'<a class="stay" href="{e(url)}" rel="nofollow sponsored noopener" target="_blank"><strong>{title}</strong><span>{text}</span></a>'
+    def card(url, title, text, icon):
+        return (f'<a class="stay" href="{e(url)}" rel="nofollow sponsored noopener" target="_blank">'
+                f'<svg class="stay-icon" viewBox="0 0 24 24" aria-hidden="true">{STAY_ICONS[icon]}</svg><strong>{title}</strong><span>{text}</span></a>')
 
     claim = f"https://www.airhelp.com/{code}/"
     esim = "https://www.airalo.com/" + ("" if code == "en" else code)
     transfer = f"https://kiwitaxi.com/{code}"
     car = f"https://localrent.com/{code}/"
-    return (card(tracked(hotel, "hotels"), p.t("stay_hotel"), p.t("stay_hotel_b"))
-            + card(tracked(tour, "tours"), p.t("stay_tour"), p.t("stay_tour_b"))
-            + card(tracked(car, "cars"), p.t("stay_car"), p.t("stay_car_b"))
-            + card(tracked(esim, "esim"), p.t("stay_esim"), p.t("stay_esim_b"))
-            + card(tracked(transfer, "transfers"), p.t("stay_transfer"), p.t("stay_transfer_b"))
-            + card(tracked(claim, "claims"), p.t("stay_claim"), p.t("stay_claim_b")))
+    return (card(tracked(hotel, "hotels"), p.t("stay_hotel"), p.t("stay_hotel_b"), "hotel")
+            + card(tracked(tour, "tours"), p.t("stay_tour"), p.t("stay_tour_b"), "tour")
+            + card(tracked(car, "cars"), p.t("stay_car"), p.t("stay_car_b"), "car")
+            + card(tracked(esim, "esim"), p.t("stay_esim"), p.t("stay_esim_b"), "esim")
+            + card(tracked(transfer, "transfers"), p.t("stay_transfer"), p.t("stay_transfer_b"), "transfer")
+            + card(tracked(claim, "claims"), p.t("stay_claim"), p.t("stay_claim_b"), "claim"))
 
 
 def guide_block(p, city, months):
