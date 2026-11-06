@@ -37,16 +37,12 @@ img { display: block; width: 100%; }
 
 .hero { position: relative; display: flex; align-items: flex-end; min-height: min(78vh, 720px); margin: 12px; overflow: hidden; color: var(--w); background: var(--k); border-radius: 22px; }
 .hero-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.hero::after, .page-hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0, 0, 0, .68) 0, rgba(0, 0, 0, .18) 58%, rgba(0, 0, 0, .3) 100%); pointer-events: none; }
+.hero::after, .page-hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0, 0, 0, .68) 0, rgba(0, 0, 0, .16) 55%, rgba(0, 0, 0, .46) 100%); pointer-events: none; }
 .hero-in, .page-hero-in { z-index: 1; }
 .hero-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .9s; }
 .hero-video.on { opacity: 1; }
 .video-pause { position: absolute; z-index: 2; inset-block-end: 88px; inset-inline-end: 24px; width: 40px; height: 40px; color: var(--w); font-size: 12px; background: rgba(0, 0, 0, .45); border: 1px solid rgba(255, 255, 255, .4); border-radius: 50%; cursor: pointer; }
-@media (min-width: 768px) {
-  .hero { min-height: min(92vh, 900px); }
-  .hero h1 { max-width: 900px; font-size: 64px; line-height: 1.08; }
-  .hero-in p { font-size: 20px; }
-}
+
 .hero-in { position: relative; width: min(1240px, 100%); margin-inline: auto; padding: 150px 32px 110px; }
 .hero h1 { max-width: 760px; font-size: 40px; font-weight: 600; }
 .hero-in p { margin-top: 10px; font-size: 16px; font-weight: 500; }
@@ -341,4 +337,9 @@ details p { margin-top: 6px; color: var(--g3); }
   .filters:not(.all) .more-filters { display: flex; }
   .more-filters { grid-column: 1 / -1; align-items: center; justify-content: center; min-height: 44px; color: var(--k); font: inherit; font-weight: 500; background: var(--w); border: 1px solid var(--g2); border-radius: 10px; }
   .filters > label:first-child { grid-column: 1 / -1; }
+}
+@media (min-width: 768px) {
+  .hero { min-height: min(92vh, 900px); }
+  .hero .hero-in h1 { max-width: 900px; font-size: 64px; line-height: 1.08; }
+  .hero .hero-in p { font-size: 20px; }
 }
