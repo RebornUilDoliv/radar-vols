@@ -64,5 +64,313 @@
       4928,
       3264
     ]
+  },
+  "PAR": {
+    "city": "Paris",
+    "artist": "Pedro Kümmel pedrokummel",
+    "license": "CC0",
+    "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "source": "https://commons.wikimedia.org/wiki/File:Eiffel_Tower_sunset_skyline_(Unsplash).jpg",
+    "size": [
+      6000,
+      4000
+    ]
+  },
+  "MAD": {
+    "city": "Madrid",
+    "artist": "Tomás Fano",
+    "license": "CC BY-SA 2.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Gran_V%C3%ADa_(Madrid)_26.jpg",
+    "size": [
+      4272,
+      2848
+    ]
+  },
+  "BCN": {
+    "city": "Barcelone",
+    "artist": "2008dago21",
+    "license": "CC BY-SA 3.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Skyline_de_barna_-_panoramio.jpg",
+    "size": [
+      3888,
+      2592
+    ]
+  },
+  "ROM": {
+    "city": "Rome",
+    "artist": "Wilfredor",
+    "license": "CC0",
+    "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "source": "https://commons.wikimedia.org/wiki/File:Colosseum_of_Rome,_Italy.jpg",
+    "size": [
+      8200,
+      5162
+    ]
+  },
+  "BER": {
+    "city": "Berlin",
+    "artist": "Perituss",
+    "license": "CC0",
+    "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "source": "https://commons.wikimedia.org/wiki/File:Strasse_des_17._Juni_2015_3.jpg",
+    "size": [
+      5124,
+      3416
+    ]
+  },
+  "AMS": {
+    "city": "Amsterdam",
+    "artist": "Diliff",
+    "license": "CC BY 2.5",
+    "license_url": "https://creativecommons.org/licenses/by/2.5",
+    "source": "https://commons.wikimedia.org/wiki/File:Amsterdam_Canals_-_July_2006.jpg",
+    "size": [
+      4017,
+      2117
+    ]
+  },
+  "LIS": {
+    "city": "Lisbonne",
+    "artist": "Jakub Hałun",
+    "license": "CC BY 4.0",
+    "license_url": "https://creativecommons.org/licenses/by/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Lisbon_Alfama_Sao_Vicente_Pantheon_from_Sao_Jorge_Castle,_20250604_1714_9406.jpg",
+    "size": [
+      5865,
+      3917
+    ]
+  },
+  "IST": {
+    "city": "Istanbul",
+    "artist": "Arild Vågen",
+    "license": "CC BY-SA 3.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Hagia_Sophia_Mars_2013.jpg",
+    "size": [
+      5514,
+      3681
+    ]
+  },
+  "DXB": {
+    "city": "Dubaï",
+    "artist": "Joi Ito from Cambridge, MA, USA",
+    "license": "CC BY 2.0",
+    "license_url": "https://creativecommons.org/licenses/by/2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Burj_Dubai_skyline_(4220501733).jpg",
+    "size": [
+      5127,
+      3412
+    ]
+  },
+  "DEL": {
+    "city": "New Delhi",
+    "artist": "Shagil Kannur",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:India_Gate,_New_Delhi_by_Shagil_Kannur_6.jpg",
+    "size": [
+      5568,
+      3712
+    ]
+  },
+  "BKK": {
+    "city": "Bangkok",
+    "artist": "Tee-12838",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Wat_Arun_Ratchawararam_and_the_Royal_Barge_Procession.jpg",
+    "size": [
+      5703,
+      3802
+    ]
+  },
+  "SIN": {
+    "city": "Singapour",
+    "artist": "Bijay Chaurasia",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Marina_Bay_Singapore-3499.jpg",
+    "size": [
+      6131,
+      4087
+    ]
+  },
+  "HKG": {
+    "city": "Hong Kong",
+    "artist": "Benh LIEU SONG (Flickr)",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Hong_Kong_Harbour_Night_2019-06-11.jpg",
+    "size": [
+      10439,
+      4936
+    ]
+  },
+  "SEL": {
+    "city": "Séoul",
+    "artist": "USAGI_POST",
+    "license": "CC0",
+    "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "source": "https://commons.wikimedia.org/wiki/File:Han_River_Seoul_skyline_Pixabay_1214950.jpg",
+    "size": [
+      5964,
+      2912
+    ]
+  },
+  "SYD": {
+    "city": "Sydney",
+    "artist": "Benh LIEU SONG (Flickr)",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Sydney_Opera_House_and_Harbour_Bridge_Dusk_(2)_2019-06-21.jpg",
+    "size": [
+      6173,
+      3087
+    ]
+  },
+  "JNB": {
+    "city": "Johannesbourg",
+    "artist": "Andrew Moore",
+    "license": "CC BY-SA 2.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Johannesburg%27s_inner_city.jpg",
+    "size": [
+      5472,
+      3648
+    ]
+  },
+  "CAI": {
+    "city": "Le Caire",
+    "artist": "Ricardo Liberato",
+    "license": "CC BY-SA 2.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:All_Gizah_Pyramids.jpg",
+    "size": [
+      4372,
+      2906
+    ]
+  },
+  "CMN": {
+    "city": "Casablanca",
+    "artist": "OussamaHamama",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Whispers_of_Gold_-_Hassan_II_Mosque_at_Dusk.jpg",
+    "size": [
+      5184,
+      3456
+    ]
+  },
+  "NYC": {
+    "city": "New York",
+    "artist": "Percival Kestreltail",
+    "license": "CC BY-SA 3.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Lower_Manhattan,_New_York_skyline_from_Liberty_Island_2021.jpg",
+    "size": [
+      4210,
+      2368
+    ]
+  },
+  "LAX": {
+    "city": "Los Angeles",
+    "artist": "Adoramassey",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:20190616154621!Echo_Park_Lake_with_Downtown_Los_Angeles_Skyline.jpg",
+    "size": [
+      3992,
+      2242
+    ]
+  },
+  "MIA": {
+    "city": "Miami",
+    "artist": "Matthew T Rader",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Miami_skyline_from_the_ocean.jpg",
+    "size": [
+      3881,
+      2426
+    ]
+  },
+  "YTO": {
+    "city": "Toronto",
+    "artist": "Maksim Sokolov (maxergon.com)",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Toronto_skyline_as_viewed_from_Ireland_Park.jpg",
+    "size": [
+      6000,
+      4000
+    ]
+  },
+  "MEX": {
+    "city": "Mexico",
+    "artist": "Daniel Case",
+    "license": "CC BY-SA 3.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Palaco_de_Bellas_Artes,_Mexico_City,_from_across_Eje_Central_Lazaro_Cardenas_in_evening.jpg",
+    "size": [
+      5676,
+      3660
+    ]
+  },
+  "BOG": {
+    "city": "Bogota",
+    "artist": "KEVIN CASTAÑEDA VILLAMIL",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:BOGOTA_CITY.jpg",
+    "size": [
+      4032,
+      2268
+    ]
+  },
+  "LIM": {
+    "city": "Lima",
+    "artist": "magicmonkey",
+    "license": "CC BY 2.0",
+    "license_url": "https://creativecommons.org/licenses/by/2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Lima_Peru_coast.jpg",
+    "size": [
+      3872,
+      2592
+    ]
+  },
+  "SAO": {
+    "city": "São Paulo",
+    "artist": "Wilfredor",
+    "license": "CC0",
+    "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "source": "https://commons.wikimedia.org/wiki/File:Avenue_and_the_downtown_skyline_of_Sao_Paulo.jpg",
+    "size": [
+      9108,
+      5703
+    ]
+  },
+  "BUE": {
+    "city": "Buenos Aires",
+    "artist": "Roberto Fiadone",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Obelisco_de_Buenos_Aires,_D%C3%ADa_de_la_Discapacidad.jpg",
+    "size": [
+      4511,
+      3257
+    ]
+  },
+  "SCL": {
+    "city": "Santiago",
+    "artist": "Nbendersky",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Santiago_en_invierno_desde_el_Cerro_San_Crist%C3%B3bal.jpg",
+    "size": [
+      4032,
+      2920
+    ]
   }
 }

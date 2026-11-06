@@ -1,5 +1,9 @@
 """Textes du site, par langue."""
-LANGS = ("fr", "en", "es")
+import json
+from pathlib import Path
+
+FULL_LANGS = ("fr", "en", "es")          # langues avec une page par route
+LANGS = FULL_LANGS
 LOCALES = {"fr": "fr-FR", "en": "en-GB", "es": "es-ES"}
 LANG_NAMES = {"fr": "Français", "en": "English", "es": "Español"}
 
@@ -88,7 +92,7 @@ TEXT = {
             ("D'où viennent les prix ?", "Ils viennent de recherches faites récemment par d'autres voyageurs sur un comparateur partenaire. Ils sont relevés deux fois par jour et peuvent avoir changé entre-temps."),
             ("Pourquoi un prix peut-il être différent sur le site de réservation ?", "Les places à petit prix partent vite, et un bagage ou une option peut s'ajouter. Quand un contrôle montre qu'un prix n'existe plus, le vol est retiré de la liste, mais tous les vols ne peuvent pas être contrôlés."),
             ("La dernière minute est-elle moins chère ?", "En général, non : les prix ont plutôt tendance à monter à l'approche du départ, même s'il existe des exceptions selon les trajets."),
-            ("Puis-je chercher un vol depuis une autre ville ?", "Oui. La recherche fonctionne partout dans le monde. Les offres repérées par Eunodia partent, pour l'instant, de Paris."),
+            ("Puis-je chercher un vol depuis une autre ville ?", "Oui. La recherche fonctionne partout dans le monde, et Eunodia montre les meilleurs prix depuis 30 grandes villes."),
             ("Comment le site gagne-t-il de l'argent ?", "Les liens vers les vols sont affiliés. Si tu réserves après avoir cliqué, le site peut toucher une commission, sans frais supplémentaires pour toi."),
             ("Puis-je réserver directement ici ?", "Pas pour l'instant. La réservation et le paiement se font sur le site du partenaire, qui gère aussi les modifications et les remboursements."),
             ("D'où viennent les photos ?", "Elles viennent de Wikimedia Commons. Les photographes et les licences sont indiqués sur la page Crédits photos."),
@@ -159,7 +163,7 @@ TEXT = {
             ("Where do the prices come from?", "They come from recent searches by other travellers on a partner comparison site. They are checked twice a day and may have changed since."),
             ("Why can a price differ on the booking site?", "Cheap seats go quickly, and baggage or extras can be added. When a check shows a price no longer exists, the flight is removed, but not every flight can be checked."),
             ("Is last minute cheaper?", "Usually not: prices tend to rise as departure gets closer, although some routes are exceptions."),
-            ("Can I search from another city?", "Yes. The search works worldwide. Eunodia's deals leave from Paris for now."),
+            ("Can I search from another city?", "Yes. The search works worldwide, and Eunodia shows the best prices from 30 major cities."),
             ("How does the site make money?", "Flight links are affiliate links. If you book after clicking, the site may earn a commission at no extra cost to you."),
             ("Can I book directly here?", "Not for now. Booking and payment happen on the partner's site, which also handles changes and refunds."),
             ("Where do the photos come from?", "They come from Wikimedia Commons. Photographers and licences are listed on the Photo credits page."),
@@ -230,7 +234,7 @@ TEXT = {
             ("¿De dónde vienen los precios?", "Vienen de búsquedas recientes de otros viajeros en un comparador asociado. Se revisan dos veces al día y pueden haber cambiado."),
             ("¿Por qué puede variar el precio en el sitio de reserva?", "Las plazas baratas vuelan rápido, y pueden añadirse equipaje o extras. Si una comprobación muestra que un precio ya no existe, el vuelo se retira, pero no se pueden comprobar todos."),
             ("¿La última hora es más barata?", "Por lo general, no: los precios suelen subir al acercarse la salida, aunque hay excepciones según la ruta."),
-            ("¿Puedo buscar desde otra ciudad?", "Sí. El buscador funciona en todo el mundo. Las ofertas de Eunodia salen, por ahora, de París."),
+            ("¿Puedo buscar desde otra ciudad?", "Sí. La búsqueda funciona en todo el mundo, y Eunodia muestra los mejores precios desde 30 grandes ciudades."),
             ("¿Cómo gana dinero el sitio?", "Los enlaces a los vuelos son de afiliados. Si reservas tras hacer clic, el sitio puede recibir una comisión sin coste adicional para ti."),
             ("¿Puedo reservar aquí directamente?", "Por ahora no. La reserva y el pago se hacen en el sitio del socio, que también gestiona cambios y reembolsos."),
             ("¿De dónde vienen las fotos?", "Vienen de Wikimedia Commons. Los fotógrafos y las licencias aparecen en la página Créditos de fotos."),
@@ -269,3 +273,20 @@ SCRIPT_TEXT = {
         "done": "Reserva de prueba confirmada", "ref": "Referencia: {ref}", "not_real": "{airline}, {price}. Este billete no existe y no sirve para viajar.", "again": "Empezar de nuevo",
     },
 }
+
+BOOKING_LOCALES = {"fr": "fr", "en": "en-gb", "es": "es"}
+DATA_LANGS = {}
+RTL_LANGS = set()
+
+# Les autres langues sont dans locales/ : ce qui n'y figure pas retombe sur l'anglais.
+for path in sorted((Path(__file__).parent / "locales").glob("*.json")):
+    lang, data = path.stem, json.loads(path.read_text())
+    LANGS += (lang,)
+    LOCALES[lang], LANG_NAMES[lang], BOOKING_LOCALES[lang] = data["locale"], data["name"], data["booking"]
+    MONTHS[lang], SHORT_MONTHS[lang] = data["months"], data["short_months"]
+    REGIONS[lang], CONTINENTS[lang] = data["regions"], data["continents"]
+    TEXT[lang] = {**TEXT["en"], **data["text"]}
+    SCRIPT_TEXT[lang] = {**SCRIPT_TEXT["en"], **data["script"]}
+    DATA_LANGS[lang] = data.get("data", lang)
+    if data.get("rtl"):
+        RTL_LANGS.add(lang)

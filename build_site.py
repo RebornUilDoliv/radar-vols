@@ -14,7 +14,8 @@ from statistics import median
 from pathlib import Path
 
 import radar
-from site_text import CONTINENTS, LANG_NAMES, LANGS, LOCALES, MONTHS, REGIONS, SCRIPT_TEXT, SHORT_MONTHS, TEXT
+from site_text import (BOOKING_LOCALES, CONTINENTS, DATA_LANGS, FULL_LANGS, LANG_NAMES, LANGS, LOCALES, MONTHS, REGIONS,
+                       RTL_LANGS, SCRIPT_TEXT, SHORT_MONTHS, TEXT)
 
 ROOT = Path(__file__).parent
 DOCS = ROOT / "docs"
@@ -27,7 +28,8 @@ ROUTES_PER_ORIGIN = 40           # pages de route créées par ville de départ
 POPULAR_ORIGINS = 10             # une destination doit être desservie depuis autant de villes
 MAX_ROUTE_PRICE = 3000           # écarte les prix aberrants
 HUB_ROWS = 60
-DEFAULT_ORIGIN = {"fr": "PAR", "en": "LON", "es": "MAD"}
+DEFAULT_ORIGIN = {"fr": "PAR", "en": "LON", "es": "MAD", "de": "BER", "it": "ROM", "pt": "LIS", "nl": "AMS", "tr": "IST", "ar": "DXB", "zh": "HKG", "ko": "SEL"}
+PARTNER_LANGS = ("fr", "en", "es", "de", "it", "pt")
 SOUTH_AMERICA = {"AR", "BO", "BR", "CL", "CO", "EC", "GF", "GY", "PE", "PY", "SR", "UY", "VE"}
 LOGO = (
     '<svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="13.8" fill="none" stroke="currentColor" stroke-width="2"/>'
@@ -134,23 +136,31 @@ PAGE_TOP = re.compile(
     r'(?P<cta><p><a class="go".*?</a></p>)?', re.S)
 
 
-def page_hero(p, path, body):
-    """Donne aux pages intérieures le même en-tête en photo que l'accueil."""
+def page_hero(p, path, body, photo=None):
+    """Donne aux pages intérieures un en-tête photo : celle de la ville, ou aucune si elle manque."""
     top = PAGE_TOP.search(body)
     photos = sorted(code for code in load_credits() if photo_exists(code))
-    if not top or not photos:
+    if not top:
         return body
     own = re.search(r"assets/photos/([A-Z]{3})\.jpg", top["cover"] or "")
-    code = own[1] if own else photos[sum(path.encode()) % len(photos)]
-    hero = (f'<section class="page-hero"><img class="hero-img" {photo_set(p, code, "100vw")} fetchpriority="high" alt="">'
+    if photo is None:
+        city_page = path.startswith(("vers/", "destinations/")) and path != "destinations/"
+        photo = own[1] if own else "" if city_page else photos[sum(path.encode()) % len(photos)] if photos else ""
+    image = f'<img class="hero-img" {photo_set(p, photo, "100vw")} fetchpriority="high" alt="">' if photo else ""
+    hero = (f'<section class="page-hero">{image}'
             f'<div class="page-hero-in wrap">{top["crumb"] or ""}<h1>{top["title"]}</h1>{top["lead"] or ""}{top["cta"] or ""}</div></section>'
             '<section class="page wrap">')
     return body[:top.start()] + hero + body[top.end():]
 
 
-def layout(p, title, description, path, body, noindex=False, extra=""):
+def page_langs(path):
+    """Les pages de route et la réservation test n'existent que dans les langues principales."""
+    return FULL_LANGS if path.startswith("test-reservation") or re.fullmatch(r"depuis/[^/]+/[^/]+/", path) else LANGS
+
+
+def layout(p, title, description, path, body, noindex=False, extra="", photo=None):
     site, base, root = p.site, p.base, p.root
-    body = page_hero(p, path, body)
+    body = page_hero(p, path, body, photo)
     name = e(site["name"])
     links = "".join(
         f'<link rel="alternate" hreflang="{lang}" href="{e(site["url"] + ("" if lang == "fr" else lang + "/") + path)}">'
@@ -158,8 +168,8 @@ def layout(p, title, description, path, body, noindex=False, extra=""):
     )
     switch = "".join(
         f'<a href="{base}{"" if lang == "fr" else lang + "/"}{path}" lang="{lang}" hreflang="{lang}"'
-        f'{" aria-current=\"true\"" if lang == p.lang else ""} title="{LANG_NAMES[lang]}">{lang.upper()}</a>'
-        for lang in LANGS
+        f'{" aria-current=\"true\"" if lang == p.lang else ""} title="{LANG_NAMES[lang]}">{LANG_NAMES[lang]}</a>'
+        for lang in page_langs(path)
     )
     shared = {key: TEXT[p.lang][key] for key in ("see", "direct", "stop", "stops", "stops_unknown", "days", "day_one")}
     script = json.dumps(
@@ -175,7 +185,7 @@ def layout(p, title, description, path, body, noindex=False, extra=""):
         beacon = e(json.dumps({"token": site["analytics_token"]}))
         analytics = f'<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon="{beacon}"></script>'
     return f"""<!doctype html>
-<html lang="{p.lang}">
+<html lang="{p.lang}"{' dir="rtl"' if p.lang in RTL_LANGS else ''}>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -209,7 +219,7 @@ def layout(p, title, description, path, body, noindex=False, extra=""):
     <a href="{root}vols-pas-chers/">{p.t('nav_deals')}</a>
     <a href="{root}a-propos/">{p.t('nav_info')}</a>
   </nav>
-  <div class="langs" aria-label="Langue">{switch}</div>
+  <details class="langs"><summary aria-label="Langue">{p.lang.upper()}</summary><div class="langs-list">{switch}</div></details>
   <button class="menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="menu" aria-label="{p.t('menu')}"><span></span><span></span><span></span></button>
 </header>
 <main>
@@ -512,7 +522,7 @@ def route_rows(p, origin):
     """Données de l'outil « où partir » pour une ville de départ."""
     rows = []
     for route in origin["routes"]:
-        internal = has_page(origin, route)
+        internal = has_page(p, origin, route)
         rows.append({
             "city": p.city(route["to"], route["to"]),
             "region": CONTINENTS[p.lang][p.zones.get(route["to"], "XX")],
@@ -634,7 +644,7 @@ def clean_names(names):
     cleaned = {}
     for lang, rows in names.items():
         cleaned[lang] = {
-            code: english.get(code, name) if name == code or name.startswith("Ville de ") else name
+            code: english.get(code, name) if name == code or name.startswith("Ville de ") or name.endswith("机场") else name
             for code, name in rows.items()
         }
         if "BUD" in cleaned[lang]:
@@ -678,15 +688,15 @@ def route_path(origin, route):
     return f"depuis/{origin['slug']}/{route['to_slug']}/"
 
 
-def has_page(origin, route):
-    return any(row["to"] == route["to"] for row in origin["pages"])
+def has_page(p, origin, route):
+    return p.lang in FULL_LANGS and any(row["to"] == route["to"] for row in origin["pages"])
 
 
 def world_row(p, origin, route, label=None):
     name = e(label or p.city(route["to"], route["to"]))
     detail = f'{e(p.day(route["depart"], False))} → {e(p.day(route["back"]))} · {e(p.t("days", count=nights(route)))} · {e(p.stops(route))}'
-    title = f'<a href="{p.root}{route_path(origin, route)}">{name}</a>' if has_page(origin, route) else name
-    action = (f'<a class="go" href="{p.root}{route_path(origin, route)}">{p.t("see")}</a>' if has_page(origin, route)
+    title = f'<a href="{p.root}{route_path(origin, route)}">{name}</a>' if has_page(p, origin, route) else name
+    action = (f'<a class="go" href="{p.root}{route_path(origin, route)}">{p.t("see")}</a>' if has_page(p, origin, route)
               else f'<a class="go" href="{e(route["link"])}" rel="nofollow sponsored noopener" target="_blank">{p.t("see")}</a>')
     return f"""<li class="row"><div class="row-info"><h3>{title}</h3><p>{detail}</p></div><p class="row-price">{p.euro(route['price'])}</p>{action}</li>"""
 
@@ -694,8 +704,10 @@ def world_row(p, origin, route, label=None):
 def world_deal(p, origin, route):
     name = f'{p.city(origin["code"], origin["code"])} → {p.city(route["to"], route["to"])}'
     detail = f'{e(p.day(route["depart"], False))} → {e(p.day(route["back"]))} · {e(p.t("days", count=nights(route)))} · {e(p.stops(route))}'
-    page = f'{p.root}{route_path(origin, route)}'
-    return f"""<li class="row"><div class="row-info"><h3><a href="{page}">{e(name)}</a></h3><p>{detail}</p></div><p class="row-price">{p.euro(route['price'])}</p><a class="go" href="{page}">{p.t('see')}</a></li>"""
+    internal = p.lang in FULL_LANGS
+    page = f'{p.root}{route_path(origin, route)}' if internal else e(route["link"])
+    extra = "" if internal else ' rel="nofollow sponsored noopener" target="_blank"'
+    return f"""<li class="row"><div class="row-info"><h3><a href="{page}"{extra}>{e(name)}</a></h3><p>{detail}</p></div><p class="row-price">{p.euro(route['price'])}</p><a class="go" href="{page}"{extra}>{p.t('see')}</a></li>"""
 
 
 def world_index(p, origins):
@@ -714,7 +726,8 @@ def origin_page(p, origin):
   <h2>{p.t('hub_all')}</h2>
   <ul class="rows">{rows}</ul>
 </section>"""
-    return layout(p, f"{p.t('hub_title', city=city)} | {p.site['name']}", p.t("hub_meta", city=city, **values), f"depuis/{origin['slug']}/", body)
+    return layout(p, f"{p.t('hub_title', city=city)} | {p.site['name']}", p.t("hub_meta", city=city, **values), f"depuis/{origin['slug']}/", body,
+                  photo=origin["code"] if photo_exists(origin["code"]) else "")
 
 
 def route_page(p, origin, route, origins, updated):
@@ -752,17 +765,17 @@ def route_page(p, origin, route, origins, updated):
   {others_block}
   {more_block}
 </section>"""
-    return layout(p, f"{title} | {p.site['name']}", p.t("route_meta", start=start, end=end, price=price), route_path(origin, route), body)
+    return layout(p, f"{title} | {p.site['name']}", p.t("route_meta", start=start, end=end, price=price), route_path(origin, route), body,
+                  photo=next((code for code in (route["to"], origin["code"]) if photo_exists(code)), ""))
 
-
-BOOKING_LOCALES = {"fr": "fr", "en": "en-gb", "es": "es"}
 
 
 def stay_links(p, name):
     """Liens vers les partenaires, suivis dès que le programme est renseigné dans config.toml."""
     query = urllib.parse.quote(name)
     hotel = f"https://www.booking.com/searchresults.{BOOKING_LOCALES[p.lang]}.html?ss={query}"
-    tour = f"https://www.tiqets.com/{p.lang}/search?q={query}"
+    code = p.lang if p.lang in PARTNER_LANGS else "en"
+    tour = f"https://www.tiqets.com/{code}/search?q={query}"
 
     def tracked(url, kind):
         program = p.site.get(f"{kind}_program")
@@ -773,10 +786,10 @@ def stay_links(p, name):
     def card(url, title, text):
         return f'<a class="stay" href="{e(url)}" rel="nofollow sponsored noopener" target="_blank"><strong>{title}</strong><span>{text}</span></a>'
 
-    claim = f"https://www.airhelp.com/{p.lang}/"
-    esim = "https://www.airalo.com/" + ("" if p.lang == "en" else p.lang)
-    transfer = f"https://kiwitaxi.com/{p.lang}"
-    car = f"https://localrent.com/{p.lang}/"
+    claim = f"https://www.airhelp.com/{code}/"
+    esim = "https://www.airalo.com/" + ("" if code == "en" else code)
+    transfer = f"https://kiwitaxi.com/{code}"
+    car = f"https://localrent.com/{code}/"
     return (card(tracked(hotel, "hotels"), p.t("stay_hotel"), p.t("stay_hotel_b"))
             + card(tracked(tour, "tours"), p.t("stay_tour"), p.t("stay_tour_b"))
             + card(tracked(car, "cars"), p.t("stay_car"), p.t("stay_car_b"))
@@ -921,7 +934,7 @@ def build_language(p, data, cities, updated_at, groups, origins=()):
         write(world / "index.html", world_index(p, origins))
     for origin in origins:
         write(world / origin["slug"] / "index.html", origin_page(p, origin))
-        for route in origin["pages"]:
+        for route in origin["pages"] if lang in FULL_LANGS else ():
             write(world / origin["slug"] / route["to_slug"] / "index.html", route_page(p, origin, route, origins, updated))
     write(folder / "vols" / "index.html", flights_page(p, origins))
     places = world_destinations(origins)
@@ -941,7 +954,8 @@ def build_language(p, data, cities, updated_at, groups, origins=()):
     write(deals / "index.html", collections_index(p, groups))
     for group in groups:
         write(deals / group["slug"] / "index.html", collection_page(p, group, groups, by_code, updated))
-    write(folder / "test-reservation" / "index.html", test_booking_page(p))
+    if lang in FULL_LANGS:
+        write(folder / "test-reservation" / "index.html", test_booking_page(p))
     write(folder / "credits" / "index.html", credits_page(p))
     keep = {c["slug"] for c in cities}
     for child in (folder / "destinations").iterdir():
@@ -994,17 +1008,17 @@ def build(data, site, catalog=None):
         page.zones, page.countries = zones, countries
         build_language(page, data, cities, updated_at, groups, origins)
     write(DOCS / "404.html", missing_page(Page(site, "fr", names.get("fr"))))
+    route_pages = [route_path(origin, route) for origin in origins for route in origin["pages"]]
     pages = ["", "vols/", "vols-pas-chers/", "destinations/", "a-propos/"] + [f"destinations/{c['slug']}/" for c in cities]
     pages += [f"vols-pas-chers/{g['slug']}/" for g in groups]
     if origins:
         pages.append("depuis/")
     for origin in origins:
         pages.append(f"depuis/{origin['slug']}/")
-        pages += [route_path(origin, route) for route in origin["pages"]]
     pages += [f"vers/{place['slug']}/" for place in world_destinations(origins)]
     urls = "".join(
         f"<url><loc>{e(site['url'] + ('' if lang == 'fr' else lang + '/') + page)}</loc></url>"
-        for lang in LANGS for page in pages
+        for lang in LANGS for page in pages + (route_pages if lang in FULL_LANGS else [])
     )
     write(DOCS / "sitemap.xml", f'<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{urls}</urlset>\n')
     write(DOCS / "manifest.webmanifest", json.dumps({
@@ -1033,8 +1047,9 @@ def load_catalog():
     write(DOCS / "assets" / "zones.json", json.dumps({row["code"]: continent(row) for row in rows}, separators=(",", ":")))
     catalog, country_names = {}, {}
     for lang in LANGS:
-        places = radar.load_places(lang)
-        rows = radar.http_json(f"{radar.TP_BASE}/data/{lang}/countries.json")
+        code = DATA_LANGS.get(lang, lang)
+        places = radar.load_places(code)
+        rows = radar.http_json(f"{radar.TP_BASE}/data/{code}/countries.json")
         catalog[lang] = (places, {row["code"]: row.get("name") or row["code"] for row in rows})
         country_names[lang] = catalog[lang][1]
     write(DOCS / "assets" / "countries.json", json.dumps(
