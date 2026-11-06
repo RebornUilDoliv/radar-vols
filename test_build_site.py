@@ -84,7 +84,7 @@ class BuildTests(unittest.TestCase):
         docs = self.build([offer("BCN", "Barcelone", "Europe", 43, 30)])
         english = (docs / "en" / "index.html").read_text()
         self.assertIn('<html lang="en">', english)
-        self.assertIn("Your next flight starts here.", english)
+        self.assertIn("Your next trip starts here.", english)
         self.assertIn("Barcelona", english)
         self.assertIn("€43", english)
         self.assertIn('hreflang="es"', english)
