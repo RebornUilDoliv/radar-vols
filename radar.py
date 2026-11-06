@@ -469,6 +469,12 @@ def run_is_recent(state, min_hours, now):
     return bool(last) and now - datetime.fromisoformat(last) < timedelta(hours=min_hours)
 
 
+def verification_is_due(state, hours, now):
+    """Google Flights coûte des crédits : il n'est consulté que de temps en temps."""
+    last = state.get("last_verify")
+    return not last or now - datetime.fromisoformat(last) >= timedelta(hours=hours)
+
+
 def load_state(path):
     return json.loads(path.read_text()) if path.exists() else {}
 
@@ -535,9 +541,14 @@ def main():
             return 0
         state["last_run"] = now.isoformat(timespec="minutes")
         client = Travelpayouts(token, config["search"])
-        serpapi_key = None if args.dry_run else os.environ.get("SERPAPI_KEY")
+        verify = not args.dry_run and verification_is_due(state, config["schedule"]["verify_hours"], now)
+        serpapi_key = os.environ.get("SERPAPI_KEY") if verify else None
+        if verify:
+            state["last_verify"] = now.isoformat(timespec="minutes")
         site = None if args.dry_run else args.site
         found = run(config, state, client, load_places(), serpapi_key, today, site)
+        if not verify and not args.dry_run:
+            found = []  # les alertes partent seulement après une vérification
         if args.dry_run:
             for offer in found:
                 print(f"{offer.city_name} {offer.price:.0f} € {offer.depart} → {offer.back} ({offer.reason})")

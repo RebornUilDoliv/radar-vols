@@ -30,7 +30,7 @@ class WorldTests(unittest.TestCase):
             path = Path(folder) / "world.json"
             now = datetime(2026, 11, 5, tzinfo=timezone.utc)
             self.assertFalse(world.is_recent(path, now))
-            path.write_text('{"updated":"2026-11-04T23:00+00:00"}')
+            path.write_text('{"updated":"2026-11-04T23:40+00:00"}')
             self.assertTrue(world.is_recent(path, now))
             self.assertFalse(world.is_recent(path, now + timedelta(days=1)))
 

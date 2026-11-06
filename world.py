@@ -10,7 +10,7 @@ import radar
 
 ROOT = Path(__file__).parent
 OUTPUT = ROOT / "docs" / "world.json"
-MIN_HOURS = 20
+MIN_HOURS = 0.75
 
 
 def is_recent(path, now):

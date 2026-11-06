@@ -37,7 +37,8 @@ test_api = "https://radar-flight-test.joseluiscardozopintos.workers.dev"        
 origins = ["LON", "PAR", "MAD", "BCN", "ROM", "BER", "AMS", "LIS", "IST", "DXB", "DEL", "BKK", "SIN", "HKG", "TYO", "SEL", "SYD", "JNB", "CAI", "CMN", "NYC", "LAX", "MIA", "YTO", "MEX", "BOG", "LIM", "SAO", "BUE", "SCL"]
 
 [schedule]
-min_hours = 12                   # le radar vérifie toutes les 4 heures, et relève au plus toutes les 12 heures
+min_hours = 0.75                 # le radar relève les prix une fois par heure
+verify_hours = 12                # et consulte Google Flights au plus toutes les 12 heures
 
 [alerts]
 deal_drop = 0.25                 # bonne affaire = 25 % sous le prix habituel
