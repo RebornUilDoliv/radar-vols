@@ -319,7 +319,8 @@
     video.muted = true; video.loop = true; video.autoplay = true; video.playsInline = true;
     video.setAttribute("aria-hidden", "true");
     video.addEventListener("canplay", function () { video.classList.add("on"); });
-    video.src = hero.dataset.video;
+    var bigScreen = screen.width * (window.devicePixelRatio || 1) >= 2400;
+    video.src = bigScreen ? hero.dataset.video.replace(".mp4", "-4k.mp4") : hero.dataset.video;
     hero.insertBefore(video, hero.querySelector(".hero-in"));
     var pause = el("button", "video-pause", "❚❚");
     pause.type = "button";
