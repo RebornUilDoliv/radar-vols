@@ -331,6 +331,7 @@ details p { margin-top: 6px; color: var(--g3); }
   .trip .stay { padding: 14px; }
   .trip .stay strong { font-size: 16px; line-height: 1.2; }
   .trip .stay span { display: none; }
+  .video-pause { inset-block: 74px auto; inset-inline-end: 14px; width: 36px; height: 36px; }
   /* Filtres */
   .filters { position: relative; padding: 12px; }
   .filters:not(.all) .adv { display: none; }
