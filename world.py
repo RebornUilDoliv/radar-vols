@@ -11,6 +11,7 @@ import radar
 ROOT = Path(__file__).parent
 OUTPUT = ROOT / "docs" / "world.json"
 MIN_HOURS = 0.75
+MARKETS = ("fr", "us", "ae")      # certaines villes n'ont des prix que sur un autre marché
 
 
 def is_recent(path, now):
@@ -51,8 +52,12 @@ def main():
     places = radar.load_places()
     routes = []
     for origin in config["world"]["origins"]:
-        client = radar.Travelpayouts(token, {**config["search"], "origin_city": origin})
-        found = best_routes(origin, client.discovery(), places, config["site"], date.today())
+        found = []
+        for market in MARKETS:
+            client = radar.Travelpayouts(token, {**config["search"], "origin_city": origin, "market": market})
+            found = best_routes(origin, client.discovery(), places, config["site"], date.today())
+            if found:
+                break
         print(f"{origin} : {len(found)} routes")
         routes += found
     if not routes:

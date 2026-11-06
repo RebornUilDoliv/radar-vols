@@ -31,6 +31,7 @@ POPULAR_ORIGINS = 10             # une destination doit être desservie depuis a
 MAX_ROUTE_PRICE = 3000           # écarte les prix aberrants
 HUB_ROWS = 60
 DEFAULT_ORIGIN = {"fr": "PAR", "en": "LON", "es": "MAD", "de": "BER", "it": "ROM", "pt": "LIS", "nl": "AMS", "tr": "IST", "ar": "RUH", "zh": "HKG", "ko": "SEL"}
+BACKUP_ORIGIN = {"ar": "DXB"}
 PARTNER_LANGS = ("fr", "en", "es", "de", "it", "pt")
 SOUTH_AMERICA = {"AR", "BO", "BR", "CL", "CO", "EC", "GF", "GY", "PE", "PY", "SR", "UY", "VE"}
 LOGO = (
@@ -389,7 +390,7 @@ def home(p, cities, offers, updated, origins=()):
     near_titles = NEAR_TITLES[p.lang]
     near_city = p.city("PAR", "Paris")
     near_script = ""
-    local = next((o for o in origins if o["code"] == DEFAULT_ORIGIN[p.lang]), None) or next((o for o in origins if o["code"] == "PAR"), None)
+    local = default_origin(p, origins)
     if local:
         near_city = p.city(local["code"], local["code"])
 
@@ -507,8 +508,15 @@ def tools_block(p):
     return f'<section class="band wrap"><h2>{p.t("tools_title")}</h2><div class="stays tools">{cards}</div></section>'
 
 
+def default_origin(p, origins):
+    """La ville de la langue, ou la plus proche disponible, puis Paris."""
+    wanted = (DEFAULT_ORIGIN[p.lang], BACKUP_ORIGIN.get(p.lang), "PAR")
+    return next((o for code in wanted for o in origins if o["code"] == code), None)
+
+
 def flights_page(p, origins=()):
-    default = DEFAULT_ORIGIN[p.lang]
+    chosen = default_origin(p, origins)
+    default = chosen["code"] if chosen else ""
     choices = "".join(
         f'<option value="{o["code"]}"{" selected" if o["code"] == default else ""}>{e(p.city(o["code"], o["code"]))}</option>'
         for o in sorted(origins, key=lambda o: p.city(o["code"], o["code"]))

@@ -26,7 +26,7 @@ concurrency:
 jobs:
   radar:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 45
     environment:
       name: github-pages
       url: https://eunodia.com/
@@ -78,3 +78,5 @@ jobs:
       - name: Mettre le site en ligne
         if: ${{ !inputs.test_email }}
         uses: actions/deploy-pages@v4
+        with:
+          timeout: 1800000
