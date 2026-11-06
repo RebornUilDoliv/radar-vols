@@ -310,6 +310,36 @@
     });
   }
 
+  function initHeroVideo() {
+    var hero = document.querySelector(".hero[data-video]");
+    var saveData = navigator.connection && navigator.connection.saveData;
+    if (!hero || saveData || !matchMedia("(min-width: 768px) and (prefers-reduced-motion: no-preference)").matches) return;
+    var video = document.createElement("video");
+    video.className = "hero-video";
+    video.muted = true; video.loop = true; video.autoplay = true; video.playsInline = true;
+    video.setAttribute("aria-hidden", "true");
+    video.addEventListener("canplay", function () { video.classList.add("on"); });
+    video.src = hero.dataset.video;
+    hero.insertBefore(video, hero.querySelector(".hero-in"));
+    var pause = el("button", "video-pause", "❚❚");
+    pause.type = "button";
+    pause.setAttribute("aria-label", "Pause");
+    pause.addEventListener("click", function () {
+      if (video.paused) { video.play(); pause.textContent = "❚❚"; } else { video.pause(); pause.textContent = "▶"; }
+    });
+    hero.appendChild(pause);
+    var played = video.play();
+    if (played && played.catch) played.catch(function () {});
+  }
+
+  function initLanguageMenu() {
+    var menu = document.querySelector("details.langs");
+    if (!menu) return;
+    document.addEventListener("click", function (event) {
+      if (!menu.contains(event.target)) menu.open = false;
+    });
+  }
+
   function initMoreFilters() {
     var button = $("more-filters");
     if (!button) return;
@@ -332,6 +362,8 @@
   initSearch();
   initNewsletter();
   initMenu();
+  initHeroVideo();
+  initLanguageMenu();
   initMoreFilters();
   rotatePhotos(Math.floor(Date.now() / 864e5));
   highlightMonth();

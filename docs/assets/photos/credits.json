@@ -67,13 +67,13 @@
   },
   "PAR": {
     "city": "Paris",
-    "artist": "Pedro Kümmel pedrokummel",
-    "license": "CC0",
-    "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
-    "source": "https://commons.wikimedia.org/wiki/File:Eiffel_Tower_sunset_skyline_(Unsplash).jpg",
+    "artist": "NonOmnisMoriar",
+    "license": "CC BY-SA 3.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Eiffel_tower_from_trocadero.jpg",
     "size": [
-      6000,
-      4000
+      4038,
+      2596
     ]
   },
   "MAD": {
@@ -166,13 +166,13 @@
   },
   "DEL": {
     "city": "New Delhi",
-    "artist": "Shagil Kannur",
+    "artist": "Bijay chaurasia",
     "license": "CC BY-SA 4.0",
     "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
-    "source": "https://commons.wikimedia.org/wiki/File:India_Gate,_New_Delhi_by_Shagil_Kannur_6.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Lotus_Temple-Panoroma-Visit_During_WCI_2016-_IMG_6471.jpg",
     "size": [
-      5568,
-      3712
+      7929,
+      4324
     ]
   },
   "BKK": {
@@ -232,13 +232,13 @@
   },
   "JNB": {
     "city": "Johannesbourg",
-    "artist": "Andrew Moore",
-    "license": "CC BY-SA 2.0",
-    "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Johannesburg%27s_inner_city.jpg",
+    "artist": "South African Tourism",
+    "license": "CC BY 2.0",
+    "license_url": "https://creativecommons.org/licenses/by/2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Mandela_Bridge,_Johannesburg,_Gauteng,_South_Africa.jpg",
     "size": [
-      5472,
-      3648
+      4928,
+      3280
     ]
   },
   "CAI": {
@@ -276,24 +276,24 @@
   },
   "LAX": {
     "city": "Los Angeles",
-    "artist": "Adoramassey",
+    "artist": "Levi Clancy",
     "license": "CC BY-SA 4.0",
     "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
-    "source": "https://commons.wikimedia.org/wiki/File:20190616154621!Echo_Park_Lake_with_Downtown_Los_Angeles_Skyline.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Skyline_of_Los_Angeles,_Downtown_Los_Angeles,_California_13.jpg",
     "size": [
-      3992,
-      2242
+      6016,
+      3862
     ]
   },
   "MIA": {
     "city": "Miami",
-    "artist": "Matthew T Rader",
-    "license": "CC BY-SA 4.0",
-    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Miami_skyline_from_the_ocean.jpg",
+    "artist": "Wilfredor",
+    "license": "CC0",
+    "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "source": "https://commons.wikimedia.org/wiki/File:Miami,_Florida_skyline.jpg",
     "size": [
-      3881,
-      2426
+      13039,
+      5504
     ]
   },
   "YTO": {
@@ -331,35 +331,35 @@
   },
   "LIM": {
     "city": "Lima",
-    "artist": "magicmonkey",
-    "license": "CC BY 2.0",
-    "license_url": "https://creativecommons.org/licenses/by/2.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Lima_Peru_coast.jpg",
+    "artist": "JulioKuLu",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Plaza_Mayor_de_Lima-1.jpg",
     "size": [
-      3872,
-      2592
+      5208,
+      2909
     ]
   },
   "SAO": {
     "city": "São Paulo",
-    "artist": "Wilfredor",
+    "artist": "ikedaleo",
     "license": "CC0",
     "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
-    "source": "https://commons.wikimedia.org/wiki/File:Avenue_and_the_downtown_skyline_of_Sao_Paulo.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:CENU,_S%C3%A3o_Paulo,_Brasil.jpg",
     "size": [
-      9108,
-      5703
+      5952,
+      2976
     ]
   },
   "BUE": {
     "city": "Buenos Aires",
-    "artist": "Roberto Fiadone",
-    "license": "CC BY-SA 4.0",
-    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Obelisco_de_Buenos_Aires,_D%C3%ADa_de_la_Discapacidad.jpg",
+    "artist": "Dragan",
+    "license": "CC BY 3.0",
+    "license_url": "https://creativecommons.org/licenses/by/3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Casa_Rosada_Buenos_Aires.JPG",
     "size": [
-      4511,
-      3257
+      4320,
+      3240
     ]
   },
   "SCL": {
