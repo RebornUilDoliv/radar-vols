@@ -16,7 +16,7 @@ from zoneinfo import ZoneInfo
 from pathlib import Path
 
 import radar
-from site_text import (BAROMETER, BOOKING_LOCALES, CONTINENTS, DATA_LANGS, FULL_LANGS, LANG_NAMES, LANGS, LOCALES, MONTHS, NEWS_DONE, REGIONS,
+from site_text import (BAROMETER, BOOKING_LOCALES, CONTINENTS, DATA_LANGS, FULL_LANGS, LANG_NAMES, LANGS, LOCALES, MONTHS, NEAR_TITLES, NEWS_DONE, REGIONS,
                        RTL_LANGS, SCRIPT_TEXT, SHORT_MONTHS, TEXT)
 
 ROOT = Path(__file__).parent
@@ -30,7 +30,7 @@ ROUTES_PER_ORIGIN = 40           # pages de route créées par ville de départ
 POPULAR_ORIGINS = 10             # une destination doit être desservie depuis autant de villes
 MAX_ROUTE_PRICE = 3000           # écarte les prix aberrants
 HUB_ROWS = 60
-DEFAULT_ORIGIN = {"fr": "PAR", "en": "LON", "es": "MAD", "de": "BER", "it": "ROM", "pt": "LIS", "nl": "AMS", "tr": "IST", "ar": "DXB", "zh": "HKG", "ko": "SEL"}
+DEFAULT_ORIGIN = {"fr": "PAR", "en": "LON", "es": "MAD", "de": "BER", "it": "ROM", "pt": "LIS", "nl": "AMS", "tr": "IST", "ar": "RUH", "zh": "HKG", "ko": "SEL"}
 PARTNER_LANGS = ("fr", "en", "es", "de", "it", "pt")
 SOUTH_AMERICA = {"AR", "BO", "BR", "CL", "CO", "EC", "GF", "GY", "PE", "PY", "SR", "UY", "VE"}
 LOGO = (
@@ -386,6 +386,27 @@ def home(p, cities, offers, updated, origins=()):
         for value in (100, 300, 600, 1000)
     )
     nothing = f'<li class="empty">{p.t("nothing")}</li>'
+    near_titles = NEAR_TITLES[p.lang]
+    near_city = p.city("PAR", "Paris")
+    near_script = ""
+    local = next((o for o in origins if o["code"] == DEFAULT_ORIGIN[p.lang]), None) or next((o for o in origins if o["code"] == "PAR"), None)
+    if local:
+        near_city = p.city(local["code"], local["code"])
+
+        def pick(rule):
+            seen, kept = set(), []
+            for route in local["routes"]:
+                gap = (date.fromisoformat(route["depart"]) - today).days
+                if rule(gap) and route["to"] not in seen:
+                    seen.add(route["to"])
+                    kept.append(route)
+            return kept[:4]
+
+        soon = "".join(world_row(p, local, r) for r in pick(lambda gap: gap <= SOON_DAYS))
+        ahead = "".join(world_row(p, local, r) for r in pick(lambda gap: gap >= AHEAD_DAYS))
+        near_data = {"soon": SOON_DAYS, "ahead": AHEAD_DAYS, "default": local["code"], "titles": near_titles,
+                     "origins": [[o["code"], p.city(o["code"], o["code"]), (p.geo.get(o["code"]) or [0, 0, ""])[2]] for o in origins]}
+        near_script = f'<script>window.RFNEAR={json.dumps(near_data, ensure_ascii=False).replace("</", "<\\/")}</script>'
     world = ""
     start = p.city("PAR", "Paris")
     hero_route = None
@@ -438,8 +459,8 @@ def home(p, cities, offers, updated, origins=()):
   <div class="budgets">{budgets}</div>
 </section>
 <section class="band wrap two">
-  <div><h2>{p.t('soon')}</h2><p class="sub">{p.t('soon_sub', days=SOON_DAYS)}</p><ul class="rows">{soon or nothing}</ul></div>
-  <div><h2>{p.t('ahead')}</h2><p class="sub">{p.t('ahead_sub')}</p><ul class="rows">{ahead or nothing}</ul></div>
+  <div><h2 id="soon-title">{e(near_titles[0].format(city=near_city))}</h2><p class="sub">{p.t('soon_sub', days=SOON_DAYS)}</p><ul class="rows" id="soon-list">{soon or nothing}</ul></div>
+  <div><h2 id="ahead-title">{e(near_titles[1].format(city=near_city))}</h2><p class="sub">{p.t('ahead_sub')}</p><ul class="rows" id="ahead-list">{ahead or nothing}</ul></div>
 </section>
 {ticker_block(p, origins)}
 <section class="band wrap"{' hidden' if origins else ''}>
@@ -448,7 +469,7 @@ def home(p, cities, offers, updated, origins=()):
 </section>
 <section class="band wrap">
 </section>"""
-    return layout(p, f"{p.site['name']} — {p.t('title_home')}", p.t("meta_home"), "", body, extra=site_schema(p))
+    return layout(p, f"{p.site['name']} — {p.t('title_home')}", p.t("meta_home"), "", body, extra=site_schema(p) + near_script)
 
 
 def ticker_block(p, origins):

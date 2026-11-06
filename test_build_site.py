@@ -43,8 +43,8 @@ class BuildTests(unittest.TestCase):
 
     def test_sections_split_soon_and_ahead(self):
         home = (self.build([offer("BCN", "Barcelone", "Europe", 43, 30), offer("LON", "Londres", "Europe", 59, 200)]) / "index.html").read_text()
-        self.assertLess(home.index("Partir bientôt"), home.index("Réserver à l'avance"))
-        self.assertIn("Londres", home[home.index("Réserver à l'avance"):])
+        self.assertLess(home.index("Partir bientôt"), home.index("Réserver à l"))
+        self.assertIn("Londres", home[home.index("Réserver à l"):])
 
     def test_escapes_city_and_links(self):
         docs = self.build([offer("BAD", "<script>x", "Europe", 40, 30)])

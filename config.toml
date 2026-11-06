@@ -34,7 +34,7 @@ analytics_token = "71176418a1124737b274a50c21f6e2a5"  # identifiant public de Cl
 test_api = "https://radar-flight-test.joseluiscardozopintos.workers.dev"                    # adresse du serveur de test ; vide = mode démonstration
 
 [world]
-origins = ["LON", "PAR", "MAD", "BCN", "ROM", "BER", "AMS", "LIS", "IST", "DXB", "DEL", "BKK", "SIN", "HKG", "TYO", "SEL", "SYD", "JNB", "CAI", "CMN", "NYC", "LAX", "MIA", "YTO", "MEX", "BOG", "LIM", "SAO", "BUE", "SCL"]
+origins = ["LON", "PAR", "MAD", "BCN", "ROM", "BER", "AMS", "LIS", "IST", "DXB", "RUH", "DEL", "BKK", "SIN", "HKG", "TYO", "SEL", "SYD", "JNB", "CAI", "CMN", "NYC", "LAX", "MIA", "YTO", "MEX", "BOG", "LIM", "SAO", "BUE", "SCL"]
 
 [schedule]
 min_hours = 0.75                 # le radar relève les prix une fois par heure

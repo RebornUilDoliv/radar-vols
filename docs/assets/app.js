@@ -174,13 +174,7 @@
     });
   }
 
-  /* Liste filtrable */
-  function initFlights() {
-    if (!$("offers")) return;
-    var all = [], current = [], shown = PAGE;
-    var clean = function (text) { return text.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase(); };
-
-    function card(o) {
+    function flightCard(o) {
       var item = el("li", "row");
       var info = el("div", "row-info");
       var title = el("h3");
@@ -195,6 +189,53 @@
       item.appendChild(info); item.appendChild(el("p", "row-price", euro(o.price))); item.appendChild(cta);
       return item;
     }
+
+  /* Vols proches : la ville suit le fuseau horaire du visiteur, sans localisation */
+  function initNearby() {
+    var data = window.RFNEAR, soon = $("soon-list"), ahead = $("ahead-list");
+    if (!data || !soon) return;
+    var zone = "";
+    try { zone = Intl.DateTimeFormat().resolvedOptions().timeZone || ""; } catch (error) {}
+    var area = zone.split("/")[0], byZone = null, byArea = null, fallback = null;
+    data.origins.forEach(function (o) {
+      if (o[0] === data.default) fallback = o;
+      if (o[2] === zone) byZone = byZone || o;
+      if (RF.lang === "fr" && o[0] === "PAR" && area === "Europe") byArea = byArea || o;
+      if (o[2] && o[2].split("/")[0] === area) byArea = byArea || o;
+    });
+    var picked = byZone || (fallback && fallback[2] && fallback[2].split("/")[0] === area ? fallback : byArea) || fallback;
+    if (!picked || picked[0] === data.default) return;
+    fetch(BASE + "assets/routes/" + RF.lang + "/" + picked[0] + ".json")
+      .then(function (r) { if (!r.ok) throw new Error(); return r.json(); })
+      .then(function (rows) {
+        var now = new Date();
+        var pick = function (test) {
+          var seen = {}, kept = [];
+          rows.slice().sort(function (a, b) { return a.price - b.price; }).forEach(function (o) {
+            var gap = (dateOf(o.depart) - now) / 864e5;
+            if (test(gap) && !seen[o.city] && kept.length < 4) { seen[o.city] = 1; kept.push(o); }
+          });
+          return kept;
+        };
+        var fill = function (box, title, text, list) {
+          if (!list.length) return;
+          box.textContent = "";
+          list.forEach(function (o) { box.appendChild(flightCard(o)); });
+          title.textContent = text.replace("{city}", picked[1]);
+        };
+        fill(soon, $("soon-title"), data.titles[0], pick(function (g) { return g <= data.soon; }));
+        fill(ahead, $("ahead-title"), data.titles[1], pick(function (g) { return g >= data.ahead; }));
+      })
+      .catch(function () {});
+  }
+
+  /* Liste filtrable */
+  function initFlights() {
+    if (!$("offers")) return;
+    var all = [], current = [], shown = PAGE;
+    var clean = function (text) { return text.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase(); };
+
+    var card = flightCard;
 
     function filtered() {
       var q = clean($("q").value.trim()), region = $("region").value, month = $("month").value;
@@ -368,6 +409,7 @@
   initSearch();
   initNewsletter();
   initMenu();
+  initNearby();
   initHeroVideo();
   initLanguageMenu();
   initMoreFilters();

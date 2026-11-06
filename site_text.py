@@ -36,6 +36,20 @@ BAROMETER = {
     "ko": ("가격 지표", "Eunodia가 찾은 가장 흥미로운 가격을 매일 업데이트합니다.", "최고의 장거리 항공편", "최저 가격", "도착 대륙별 중간 가격", "{updated} 기준 1인 왕복 가격이며 부가 서비스는 제외입니다. 빠르게 바뀔 수 있습니다.", "중간값 {price}"),
 }
 
+NEAR_TITLES = {
+    "fr": ("Partir bientôt depuis {city}", "Réserver à l'avance depuis {city}"),
+    "en": ("Leaving soon from {city}", "Book ahead from {city}"),
+    "es": ("Salir pronto desde {city}", "Reservar con antelación desde {city}"),
+    "de": ("Bald losfliegen ab {city}", "Früh buchen ab {city}"),
+    "it": ("Partire presto da {city}", "Prenota in anticipo da {city}"),
+    "pt": ("Partir em breve de {city}", "Reservar com antecedência de {city}"),
+    "nl": ("Snel vertrekken vanuit {city}", "Vroeg boeken vanuit {city}"),
+    "tr": ("{city} çıkışlı yakın uçuşlar", "{city} çıkışlı erken rezervasyon"),
+    "ar": ("سافر قريبًا من {city}", "احجز مبكرًا من {city}"),
+    "zh": ("近期从{city}出发", "提前预订，从{city}出发"),
+    "ko": ("{city}에서 곧 출발", "{city}에서 미리 예약"),
+}
+
 NEWS_DONE = {
     "fr": ("C'est confirmé, bienvenue !", "Ton inscription à Eunodia est validée. Les prochains bons plans arriveront directement dans ta boîte mail.", "Voir où je peux partir", "Explorer les destinations"),
     "en": ("You're in, welcome!", "Your Eunodia subscription is confirmed. The next deals will land straight in your inbox.", "See where I can go", "Explore destinations"),
