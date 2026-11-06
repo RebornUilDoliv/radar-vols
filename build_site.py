@@ -128,8 +128,29 @@ def destinations(offers):
     return sorted(cities.values(), key=lambda c: c["best"]["price"])
 
 
+PAGE_TOP = re.compile(
+    r'<section class="page wrap">\s*(?P<crumb><p class="crumb">.*?</p>)?\s*<h1>(?P<title>.*?)</h1>\s*'
+    r'(?P<cover><figure class="cover">.*?</figure>)?\s*(?P<lead><p class="lead">.*?</p>)?\s*'
+    r'(?P<cta><p><a class="go".*?</a></p>)?', re.S)
+
+
+def page_hero(p, path, body):
+    """Donne aux pages intérieures le même en-tête en photo que l'accueil."""
+    top = PAGE_TOP.search(body)
+    photos = sorted(code for code in load_credits() if photo_exists(code))
+    if not top or not photos:
+        return body
+    own = re.search(r"assets/photos/([A-Z]{3})\.jpg", top["cover"] or "")
+    code = own[1] if own else photos[sum(path.encode()) % len(photos)]
+    hero = (f'<section class="page-hero"><img class="hero-img" {photo_set(p, code, "100vw")} fetchpriority="high" alt="">'
+            f'<div class="page-hero-in wrap">{top["crumb"] or ""}<h1>{top["title"]}</h1>{top["lead"] or ""}{top["cta"] or ""}</div></section>'
+            '<section class="page wrap">')
+    return body[:top.start()] + hero + body[top.end():]
+
+
 def layout(p, title, description, path, body, noindex=False, extra=""):
     site, base, root = p.site, p.base, p.root
+    body = page_hero(p, path, body)
     name = e(site["name"])
     links = "".join(
         f'<link rel="alternate" hreflang="{lang}" href="{e(site["url"] + ("" if lang == "fr" else lang + "/") + path)}">'

@@ -30,7 +30,6 @@ img { display: block; width: 100%; }
 .langs { display: flex; gap: 8px; font-size: 13px; }
 .langs a { padding: 2px; text-decoration: none; opacity: .65; }
 .langs a[aria-current], .langs a:hover { opacity: 1; text-decoration: underline; text-underline-offset: 4px; }
-body:has(.page) .nav { position: static; margin: 0; padding: 16px 32px; color: var(--w); background: var(--k); }
 
 .hero { position: relative; display: flex; align-items: flex-end; min-height: min(78vh, 720px); margin: 12px; overflow: hidden; color: var(--w); background: var(--k); border-radius: 22px; }
 .hero-img { position: absolute; inset: 0; height: 100%; object-fit: cover; filter: brightness(.68); }
@@ -133,8 +132,17 @@ h2 { font-size: 32px; font-weight: 500; }
 .test-cta strong { font-size: 20px; font-weight: 500; }
 .test-cta span { color: #c5c5c5; }
 
-.page { padding-block: 38px 8px; }
-.page h1 { font-size: 40px; font-weight: 600; }
+.page-hero { position: relative; display: flex; align-items: flex-end; min-height: 380px; margin: 12px; overflow: hidden; color: var(--w); background: var(--k); border-radius: 22px; }
+.page-hero-in { position: relative; padding-block: 120px 34px; }
+.page-hero h1 { max-width: 900px; font-size: 44px; font-weight: 600; }
+.page-hero .lead { max-width: 720px; margin-top: 10px; color: #e8e8e8; font-size: 18px; }
+.page-hero .lead strong { color: var(--w); }
+.page-hero .crumb { margin-bottom: 10px; color: #dcdcdc; }
+.page-hero .crumb a { color: inherit; }
+.page-hero .go { margin-top: 16px; color: var(--k); background: var(--w); }
+.page { width: min(1040px, 100%); padding-block: 40px 56px; }
+.page > h2 { margin: 36px 0 10px; font-size: 28px; }
+.page > h2:first-child { margin-top: 0; }
 .lead { max-width: 720px; margin-top: 8px; color: var(--g3); font-size: 16px; }
 .lead strong { color: var(--k); font-weight: 650; }
 .crumb { margin-bottom: 8px; color: var(--g3); font-size: 15px; }
@@ -151,8 +159,8 @@ h2 { font-size: 32px; font-weight: 500; }
 .more[hidden] { display: none; }
 img { max-width: 100%; }
 .empty { padding: 20px 0; color: var(--g3); }
-.panel { margin-top: 36px; }
-.panel h2 { margin-bottom: 10px; font-size: 24px; }
+.panel { margin-top: 48px; }
+.panel h2 { margin-bottom: 12px; font-size: 28px; }
 .scroll { overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; }
 th, td { padding: 11px 14px 11px 0; text-align: left; border-bottom: 1px solid var(--g2); white-space: nowrap; font-weight: 400; }
@@ -174,8 +182,9 @@ td.num, th.num { text-align: right; font-weight: 650; font-variant-numeric: tabu
 .stays.tools { grid-template-columns: repeat(4, 1fr); margin-top: 18px; }
 .guide { display: grid; gap: 4px; }
 .guide li::before { content: "– "; color: var(--g3); }
-.dest-group { margin-top: 32px; }
-.dest-group h2 { margin-bottom: 8px; font-size: 24px; }
+.dest-group { margin-top: 44px; }
+.dest-group:first-child { margin-top: 0; }
+.dest-group h2 { margin-bottom: 10px; font-size: 28px; }
 .chart { position: relative; }
 .chart svg { display: block; width: 100%; height: 170px; touch-action: pan-y; }
 .chart .axis { fill: var(--g3); font-size: 12px; }
@@ -222,7 +231,7 @@ details p { margin-top: 6px; color: var(--g3); }
   .mosaic { grid-template-columns: 1fr; }
   .card.big { min-height: 340px; }
   .budgets, .links { grid-template-columns: repeat(2, 1fr); }
-  .stays { grid-template-columns: 1fr; }
+  .stays { grid-template-columns: repeat(2, 1fr); }
   .stays.tools { grid-template-columns: repeat(2, 1fr); }
   .filters { grid-template-columns: repeat(3, 1fr); }
   .two { grid-template-columns: 1fr; }
@@ -233,10 +242,15 @@ details p { margin-top: 6px; color: var(--g3); }
   .nav nav { order: 3; width: 100%; margin: 0; gap: 2px 14px; }
   .nav nav a { font-size: 14px; }
   .langs { margin-left: auto; }
-  body:has(.page) .nav { padding: 14px 18px; }
+  .page-hero { min-height: 300px; margin: 6px; border-radius: 16px; }
+  .page-hero-in { padding: 104px 18px 26px; }
+  .page-hero h1 { font-size: 30px; }
+  .page { padding-block: 26px 40px; }
+  .page > h2 { margin-top: 28px; }
+  .panel { margin-top: 36px; }
   .hero { margin: 6px; min-height: 66vh; border-radius: 16px; }
   .hero-in { padding: 140px 18px 92px; }
-  .hero h1, .page h1 { font-size: 30px; }
+  .hero h1 { font-size: 30px; }
   h2 { font-size: 24px; }
   #booking h2 { font-size: 24px; }
   .search { grid-template-columns: 1fr 1fr; padding: 12px; }
