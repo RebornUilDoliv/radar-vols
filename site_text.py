@@ -22,6 +22,20 @@ REGIONS = {
     "es": {"Argentine et Chili": "Argentina y Chile", "Paraguay": "Paraguay", "États-Unis": "Estados Unidos", "Canada": "Canadá", "Mexique": "México", "Europe": "Europa", "Asie": "Asia", "Corée du Nord": "Corea del Norte", "Océanie": "Oceanía"},
 }
 
+NEWS_DONE = {
+    "fr": ("C'est confirmé, bienvenue !", "Ton inscription à Eunodia est validée. Les prochains bons plans arriveront directement dans ta boîte mail.", "Voir où je peux partir", "Explorer les destinations"),
+    "en": ("You're in, welcome!", "Your Eunodia subscription is confirmed. The next deals will land straight in your inbox.", "See where I can go", "Explore destinations"),
+    "es": ("¡Confirmado, bienvenido!", "Tu suscripción a Eunodia está validada. Las próximas ofertas llegarán directamente a tu correo.", "Ver a dónde puedo ir", "Explorar destinos"),
+    "de": ("Bestätigt, willkommen!", "Deine Anmeldung bei Eunodia ist bestätigt. Die nächsten Angebote kommen direkt in dein Postfach.", "Sehen, wohin ich reisen kann", "Reiseziele entdecken"),
+    "it": ("Confermato, benvenuto!", "La tua iscrizione a Eunodia è confermata. Le prossime offerte arriveranno direttamente nella tua casella.", "Vedi dove posso andare", "Esplora le destinazioni"),
+    "pt": ("Confirmado, bem-vindo!", "A tua inscrição na Eunodia está confirmada. As próximas ofertas chegarão diretamente à tua caixa de entrada.", "Ver para onde posso ir", "Explorar destinos"),
+    "nl": ("Bevestigd, welkom!", "Je inschrijving bij Eunodia is bevestigd. De volgende aanbiedingen komen rechtstreeks in je inbox.", "Bekijk waar ik heen kan", "Bestemmingen ontdekken"),
+    "tr": ("Onaylandı, hoş geldiniz!", "Eunodia aboneliğiniz onaylandı. Sonraki fırsatlar doğrudan gelen kutunuza gelecek.", "Nereye gidebileceğimi gör", "Destinasyonları keşfet"),
+    "ar": ("تم التأكيد، مرحبًا بك!", "تم تأكيد اشتراكك في Eunodia. ستصلك العروض القادمة مباشرة إلى بريدك.", "اعرف إلى أين يمكنني الذهاب", "استكشف الوجهات"),
+    "zh": ("已确认，欢迎加入！", "您的 Eunodia 订阅已确认。接下来的优惠将直接发送到您的邮箱。", "看看我能去哪里", "探索目的地"),
+    "ko": ("확인되었습니다. 환영합니다!", "Eunodia 구독이 확인되었습니다. 다음 특가는 메일함으로 바로 보내 드립니다.", "어디로 갈 수 있는지 보기", "여행지 둘러보기"),
+}
+
 CONTINENTS = {
     "fr": {"EU": "Europe", "AF": "Afrique", "AS": "Asie", "NA": "Amérique du Nord et centrale", "SA": "Amérique du Sud", "OC": "Océanie", "IN": "Océan Indien", "XX": "Autres"},
     "en": {"EU": "Europe", "AF": "Africa", "AS": "Asia", "NA": "North and Central America", "SA": "South America", "OC": "Oceania", "IN": "Indian Ocean", "XX": "Other"},

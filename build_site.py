@@ -14,7 +14,7 @@ from statistics import median
 from pathlib import Path
 
 import radar
-from site_text import (BOOKING_LOCALES, CONTINENTS, DATA_LANGS, FULL_LANGS, LANG_NAMES, LANGS, LOCALES, MONTHS, REGIONS,
+from site_text import (BOOKING_LOCALES, CONTINENTS, DATA_LANGS, FULL_LANGS, LANG_NAMES, LANGS, LOCALES, MONTHS, NEWS_DONE, REGIONS,
                        RTL_LANGS, SCRIPT_TEXT, SHORT_MONTHS, TEXT)
 
 ROOT = Path(__file__).parent
@@ -914,6 +914,14 @@ def credits_page(p):
     return layout(p, f"{p.t('credits')} | {p.site['name']}", p.t("credits_lead"), "credits/", body)
 
 
+def news_done_page(p):
+    title, lead, first, second = NEWS_DONE[p.lang]
+    body = (f'<section class="page wrap"><h1>{e(title)}</h1><p class="lead">{e(lead)}</p></section>'
+            f'<section class="done-actions wrap"><a class="go" href="{p.root}vols/">{e(first)}</a>'
+            f'<a class="done-link" href="{p.root}destinations/">{e(second)}</a></section>')
+    return layout(p, f"{title} | {p.site['name']}", lead, "newsletter-confirmee/", body, noindex=True, photo="SYD")
+
+
 def missing_page(p):
     body = f'<section class="page wrap narrow"><h1>{p.t("missing")}</h1><p class="lead">{p.t("missing_lead")}</p><a class="search-go" href="{p.root}">{p.t("back_home")}</a></section>'
     return layout(p, f"{p.t('missing')} | {p.site['name']}", p.t("missing_lead"), "404.html", body)
@@ -973,6 +981,7 @@ def build_language(p, data, cities, updated_at, groups, origins=()):
     for origin in origins:
         write(DOCS / "assets" / "routes" / lang / f"{origin['code']}.json", json.dumps(route_rows(p, origin), ensure_ascii=False, separators=(",", ":")))
     write(folder / "a-propos" / "index.html", about_page(p))
+    write(folder / "newsletter-confirmee" / "index.html", news_done_page(p))
     deals = folder / "vols-pas-chers"
     if deals.exists():
         shutil.rmtree(deals)

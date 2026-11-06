@@ -220,6 +220,11 @@ class BuildTests(unittest.TestCase):
     def test_one_day_is_singular(self):
         self.assertEqual(build_site.Page({"root": "/"}, "fr").t("days", count=1), "1 jour")
 
+    def test_newsletter_confirmation_page_is_hidden_from_search(self):
+        page = (self.build(self.deals()) / "newsletter-confirmee" / "index.html").read_text()
+        self.assertIn("bienvenue", page)
+        self.assertIn('content="noindex, nofollow"', page)
+
     def test_slug_removes_accents(self):
         self.assertEqual(build_site.slug("Montréal – Dorval"), "montreal-dorval")
 
