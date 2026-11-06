@@ -136,7 +136,7 @@ def destinations(offers):
 
 
 PAGE_TOP = re.compile(
-    r'<section class="page wrap">\s*(?P<crumb><p class="crumb">.*?</p>)?\s*<h1>(?P<title>.*?)</h1>\s*'
+    r'<section class="page wrap(?P<narrow> narrow)?">\s*(?P<crumb><p class="crumb">.*?</p>)?\s*<h1>(?P<title>.*?)</h1>\s*'
     r'(?P<cover><figure class="cover">.*?</figure>)?\s*(?P<lead><p class="lead">.*?</p>)?\s*'
     r'(?P<cta><p><a class="go".*?</a></p>)?', re.S)
 
@@ -154,7 +154,7 @@ def page_hero(p, path, body, photo=None):
     image = f'<img class="hero-img" {photo_set(p, photo, "100vw").replace("async", "sync")} fetchpriority="high" alt="">' if photo else ""
     hero = (f'<section class="page-hero">{image}'
             f'<div class="page-hero-in wrap">{top["crumb"] or ""}<h1>{top["title"]}</h1>{top["lead"] or ""}{top["cta"] or ""}</div></section>'
-            '<section class="page wrap">')
+            f'<section class="page wrap{top["narrow"] or ""}">')
     return body[:top.start()] + hero + body[top.end():]
 
 
@@ -990,8 +990,8 @@ def destination_page(p, city, cities):
 
 def about_page(p):
     items = "".join(f"<details><summary>{e(q)}</summary><p>{e(a)}</p></details>" for q, a in TEXT[p.lang]["faq"])
-    body = f'<section class="page wrap narrow"><h1>{p.t("info_title")}</h1><p class="lead">{p.t("info_lead")}</p><div class="faq">{items}</div><a class="search-go" href="{p.root}">{p.t("info_go")}</a></section>'
-    return layout(p, f"{p.t('info_title')} | {p.site['name']}", p.t("info_meta"), "a-propos/", body)
+    body = f'<section class="page wrap narrow"><h1>{p.t("info_title")}</h1><p class="lead">{p.t("info_lead")}</p><div class="faq">{items}</div><p class="info-contact"><a href="mailto:contact@eunodia.com">contact@eunodia.com</a></p><a class="search-go" href="{p.root}">{p.t("info_go")}</a></section>'
+    return layout(p, f"{p.t('info_title')} | {p.site['name']}", p.t("info_meta"), "a-propos/", body, photo="BCN" if photo_exists("BCN") else None)
 
 
 def credits_page(p):

@@ -239,6 +239,13 @@ class BuildTests(unittest.TestCase):
         self.assertIn('"@type": "Organization"', page)
         self.assertIn('application/ld+json', page)
 
+    def test_about_page_has_photo_header(self):
+        html = '<section class="page wrap narrow"><h1>Infos</h1><p class="lead">Texte</p></section>'
+        site = {"root": "/", "url": "https://eunodia.com/", "name": "Eunodia"}
+        out = build_site.page_hero(build_site.Page(site, "fr"), "a-propos/", html, "")
+        self.assertIn('class="page-hero"', out)
+        self.assertIn('class="page wrap narrow"', out)
+
     def test_slug_removes_accents(self):
         self.assertEqual(build_site.slug("Montréal – Dorval"), "montreal-dorval")
 
