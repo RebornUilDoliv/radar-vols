@@ -55,6 +55,12 @@ jobs:
       - name: Construire le site
         if: ${{ !inputs.test_email }}
         run: python build_site.py
+      - name: Programmer la newsletter
+        if: ${{ !inputs.test_email }}
+        continue-on-error: true
+        env:
+          BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
+        run: python newsletter.py
       - name: Sauvegarder l'historique des prix
         if: ${{ !cancelled() }}
         run: |

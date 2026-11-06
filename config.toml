@@ -129,3 +129,7 @@ cities = ["SYD"]
 max_price = 900
 min_days = 14
 max_days = 35
+
+[newsletter]
+list_id = 2                      # liste Brevo des abonnés
+sender = "contact@eunodia.com"

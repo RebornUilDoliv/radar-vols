@@ -103,6 +103,8 @@ Le relevé mondial (`world.py`) cherche les prix depuis les villes de `[world]` 
 
 La page `/vols/` est l'outil « Où partir » : elle lit les prix de la ville choisie dans `docs/assets/routes/`. La page `/test-reservation/` reste accessible par son lien direct, mais n'est plus dans le menu.
 
+La newsletter du jeudi (`newsletter.py`) est créée le mercredi soir et programmée dans Brevo pour le jeudi à 8 h, heure de Paris. Elle a besoin du secret `BREVO_API_KEY`.
+
 Le nom et l'adresse du site se changent dans la section `[site]` de `config.toml`.
 
 ## La version de test de réservation

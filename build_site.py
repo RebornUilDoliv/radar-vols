@@ -885,8 +885,8 @@ STAY_ICONS = {
 }
 
 
-def stay_links(p, name):
-    """Liens vers les partenaires, suivis dès que le programme est renseigné dans config.toml."""
+def stay_items(p, name):
+    """Liens partenaires, suivis dès que le programme est renseigné dans config.toml."""
     query = urllib.parse.quote(name)
     hotel = f"https://www.booking.com/searchresults.{BOOKING_LOCALES[p.lang]}.html?ss={query}"
     code = p.lang if p.lang in PARTNER_LANGS else "en"
@@ -898,20 +898,24 @@ def stay_links(p, name):
             return url
         return radar.partner_link(url, {**p.site, "program": program, "campaign": p.site[f"{kind}_campaign"]})
 
-    def card(url, title, text, icon):
-        return (f'<a class="stay" href="{e(url)}" rel="nofollow sponsored noopener" target="_blank">'
-                f'<svg class="stay-icon" viewBox="0 0 24 24" aria-hidden="true">{STAY_ICONS[icon]}</svg><strong>{title}</strong><span>{text}</span></a>')
-
     claim = f"https://www.airhelp.com/{code}/"
     esim = "https://www.airalo.com/" + ("" if code == "en" else code)
     transfer = f"https://kiwitaxi.com/{code}"
     car = f"https://localrent.com/{code}/"
-    return (card(tracked(hotel, "hotels"), p.t("stay_hotel"), p.t("stay_hotel_b"), "hotel")
-            + card(tracked(tour, "tours"), p.t("stay_tour"), p.t("stay_tour_b"), "tour")
-            + card(tracked(car, "cars"), p.t("stay_car"), p.t("stay_car_b"), "car")
-            + card(tracked(esim, "esim"), p.t("stay_esim"), p.t("stay_esim_b"), "esim")
-            + card(tracked(transfer, "transfers"), p.t("stay_transfer"), p.t("stay_transfer_b"), "transfer")
-            + card(tracked(claim, "claims"), p.t("stay_claim"), p.t("stay_claim_b"), "claim"))
+    return [(tracked(hotel, "hotels"), p.t("stay_hotel"), p.t("stay_hotel_b"), "hotel"),
+            (tracked(tour, "tours"), p.t("stay_tour"), p.t("stay_tour_b"), "tour"),
+            (tracked(car, "cars"), p.t("stay_car"), p.t("stay_car_b"), "car"),
+            (tracked(esim, "esim"), p.t("stay_esim"), p.t("stay_esim_b"), "esim"),
+            (tracked(transfer, "transfers"), p.t("stay_transfer"), p.t("stay_transfer_b"), "transfer"),
+            (tracked(claim, "claims"), p.t("stay_claim"), p.t("stay_claim_b"), "claim")]
+
+
+def stay_links(p, name):
+    return "".join(
+        f'<a class="stay" href="{e(url)}" rel="nofollow sponsored noopener" target="_blank">'
+        f'<svg class="stay-icon" viewBox="0 0 24 24" aria-hidden="true">{STAY_ICONS[icon]}</svg><strong>{title}</strong><span>{text}</span></a>'
+        for url, title, text, icon in stay_items(p, name)
+    )
 
 
 def guide_block(p, city, months):
