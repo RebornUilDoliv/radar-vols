@@ -376,7 +376,7 @@ def home(p, cities, offers, updated, origins=()):
   <img class="hero-img" {photo_set(p, "BKK" if photo_exists("BKK") else hero_code, "100vw")} alt="" loading="lazy">
   <div class="trip-in wrap">
     <h2>{p.t('trip_title')}</h2>
-    <p>{p.t('stay_lead')}</p>
+    <p>{p.t('trip_lead')}</p>
     <div class="stays">{stay_links(p, "")}</div>
   </div>
 </section>
@@ -435,8 +435,7 @@ def ticker_block(p, origins):
 
 def tools_block(p):
     """Présente les fonctions du site dès l'accueil."""
-    items = [("vols/", "tools_budget"), ("#recherche", "tools_search"), ("depuis/", "tools_world"), ("destinations/", "tools_places"),
-             ("vols-pas-chers/", "tools_deals"), ("#newsletter", "tools_alert"), ("#preparer", "tools_trip"), ("#preparer", "tools_claim")]
+    items = [("vols/", "tools_budget"), ("destinations/", "tools_places"), ("vols-pas-chers/", "tools_deals"), ("#newsletter", "tools_alert")]
     cards = "".join(
         f'<a class="stay" href="{p.root}{target}"><strong>{p.t(key)}</strong><span>{p.t(key + "_b")}</span></a>'
         for target, key in items
