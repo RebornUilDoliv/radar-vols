@@ -311,7 +311,7 @@
   }
 
   function initHeroVideo() {
-    var hero = document.querySelector(".hero[data-video]");
+    var hero = document.querySelector(".hero[data-videos]");
     var saveData = navigator.connection && navigator.connection.saveData;
     if (!hero || saveData || !matchMedia("(min-width: 768px) and (prefers-reduced-motion: no-preference)").matches) return;
     var video = document.createElement("video");
@@ -320,7 +320,9 @@
     video.setAttribute("aria-hidden", "true");
     video.addEventListener("canplay", function () { video.classList.add("on"); });
     var bigScreen = screen.width * (window.devicePixelRatio || 1) >= 2400;
-    video.src = bigScreen ? hero.dataset.video.replace(".mp4", "-4k.mp4") : hero.dataset.video;
+    var names = hero.dataset.names.split(",");
+    var name = names[Math.floor(Math.random() * names.length)];
+    video.src = hero.dataset.videos + name + (bigScreen ? "-4k" : "") + ".mp4";
     hero.insertBefore(video, hero.querySelector(".hero-in"));
     var pause = el("button", "video-pause", "❚❚");
     pause.type = "button";

@@ -1,6 +1,32 @@
-{
-  "artist": "EagleView",
-  "license": "CC BY 3.0",
-  "license_url": "https://creativecommons.org/licenses/by/3.0",
-  "source": "https://commons.wikimedia.org/wiki/File:Oregon_Coast_Odyssey-_FPV_Drone_Captures_Stunning_Ocean_Views.webm"
-}
+[
+  {
+    "artist": "Alberto Escalona",
+    "license": "Pexels",
+    "license_url": "https://www.pexels.com/license/",
+    "source": "https://www.pexels.com/video/36584880/"
+  },
+  {
+    "artist": "Kmeel.com Videos",
+    "license": "Pexels",
+    "license_url": "https://www.pexels.com/license/",
+    "source": "https://www.pexels.com/video/13118329/"
+  },
+  {
+    "artist": "Claudio AFC",
+    "license": "Pexels",
+    "license_url": "https://www.pexels.com/license/",
+    "source": "https://www.pexels.com/video/36022999/"
+  },
+  {
+    "artist": "Alin Buda",
+    "license": "Pexels",
+    "license_url": "https://www.pexels.com/license/",
+    "source": "https://www.pexels.com/video/12329725/"
+  },
+  {
+    "artist": "CityXcape",
+    "license": "Pexels",
+    "license_url": "https://www.pexels.com/license/",
+    "source": "https://www.pexels.com/video/5838621/"
+  }
+]

@@ -355,7 +355,7 @@ def home(p, cities, offers, updated, origins=()):
         deals = "".join(world_deal(p, origin, route) for origin, route in picks[:8])
         start = p.city(hero_route[0]["code"], hero_route[0]["code"])
         world = f'''<section class="band wrap"><h2>{p.t("world_home")}</h2><p class="sub">{p.t("world_home_sub", count=len(origins))}</p><ul class="links cities">{origin_links(p, origins)}</ul><p class="all-cities"><a href="{p.root}depuis/">{p.t("world_all")}</a></p></section>'''
-    body = f"""<section class="hero" data-video="{p.base}assets/video/hero.mp4">
+    body = f"""<section class="hero" data-videos="{p.base}assets/video/" data-names="rome-steps,rome-castle,rome-basilica,paris,new-york">
   {hero_image}
   <div class="hero-in">
     <h1>{p.t('hero')}</h1>
@@ -901,8 +901,11 @@ def credits_page(p):
     video_path = DOCS / "assets" / "video" / "credit.json"
     if video_path.exists():
         video = json.loads(video_path.read_text())
-        rows += (f'<li><strong>Video</strong><br><a href="{e(video["source"])}" rel="noopener">{e(video["artist"])}</a>, '
-                 f'<a href="{e(video["license_url"])}" rel="noopener">{e(video["license"])}</a></li>')
+        rows += "".join(
+            f'<li><strong>Video</strong><br><a href="{e(item["source"])}" rel="noopener">{e(item["artist"])}</a>, '
+            f'<a href="{e(item["license_url"])}" rel="noopener">{e(item["license"])}</a></li>'
+            for item in video
+        )
     body = f'<section class="page wrap narrow"><h1>{p.t("credits")}</h1><p class="lead">{p.t("credits_lead")}</p><ul class="credit-list">{rows}</ul></section>'
     return layout(p, f"{p.t('credits')} | {p.site['name']}", p.t("credits_lead"), "credits/", body)
 
