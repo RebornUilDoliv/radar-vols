@@ -216,7 +216,7 @@ def layout(p, title, description, path, body, noindex=False, extra="", photo=Non
         f'{" aria-current=\"true\"" if lang == p.lang else ""} title="{LANG_NAMES[lang]}">{LANG_NAMES[lang]}</a>'
         for lang in page_langs(path)
     )
-    shared = {key: TEXT[p.lang][key] for key in ("see", "direct", "stop", "stops", "stops_unknown", "days", "day_one")}
+    shared = {key: TEXT[p.lang][key] for key in ("see", "check", "direct", "stop", "stops", "stops_unknown", "days", "day_one")}
     script = json.dumps(
         {"lang": p.lang, "locale": LOCALES[p.lang], "root": root, "base": base, "t": {**SCRIPT_TEXT[p.lang], **shared},
          "from_label": p.t("search_from"), "to_label": p.t("search_to"), "out_label": p.t("search_out"), "search_place": p.t("search_place"),
@@ -581,6 +581,7 @@ def world_place_page(p, place):
   <h1>{e(p.t('to_title', city=city))}</h1>
   {cover}
   <p class="lead">{p.t('to_lead', **values)}</p>
+  <p><a class="go" href="{e(place['routes'][0][1]['link'])}" rel="nofollow sponsored noopener" target="_blank">{p.t('check')}</a></p>
   <h2>{p.t('to_list')}</h2>
   <ul class="rows">{rows}</ul>
   <section class="panel"><h2>{e(p.t('stay_title', city=city))}</h2><p class="sub">{p.t('stay_lead')}</p><div class="stays">{stay_links(p, city)}</div></section>
@@ -599,6 +600,7 @@ def route_rows(p, origin):
             "region": CONTINENTS[p.lang][p.zones.get(route["to"], "XX")],
             "price": route["price"], "depart": route["depart"], "back": route["back"], "stops": route["stops"],
             "href": f"{p.root}{route_path(origin, route)}" if internal else route["link"], "external": not internal,
+            "buy": route["link"],
         })
     return rows
 
@@ -767,8 +769,7 @@ def world_row(p, origin, route, label=None):
     name = e(label or p.city(route["to"], route["to"]))
     detail = f'{e(p.day(route["depart"], False))} → {e(p.day(route["back"]))} · {e(p.t("days", count=nights(route)))} · {e(p.stops(route))}'
     title = f'<a href="{p.root}{route_path(origin, route)}">{name}</a>' if has_page(p, origin, route) else name
-    action = (f'<a class="go" href="{p.root}{route_path(origin, route)}">{p.t("see")}</a>' if has_page(p, origin, route)
-              else f'<a class="go" href="{e(route["link"])}" rel="nofollow sponsored noopener" target="_blank">{p.t("see")}</a>')
+    action = f'<a class="go buy" href="{e(route["link"])}" rel="nofollow sponsored noopener" target="_blank">{p.t("check")}</a>'
     return f"""<li class="row"><div class="row-info"><h3>{title}</h3><p>{detail}</p></div><p class="row-price">{p.euro(route['price'])}</p>{action}</li>"""
 
 
@@ -838,6 +839,7 @@ def origin_page(p, origin):
   <p class="crumb"><a href="{p.root}depuis/">{p.t('nav_world')}</a></p>
   <h1>{e(p.t('hub_title', city=city))}</h1>
   <p class="lead">{p.t('hub_lead', **values)}</p>
+  <p><a class="go" href="{e(origin['routes'][0]['link'])}" rel="nofollow sponsored noopener" target="_blank">{p.t('check')}</a></p>
   <h2>{p.t('hub_all')}</h2>
   <ul class="rows">{rows}</ul>
 </section>"""

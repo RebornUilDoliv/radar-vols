@@ -183,9 +183,10 @@
       title.appendChild(link);
       info.appendChild(title);
       info.appendChild(el("p", "", fmt(o.depart, { day: "numeric", month: "short" }) + " → " + shortDate(o.back) + " · " + (days(o) === 1 ? RF.t.day_one : say("days", { count: days(o) })) + " · " + stops(o)));
-      var cta = el("a", "go", RF.t.see);
-      cta.href = o.href || link.href + "?mois=" + o.depart.slice(0, 7);
-      if (o.external) [link, cta].forEach(function (a) { a.target = "_blank"; a.rel = "nofollow sponsored noopener"; });
+      var cta = el("a", o.buy ? "go buy" : "go", o.buy ? RF.t.check : RF.t.see);
+      cta.href = o.buy || o.href || link.href + "?mois=" + o.depart.slice(0, 7);
+      if (o.external) { link.target = "_blank"; link.rel = "nofollow sponsored noopener"; }
+      if (o.buy) { cta.target = "_blank"; cta.rel = "nofollow sponsored noopener"; }
       item.appendChild(info); item.appendChild(el("p", "row-price", euro(o.price))); item.appendChild(cta);
       return item;
     }

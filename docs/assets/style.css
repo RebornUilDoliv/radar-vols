@@ -336,6 +336,7 @@ details p { margin-top: 6px; color: var(--g3); }
   .row { position: relative; grid-template-columns: 1fr auto; padding: 14px 0; }
   .row h3 a::after { content: ""; position: absolute; inset: 0; }
   .row .go { display: none; }
+  .row .go.buy { position: relative; z-index: 1; display: flex; grid-column: 1 / -1; min-height: 44px; }
   .foot-links a { display: flex; align-items: center; min-height: 44px; }
   .news-consent input { width: 24px; height: 24px; flex: none; }
   .news-consent { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; }
