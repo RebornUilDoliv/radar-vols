@@ -234,7 +234,7 @@ def layout(p, title, description, path, body, noindex=False, extra="", photo=Non
       <p>{p.t('foot_1')}</p>
       <p>{p.t('foot_2', name=name)}</p>
     </div>
-    <p class="foot-links"><a href="{root}depuis/">{p.t('nav_world')}</a><a href="{root}vols/">{p.t('nav_flights')}</a><a href="{root}vols-pas-chers/">{p.t('nav_deals')}</a><a href="{root}destinations/">{p.t('nav_places')}</a><a href="{root}a-propos/">{p.t('nav_info')}</a><a href="{root}credits/">{p.t('credits')}</a></p>
+    <p class="foot-links"><a href="{root}depuis/">{p.t('nav_world')}</a><a href="{root}vols/">{p.t('nav_flights')}</a><a href="{root}vols-pas-chers/">{p.t('nav_deals')}</a><a href="{root}destinations/">{p.t('nav_places')}</a><a href="{root}a-propos/">{p.t('nav_info')}</a><a href="{root}credits/">{p.t('credits')}</a><a href="mailto:contact@eunodia.com">contact@eunodia.com</a></p>
   </div>
 </footer>
 </body>

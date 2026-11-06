@@ -225,6 +225,9 @@ class BuildTests(unittest.TestCase):
         self.assertIn("bienvenue", page)
         self.assertIn('content="noindex, nofollow"', page)
 
+    def test_footer_shows_contact_email(self):
+        self.assertIn("mailto:contact@eunodia.com", (self.build(self.deals()) / "index.html").read_text())
+
     def test_slug_removes_accents(self):
         self.assertEqual(build_site.slug("Montréal – Dorval"), "montreal-dorval")
 
