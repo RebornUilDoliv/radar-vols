@@ -104,6 +104,8 @@ def photo_set(p, code, sizes):
     """Sert la version 4K aux grands écrans, et la version légère aux autres."""
     light = f"{p.base}assets/photos/{code}.jpg"
     if not (DOCS / "assets" / "photos" / f"{code}-4k.jpg").exists():
+        if (DOCS / "assets" / "photos" / f"{code}-m.jpg").exists():
+            return f'src="{light}" srcset="{p.base}assets/photos/{code}-m.jpg 640w, {light} 1600w" sizes="{sizes}" decoding="async"'
         return f'src="{light}"'
     small = f"{p.base}assets/photos/{code}-m.jpg"
     return f'src="{light}" srcset="{small} 828w, {light} 1280w, {p.base}assets/photos/{code}-4k.jpg 3840w" sizes="{sizes}" decoding="async"'
@@ -491,12 +493,14 @@ def world_places_index(p, places, zones):
     blocks = ""
     for zone in sorted(groups, key=lambda z: (z == "XX", CONTINENTS[p.lang][z])):
         ordered = sorted(groups[zone], key=lambda place: p.city(place["code"], place["code"]))
-        links = "".join(
-            f'<li><a href="{p.root}vers/{place["slug"]}/"><span>{e(p.city(place["code"], place["code"]))}</span>'
-            f'<span>{p.t("from_price", price=p.euro(place["routes"][0][1]["price"]))}</span></a></li>'
+        cards = "".join(
+            f'<li><a class="place" href="{p.root}vers/{place["slug"]}/">'
+            + (f'<img {photo_set(p, place["code"], "(max-width: 640px) 50vw, 25vw")} alt="" loading="lazy">' if photo_exists(place["code"]) else "")
+            + f'<span class="place-name">{e(p.city(place["code"], place["code"]))}</span>'
+            f'<span class="place-price">{p.t("from_price", price=p.euro(place["routes"][0][1]["price"]))}</span></a></li>'
             for place in ordered
         )
-        blocks += f'<section class="dest-group"><h2>{e(CONTINENTS[p.lang][zone])}</h2><ul class="links">{links}</ul></section>'
+        blocks += f'<section class="dest-group"><h2>{e(CONTINENTS[p.lang][zone])}</h2><ul class="places">{cards}</ul></section>'
     lead = p.t("places_lead", count=len(places))
     body = f'<section class="page wrap"><h1>{p.t("places_title")}</h1><p class="lead">{lead}</p>{blocks}</section>'
     return layout(p, f"{p.t('places_title')} | {p.site['name']}", lead, "destinations/", body)

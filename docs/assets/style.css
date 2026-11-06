@@ -206,6 +206,14 @@ td.num, th.num { text-align: right; font-weight: 650; font-variant-numeric: tabu
 .stays.tools { grid-template-columns: repeat(4, 1fr); margin-top: 18px; }
 .guide { display: grid; gap: 4px; }
 .guide li::before { content: "– "; color: var(--g3); }
+.places { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 14px; }
+.place { position: relative; display: flex; flex-direction: column; justify-content: flex-end; aspect-ratio: 4 / 3; padding: 14px; overflow: hidden; color: var(--w); text-decoration: none; background: var(--k); border-radius: 14px; }
+.place img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .35s; }
+.place::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0, 0, 0, .72), rgba(0, 0, 0, 0) 62%); }
+.place:hover img { transform: scale(1.05); }
+.place-name, .place-price { position: relative; z-index: 1; }
+.place-name { font-family: "Clash Display", "Geist", system-ui, sans-serif; font-size: 20px; font-weight: 500; line-height: 1.15; }
+.place-price { margin-top: 2px; font-size: 14px; }
 .dest-group { margin-top: 44px; }
 .dest-group:first-child { margin-top: 0; }
 .dest-group h2 { margin-bottom: 10px; font-size: 28px; }
@@ -255,6 +263,7 @@ details p { margin-top: 6px; color: var(--g3); }
   .mosaic { grid-template-columns: 1fr; }
   .card.big { min-height: 340px; }
   .budgets, .links { grid-template-columns: repeat(2, 1fr); }
+  .places { grid-template-columns: repeat(3, 1fr); }
   .stays { grid-template-columns: repeat(2, 1fr); }
   .stays.tools { grid-template-columns: repeat(2, 1fr); }
   .filters { grid-template-columns: repeat(3, 1fr); }
@@ -332,6 +341,10 @@ details p { margin-top: 6px; color: var(--g3); }
   .trip .stay strong { font-size: 16px; line-height: 1.2; }
   .trip .stay span { display: none; }
   .video-pause { inset-block: 74px auto; inset-inline-end: 14px; width: 36px; height: 36px; }
+  .places { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .place { padding: 10px; }
+  .place-name { font-size: 16px; }
+  .place-price { font-size: 13px; }
   /* Filtres */
   .filters { position: relative; padding: 12px; }
   .filters:not(.all) .adv { display: none; }
