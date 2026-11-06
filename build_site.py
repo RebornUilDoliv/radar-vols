@@ -146,7 +146,7 @@ def page_hero(p, path, body, photo=None):
     if photo is None:
         city_page = path.startswith(("vers/", "destinations/")) and path != "destinations/"
         photo = own[1] if own else "" if city_page else photos[sum(path.encode()) % len(photos)] if photos else ""
-    image = f'<img class="hero-img" {photo_set(p, photo, "100vw")} fetchpriority="high" alt="">' if photo else ""
+    image = f'<img class="hero-img" {photo_set(p, photo, "100vw").replace("async", "sync")} fetchpriority="high" alt="">' if photo else ""
     hero = (f'<section class="page-hero">{image}'
             f'<div class="page-hero-in wrap">{top["crumb"] or ""}<h1>{top["title"]}</h1>{top["lead"] or ""}{top["cta"] or ""}</div></section>'
             '<section class="page wrap">')
@@ -309,7 +309,7 @@ def home(p, cities, offers, updated, origins=()):
     best = cities[0]["best"]
     choices = sorted(code for code in credits if photo_exists(code))
     hero_code = choices[(today - date(1970, 1, 1)).days % len(choices)] if choices else ""
-    hero_image = f'<img class="hero-img" {photo_set(p, hero_code, "100vw")} fetchpriority="high" alt="">' if hero_code else ""
+    hero_image = f'<img class="hero-img" {photo_set(p, hero_code, "100vw").replace("async", "sync")} fetchpriority="high" alt="">' if hero_code else ""
     mosaic = ""
     if pictured:
         first, *others = pictured[:5]
