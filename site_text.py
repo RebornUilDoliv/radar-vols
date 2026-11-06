@@ -22,6 +22,20 @@ REGIONS = {
     "es": {"Argentine et Chili": "Argentina y Chile", "Paraguay": "Paraguay", "États-Unis": "Estados Unidos", "Canada": "Canadá", "Mexique": "México", "Europe": "Europa", "Asie": "Asia", "Corée du Nord": "Corea del Norte", "Océanie": "Oceanía"},
 }
 
+BAROMETER = {
+    "fr": ("Baromètre des prix", "Les prix les plus intéressants relevés par Eunodia, mis à jour chaque jour.", "Les meilleurs longs courriers", "Les prix les plus bas", "Prix médian par continent d'arrivée", "Prix relevés le {updated}, en aller-retour par personne et sans options. Ils peuvent changer vite.", "médiane {price}"),
+    "en": ("Price barometer", "The most interesting prices found by Eunodia, updated every day.", "The best long-haul fares", "The lowest prices", "Median price by destination continent", "Prices found on {updated}, return per person, without extras. They can change quickly.", "median {price}"),
+    "es": ("Barómetro de precios", "Los precios más interesantes detectados por Eunodia, actualizados cada día.", "Los mejores vuelos de largo radio", "Los precios más bajos", "Precio mediano por continente de llegada", "Precios detectados el {updated}, ida y vuelta por persona y sin extras. Pueden cambiar rápido.", "mediana {price}"),
+    "de": ("Preisbarometer", "Die interessantesten von Eunodia gefundenen Preise, täglich aktualisiert.", "Die besten Langstreckenflüge", "Die niedrigsten Preise", "Medianpreis nach Zielkontinent", "Preise vom {updated}, hin und zurück pro Person, ohne Extras. Sie können sich schnell ändern.", "Median {price}"),
+    "it": ("Barometro dei prezzi", "I prezzi più interessanti trovati da Eunodia, aggiornati ogni giorno.", "I migliori voli a lungo raggio", "I prezzi più bassi", "Prezzo mediano per continente di arrivo", "Prezzi rilevati il {updated}, andata e ritorno a persona, senza extra. Possono cambiare in fretta.", "mediana {price}"),
+    "pt": ("Barómetro de preços", "Os preços mais interessantes encontrados pela Eunodia, atualizados todos os dias.", "Os melhores voos de longo curso", "Os preços mais baixos", "Preço mediano por continente de chegada", "Preços encontrados em {updated}, ida e volta por pessoa, sem extras. Podem mudar depressa.", "mediana {price}"),
+    "nl": ("Prijsbarometer", "De interessantste prijzen die Eunodia vond, elke dag bijgewerkt.", "De beste langeafstandsvluchten", "De laagste prijzen", "Mediaanprijs per bestemmingscontinent", "Prijzen gevonden op {updated}, retour per persoon, zonder extra's. Ze kunnen snel veranderen.", "mediaan {price}"),
+    "tr": ("Fiyat barometresi", "Eunodia'nın bulduğu en ilginç fiyatlar, her gün güncellenir.", "En iyi uzun mesafe uçuşları", "En düşük fiyatlar", "Varış kıtasına göre medyan fiyat", "Fiyatlar {updated} tarihinde bulundu, kişi başı gidiş-dönüş, ekstralar hariç. Hızla değişebilir.", "medyan {price}"),
+    "ar": ("مؤشر الأسعار", "أكثر الأسعار إثارة للاهتمام التي رصدها Eunodia، محدثة يوميًا.", "أفضل الرحلات الطويلة", "أقل الأسعار", "السعر الوسيط حسب قارة الوصول", "أسعار رُصدت في {updated}، ذهابًا وإيابًا للشخص دون إضافات. قد تتغير بسرعة.", "الوسيط {price}"),
+    "zh": ("价格晴雨表", "Eunodia 发现的最值得关注的价格，每日更新。", "最佳长途航线", "最低价格", "按目的地大洲的中位价", "价格发现于 {updated}，每人往返，不含附加服务，可能很快变化。", "中位价 {price}"),
+    "ko": ("가격 지표", "Eunodia가 찾은 가장 흥미로운 가격을 매일 업데이트합니다.", "최고의 장거리 항공편", "최저 가격", "도착 대륙별 중간 가격", "{updated} 기준 1인 왕복 가격이며 부가 서비스는 제외입니다. 빠르게 바뀔 수 있습니다.", "중간값 {price}"),
+}
+
 NEWS_DONE = {
     "fr": ("C'est confirmé, bienvenue !", "Ton inscription à Eunodia est validée. Les prochains bons plans arriveront directement dans ta boîte mail.", "Voir où je peux partir", "Explorer les destinations"),
     "en": ("You're in, welcome!", "Your Eunodia subscription is confirmed. The next deals will land straight in your inbox.", "See where I can go", "Explore destinations"),
@@ -44,6 +58,7 @@ CONTINENTS = {
 
 TEXT = {
     "fr": {
+        "route_dist": "Environ {km} km, soit à peu près {hours} h de vol direct.", "route_tz": "Décalage horaire avec {start} : {diff} h.", "route_to": "Tous les départs vers {end}",
         "trip_lead": "Hôtel, activités, internet et transfert : tout pour ton séjour, au même endroit.",
         "ticker": "Les prix, pays par pays",
         "f_more": "Plus de filtres", "world_all": "Voir toutes les villes", "menu": "Menu",
@@ -116,6 +131,7 @@ TEXT = {
         "test_title": "Réservation de test", "test_banner": "Version de test ({mode}).", "test_banner_b": "Aucun vrai vol, aucun vrai billet, aucun paiement.", "test_server": "serveur de test Duffel", "test_demo": "démonstration", "test_meta": "Page de test.",
     },
     "en": {
+        "route_dist": "About {km} km, or roughly {hours} h on a direct flight.", "route_tz": "Time difference with {start}: {diff} h.", "route_to": "All departures to {end}",
         "trip_lead": "Hotels, activities, mobile data and transfers: everything for your stay in one place.",
         "ticker": "Prices, country by country",
         "f_more": "More filters", "world_all": "See all cities", "menu": "Menu",
@@ -188,6 +204,7 @@ TEXT = {
         "test_title": "Test booking", "test_banner": "Test version ({mode}).", "test_banner_b": "No real flight, no real ticket, no payment.", "test_server": "Duffel test server", "test_demo": "demo", "test_meta": "Test page.",
     },
     "es": {
+        "route_dist": "Unos {km} km, es decir, unas {hours} h en vuelo directo.", "route_tz": "Diferencia horaria con {start}: {diff} h.", "route_to": "Todas las salidas a {end}",
         "trip_lead": "Hotel, actividades, internet y traslado: todo para tu estancia en un solo lugar.",
         "ticker": "Precios, país por país",
         "f_more": "Más filtros", "world_all": "Ver todas las ciudades", "menu": "Menú",

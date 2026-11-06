@@ -228,6 +228,17 @@ class BuildTests(unittest.TestCase):
     def test_footer_shows_contact_email(self):
         self.assertIn("mailto:contact@eunodia.com", (self.build(self.deals()) / "index.html").read_text())
 
+    def test_distance_and_time_difference(self):
+        paris, tokyo = [48.85, 2.35, "Europe/Paris"], [35.68, 139.69, "Asia/Tokyo"]
+        self.assertAlmostEqual(build_site.distance_km(paris, tokyo), 9700, delta=100)
+        self.assertEqual(build_site.time_difference(paris, tokyo, "2027-01-15"), 8)
+        self.assertIsNone(build_site.time_difference(paris, [0, 0, None], "2027-01-15"))
+
+    def test_home_declares_site_schema(self):
+        page = (self.build(self.deals()) / "index.html").read_text()
+        self.assertIn('"@type": "Organization"', page)
+        self.assertIn('application/ld+json', page)
+
     def test_slug_removes_accents(self):
         self.assertEqual(build_site.slug("Montréal – Dorval"), "montreal-dorval")
 

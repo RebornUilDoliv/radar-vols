@@ -3,6 +3,7 @@
 import hashlib
 import html
 import json
+import math
 import re
 import shutil
 import sys
@@ -11,10 +12,11 @@ import unicodedata
 import urllib.parse
 from datetime import date, datetime
 from statistics import median
+from zoneinfo import ZoneInfo
 from pathlib import Path
 
 import radar
-from site_text import (BOOKING_LOCALES, CONTINENTS, DATA_LANGS, FULL_LANGS, LANG_NAMES, LANGS, LOCALES, MONTHS, NEWS_DONE, REGIONS,
+from site_text import (BAROMETER, BOOKING_LOCALES, CONTINENTS, DATA_LANGS, FULL_LANGS, LANG_NAMES, LANGS, LOCALES, MONTHS, NEWS_DONE, REGIONS,
                        RTL_LANGS, SCRIPT_TEXT, SHORT_MONTHS, TEXT)
 
 ROOT = Path(__file__).parent
@@ -55,6 +57,7 @@ class Page:
         self.prefix = "" if lang == "fr" else f"{lang}/"
         self.zones = {}
         self.countries = {}
+        self.geo = {}
 
     def t(self, key, **values):
         if key == "days" and values.get("count") == 1:
@@ -155,6 +158,46 @@ def page_hero(p, path, body, photo=None):
     return body[:top.start()] + hero + body[top.end():]
 
 
+def schema_tag(data):
+    return f'<script type="application/ld+json">{json.dumps(data, ensure_ascii=False).replace("</", "<\\/")}</script>'
+
+
+def breadcrumbs(p, items):
+    """Fil d'Ariane lisible par Google."""
+    base = p.site["url"] + p.prefix
+    return schema_tag({
+        "@context": "https://schema.org", "@type": "BreadcrumbList",
+        "itemListElement": [{"@type": "ListItem", "position": n, "name": name, "item": base + path}
+                            for n, (name, path) in enumerate(items, 1)],
+    })
+
+
+def site_schema(p):
+    url = p.site["url"]
+    return schema_tag([
+        {"@context": "https://schema.org", "@type": "WebSite", "name": p.site["name"], "url": url, "inLanguage": LOCALES[p.lang]},
+        {"@context": "https://schema.org", "@type": "Organization", "name": p.site["name"], "url": url,
+         "logo": f"{url}assets/icon-512.png", "email": "contact@eunodia.com"},
+    ])
+
+
+def distance_km(a, b):
+    lat1, lon1, lat2, lon2 = map(math.radians, (a[0], a[1], b[0], b[1]))
+    h = math.sin((lat2 - lat1) / 2) ** 2 + math.cos(lat1) * math.cos(lat2) * math.sin((lon2 - lon1) / 2) ** 2
+    return 6371 * 2 * math.asin(math.sqrt(h))
+
+
+def time_difference(a, b, day):
+    """Écart en heures entre deux villes à une date donnée, ou None si un fuseau manque."""
+    moment = datetime.fromisoformat(f"{day}T12:00:00")
+    try:
+        first = moment.replace(tzinfo=ZoneInfo(a[2])).utcoffset()
+        second = moment.replace(tzinfo=ZoneInfo(b[2])).utcoffset()
+    except (KeyError, IndexError, TypeError, ValueError):
+        return None
+    return (second - first).total_seconds() / 3600
+
+
 def page_langs(path):
     """Les pages de route et la réservation test n'existent que dans les langues principales."""
     return FULL_LANGS if path.startswith("test-reservation") or re.fullmatch(r"depuis/[^/]+/[^/]+/", path) else LANGS
@@ -234,7 +277,7 @@ def layout(p, title, description, path, body, noindex=False, extra="", photo=Non
       <p>{p.t('foot_1')}</p>
       <p>{p.t('foot_2', name=name)}</p>
     </div>
-    <p class="foot-links"><a href="{root}depuis/">{p.t('nav_world')}</a><a href="{root}vols/">{p.t('nav_flights')}</a><a href="{root}vols-pas-chers/">{p.t('nav_deals')}</a><a href="{root}destinations/">{p.t('nav_places')}</a><a href="{root}a-propos/">{p.t('nav_info')}</a><a href="{root}credits/">{p.t('credits')}</a><a href="mailto:contact@eunodia.com">contact@eunodia.com</a></p>
+    <p class="foot-links"><a href="{root}depuis/">{p.t('nav_world')}</a><a href="{root}vols/">{p.t('nav_flights')}</a><a href="{root}vols-pas-chers/">{p.t('nav_deals')}</a><a href="{root}barometre/">{e(BAROMETER[p.lang][0])}</a><a href="{root}destinations/">{p.t('nav_places')}</a><a href="{root}a-propos/">{p.t('nav_info')}</a><a href="{root}credits/">{p.t('credits')}</a><a href="mailto:contact@eunodia.com">contact@eunodia.com</a></p>
   </div>
 </footer>
 </body>
@@ -405,7 +448,7 @@ def home(p, cities, offers, updated, origins=()):
 </section>
 <section class="band wrap">
 </section>"""
-    return layout(p, f"{p.site['name']} — {p.t('title_home')}", p.t("meta_home"), "", body)
+    return layout(p, f"{p.site['name']} — {p.t('title_home')}", p.t("meta_home"), "", body, extra=site_schema(p))
 
 
 def ticker_block(p, origins):
@@ -521,7 +564,8 @@ def world_place_page(p, place):
   <ul class="rows">{rows}</ul>
   <section class="panel"><h2>{e(p.t('stay_title', city=city))}</h2><p class="sub">{p.t('stay_lead')}</p><div class="stays">{stay_links(p, city)}</div></section>
 </section>"""
-    return layout(p, f"{p.t('to_title', city=city)} | {p.site['name']}", p.t("to_meta", city=city, **values), f"vers/{place['slug']}/", body)
+    return layout(p, f"{p.t('to_title', city=city)} | {p.site['name']}", p.t("to_meta", city=city, **values), f"vers/{place['slug']}/", body,
+                  extra=breadcrumbs(p, [(p.t("nav_places"), "destinations/"), (city, f"vers/{place['slug']}/")]))
 
 
 def route_rows(p, origin):
@@ -707,10 +751,54 @@ def world_row(p, origin, route, label=None):
     return f"""<li class="row"><div class="row-info"><h3>{title}</h3><p>{detail}</p></div><p class="row-price">{p.euro(route['price'])}</p>{action}</li>"""
 
 
+def barometer_rows(p, pairs):
+    return "".join(world_deal(p, origin, route) for origin, route in pairs)
+
+
+def barometer_page(p, origins, updated):
+    title, lead, far, near, zones_title, note, median_label = BAROMETER[p.lang]
+    pairs = sorted(((o, r) for o in origins for r in o["routes"]), key=lambda pair: pair[1]["price"])
+
+    def unique(items, limit):
+        seen, kept = set(), []
+        for origin, route in items:
+            if route["to"] not in seen:
+                seen.add(route["to"])
+                kept.append((origin, route))
+            if len(kept) == limit:
+                break
+        return kept
+
+    def long_haul(pair):
+        a, b = p.geo.get(pair[0]["code"]), p.geo.get(pair[1]["to"])
+        return bool(a and b and distance_km(a, b) >= 5000)
+
+    by_zone = {}
+    for origin, route in pairs:
+        by_zone.setdefault(p.zones.get(route["to"], "XX"), []).append(route["price"])
+    zone_rows = "".join(
+        f'<li><span class="stat">{e(CONTINENTS[p.lang][z])}</span><span>{e(median_label.format(price=p.euro(median(v))))}</span></li>'
+        for z, v in sorted(by_zone.items(), key=lambda item: median(item[1])) if z != "XX"
+    )
+    body = f"""<section class="page wrap">
+  <h1>{e(title)}</h1>
+  <p class="lead">{e(lead)}</p>
+  <h2>{e(far)}</h2>
+  <ul class="rows">{barometer_rows(p, unique(filter(long_haul, pairs), 10))}</ul>
+  <h2>{e(near)}</h2>
+  <ul class="rows">{barometer_rows(p, unique(pairs, 10))}</ul>
+  <h2>{e(zones_title)}</h2>
+  <ul class="links zones">{zone_rows}</ul>
+  <p class="sub">{e(note.format(updated=updated))}</p>
+</section>"""
+    return layout(p, f"{title} | {p.site['name']}", lead, "barometre/", body, extra=breadcrumbs(p, [(title, "barometre/")]))
+
+
 def world_deal(p, origin, route):
     name = f'{p.city(origin["code"], origin["code"])} → {p.city(route["to"], route["to"])}'
     detail = f'{e(p.day(route["depart"], False))} → {e(p.day(route["back"]))} · {e(p.t("days", count=nights(route)))} · {e(p.stops(route))}'
     internal = p.lang in FULL_LANGS
+    internal = internal and has_page(p, origin, route)
     page = f'{p.root}{route_path(origin, route)}' if internal else e(route["link"])
     extra = "" if internal else ' rel="nofollow sponsored noopener" target="_blank"'
     return f"""<li class="row"><div class="row-info"><h3><a href="{page}"{extra}>{e(name)}</a></h3><p>{detail}</p></div><p class="row-price">{p.euro(route['price'])}</p><a class="go" href="{page}"{extra}>{p.t('see')}</a></li>"""
@@ -733,6 +821,7 @@ def origin_page(p, origin):
   <ul class="rows">{rows}</ul>
 </section>"""
     return layout(p, f"{p.t('hub_title', city=city)} | {p.site['name']}", p.t("hub_meta", city=city, **values), f"depuis/{origin['slug']}/", body,
+                  extra=breadcrumbs(p, [(p.t("nav_world"), "depuis/"), (city, f"depuis/{origin['slug']}/")]),
                   photo=origin["code"] if photo_exists(origin["code"]) else "")
 
 
@@ -741,10 +830,19 @@ def route_page(p, origin, route, origins, updated):
     title = p.t("route_title", start=start, end=end)
     price = p.euro(route["price"])
     facts = [p.t("route_trip", days=e(p.t("days", count=nights(route))), stops=e(p.stops(route)))]
+    here, there = p.geo.get(origin["code"]), p.geo.get(route["to"])
+    if here and there:
+        km = distance_km(here, there)
+        if km >= 150:
+            facts.append(p.t("route_dist", km=f"{round(km, -1):,.0f}".replace(",", " "), hours=max(1, round(km / 800 + 0.5))))
+        diff = time_difference(here, there, route["depart"])
+        if diff:
+            facts.append(p.t("route_tz", start=e(start), diff=f"{diff:+g}"))
     reverse = next((o for o in origins if o["code"] == route["to"]), None)
     back = next((r for r in reverse["pages"] if r["to"] == origin["code"]), None) if reverse else None
     if back:
         facts.append(f'<a href="{p.root}{route_path(reverse, back)}">{p.t("route_back", end=e(end), start=e(start), price=p.euro(back["price"]))}</a>')
+    facts.append(f'<a href="{p.root}vers/{route["to_slug"]}/">{e(p.t("route_to", end=end))}</a>')
     items = "".join(f"<li>{fact}</li>" for fact in facts)
     others = sorted(
         ((o, r) for o in origins if o["code"] != origin["code"] for r in o["pages"] if r["to"] == route["to"]),
@@ -772,6 +870,7 @@ def route_page(p, origin, route, origins, updated):
   {more_block}
 </section>"""
     return layout(p, f"{title} | {p.site['name']}", p.t("route_meta", start=start, end=end, price=price), route_path(origin, route), body,
+                  extra=breadcrumbs(p, [(p.t("nav_world"), "depuis/"), (start, f"depuis/{origin['slug']}/"), (title, route_path(origin, route))]),
                   photo=next((code for code in (route["to"], origin["code"]) if photo_exists(code)), ""))
 
 
@@ -980,6 +1079,8 @@ def build_language(p, data, cities, updated_at, groups, origins=()):
     for origin in origins:
         write(DOCS / "assets" / "routes" / lang / f"{origin['code']}.json", json.dumps(route_rows(p, origin), ensure_ascii=False, separators=(",", ":")))
     write(folder / "a-propos" / "index.html", about_page(p))
+    if origins:
+        write(folder / "barometre" / "index.html", barometer_page(p, origins, updated))
     write(folder / "newsletter-confirmee" / "index.html", news_done_page(p))
     deals = folder / "vols-pas-chers"
     if deals.exists():
@@ -1035,18 +1136,20 @@ def build(data, site, catalog=None):
     origins = load_world(names.get("fr", {}))
     zones_path = DOCS / "assets" / "zones.json"
     zones = json.loads(zones_path.read_text()) if zones_path.exists() else {}
+    geo_path = DOCS / "assets" / "geo.json"
+    geo = json.loads(geo_path.read_text()) if geo_path.exists() else {}
     countries_path = DOCS / "assets" / "countries.json"
     countries = json.loads(countries_path.read_text()) if countries_path.exists() else {}
     for lang in LANGS:
         page = Page(site, lang, names.get(lang))
-        page.zones, page.countries = zones, countries
+        page.zones, page.countries, page.geo = zones, countries, geo
         build_language(page, data, cities, updated_at, groups, origins)
     write(DOCS / "404.html", missing_page(Page(site, "fr", names.get("fr"))))
     route_pages = [route_path(origin, route) for origin in origins for route in origin["pages"]]
     pages = ["", "vols/", "vols-pas-chers/", "destinations/", "a-propos/"] + [f"destinations/{c['slug']}/" for c in cities]
     pages += [f"vols-pas-chers/{g['slug']}/" for g in groups]
     if origins:
-        pages.append("depuis/")
+        pages += ["depuis/", "barometre/"]
     for origin in origins:
         pages.append(f"depuis/{origin['slug']}/")
     pages += [f"vers/{place['slug']}/" for place in world_destinations(origins)]
@@ -1079,6 +1182,9 @@ def continent(row):
 def load_catalog():
     rows = radar.http_json(f"{radar.TP_BASE}/data/en/cities.json")
     write(DOCS / "assets" / "zones.json", json.dumps({row["code"]: continent(row) for row in rows}, separators=(",", ":")))
+    geo = {row["code"]: [row["coordinates"]["lat"], row["coordinates"]["lon"], row.get("time_zone")]
+           for row in rows if (row.get("coordinates") or {}).get("lat") is not None}
+    write(DOCS / "assets" / "geo.json", json.dumps(geo, separators=(",", ":")))
     catalog, country_names = {}, {}
     for lang in LANGS:
         code = DATA_LANGS.get(lang, lang)
