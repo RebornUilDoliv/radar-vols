@@ -313,24 +313,27 @@
   function initHeroVideo() {
     var hero = document.querySelector(".hero[data-videos]");
     var saveData = navigator.connection && navigator.connection.saveData;
-    if (!hero || saveData || !matchMedia("(min-width: 768px) and (prefers-reduced-motion: no-preference)").matches) return;
+    if (!hero || saveData) return;
+    var calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
     var video = document.createElement("video");
     video.className = "hero-video";
-    video.muted = true; video.loop = true; video.autoplay = true; video.playsInline = true;
-    video.setAttribute("aria-hidden", "true");
-    video.addEventListener("canplay", function () { video.classList.add("on"); });
-    var bigScreen = screen.width * (window.devicePixelRatio || 1) >= 2400;
+    video.muted = true; video.loop = true; video.playsInline = true;
+    video.setAttribute("muted", ""); video.setAttribute("playsinline", ""); video.setAttribute("aria-hidden", "true");
+    var pause = el("button", "video-pause", "▶");
+    pause.type = "button";
+    pause.setAttribute("aria-label", "Play / pause");
+    video.addEventListener("playing", function () { video.classList.add("on"); pause.textContent = "❚❚"; });
+    video.addEventListener("pause", function () { pause.textContent = "▶"; });
+    pause.addEventListener("click", function () {
+      if (video.paused) { var again = video.play(); if (again && again.catch) again.catch(function () {}); } else { video.pause(); }
+    });
+    var bigScreen = screen.width * (window.devicePixelRatio || 1) >= 2400 && innerWidth >= 768;
     var names = hero.dataset.names.split(",");
     var name = names[Math.floor(Math.random() * names.length)];
     video.src = hero.dataset.videos + name + (bigScreen ? "-4k" : "") + ".mp4";
     hero.insertBefore(video, hero.querySelector(".hero-in"));
-    var pause = el("button", "video-pause", "❚❚");
-    pause.type = "button";
-    pause.setAttribute("aria-label", "Pause");
-    pause.addEventListener("click", function () {
-      if (video.paused) { video.play(); pause.textContent = "❚❚"; } else { video.pause(); pause.textContent = "▶"; }
-    });
     hero.appendChild(pause);
+    if (calm) return;
     var played = video.play();
     if (played && played.catch) played.catch(function () {});
   }
