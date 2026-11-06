@@ -194,6 +194,9 @@
   function initNearby() {
     var data = window.RFNEAR, soon = $("soon-list"), ahead = $("ahead-list");
     if (!data || !soon) return;
+    var chosen = false;
+    try { chosen = sessionStorage.getItem("eunodia-language") === RF.lang; } catch (error) {}
+    if (chosen) return;
     var zone = "";
     try { zone = Intl.DateTimeFormat().resolvedOptions().timeZone || ""; } catch (error) {}
     var area = zone.split("/")[0], byZone = null, byArea = null, fallback = null;
@@ -384,6 +387,11 @@
     if (!menu) return;
     document.addEventListener("click", function (event) {
       if (!menu.contains(event.target)) menu.open = false;
+    });
+    menu.querySelectorAll(".langs-list a").forEach(function (link) {
+      link.addEventListener("click", function () {
+        try { sessionStorage.setItem("eunodia-language", link.lang); } catch (error) {}
+      });
     });
   }
 
