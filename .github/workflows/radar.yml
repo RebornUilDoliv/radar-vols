@@ -71,7 +71,7 @@ jobs:
           git diff --cached --quiet || git commit -m "Mise à jour de l'historique des prix"
           for attempt in 1 2 3; do
             git push && exit 0
-            git pull --rebase origin main || exit 1
+            git pull --rebase --autostash origin main || exit 1
           done
           exit 1
       - name: Préparer le site
