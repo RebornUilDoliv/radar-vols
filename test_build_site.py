@@ -37,6 +37,17 @@ class BuildTests(unittest.TestCase):
             self.assertEqual(build_site.cover_code(page, "AAA"), "BBB")
             self.assertEqual(build_site.cover_code(page, "CCC"), "")
 
+    def test_destinations_never_show_the_same_photo_twice(self):
+        from types import SimpleNamespace
+        page = SimpleNamespace(lang="fr", root="/", base="/", site={"name": "Eunodia"}, countries={"cities": {"AAA": "FR", "BBB": "FR", "DDD": "FR"}},
+                               t=lambda key, **k: key, city=lambda code, name: code, euro=lambda v: f"{v} €")
+        places = [{"code": c, "slug": c.lower(), "routes": [({}, {"price": 50})]} for c in ("AAA", "BBB", "DDD")]
+        with mock.patch.object(build_site, "photo_exists", lambda code: code == "BBB"), \
+             mock.patch.object(build_site, "layout", lambda p, title, lead, path, body, **k: body):
+            html = build_site.world_places_index(page, places, {c: "EU" for c in ("AAA", "BBB", "DDD")})
+        self.assertEqual(html.count("photos/BBB.jpg"), 1)
+        self.assertEqual(html.count('class="place"'), 3)
+
     def test_row_city_is_clickable_without_its_own_page(self):
         from types import SimpleNamespace
         page = SimpleNamespace(lang="fr", root="/", city=lambda code, name: "Pise", day=lambda *a: "19 nov.", t=lambda *a, **k: "Voir", stops=lambda r: "direct", euro=lambda v: f"{v} €")

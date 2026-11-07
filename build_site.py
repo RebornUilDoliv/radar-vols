@@ -579,9 +579,18 @@ def world_places_index(p, places, zones):
     for place in places:
         groups.setdefault(zones.get(place["code"], "XX"), []).append(place)
     blocks = ""
+    # Une photo ne sert qu'une fois sur la page : une ville sans photo à elle
+    # garde un fond uni plutôt que de répéter celle d'une voisine.
+    used = {place["code"] for place in places if photo_exists(place["code"])}
     for zone in sorted(groups, key=lambda z: (z == "XX", CONTINENTS[p.lang][z])):
         ordered = sorted(groups[zone], key=lambda place: p.city(place["code"], place["code"]))
-        covers = {place["code"]: cover_code(p, place["code"]) for place in ordered}
+        covers = {}
+        for place in ordered:
+            cover = cover_code(p, place["code"])
+            if cover != place["code"]:
+                cover = "" if cover in used else cover
+                used.add(cover)
+            covers[place["code"]] = cover
         cards = "".join(
             f'<li><a class="place" href="{p.root}vers/{place["slug"]}/">'
             + (f'<img {photo_set(p, covers[place["code"]], "(max-width: 640px) 50vw, 25vw")} alt="" loading="lazy">' if covers[place["code"]] else "")
