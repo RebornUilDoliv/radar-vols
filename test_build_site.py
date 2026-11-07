@@ -194,9 +194,9 @@ class BuildTests(unittest.TestCase):
         self.assertEqual([r["to"] for r in london["pages"]], ["TYO"])
 
     def test_clean_names_fixes_source_errors(self):
-        names = build_site.clean_names({"fr": {"ACE": "ACE", "MAD": "Ville de Madrid", "BUD": "Buda"},
-                                        "en": {"ACE": "Arrecife", "MAD": "Madrid", "BUD": "Budapest"}})
-        self.assertEqual(names["fr"], {"ACE": "Arrecife", "MAD": "Madrid", "BUD": "Budapest"})
+        names = build_site.clean_names({"fr": {"ZZZ": "ZZZ", "MAD": "Ville de Madrid", "BUD": "Buda", "LCA": "Citium"},
+                                        "en": {"ZZZ": "Zedville", "MAD": "Madrid", "BUD": "Budapest", "LCA": "Larnaca"}})
+        self.assertEqual(names["fr"], {"ZZZ": "Zedville", "MAD": "Madrid", "BUD": "Budapest", "LCA": "Larnaca"})
 
     def test_test_booking_is_hidden_from_public_pages(self):
         docs = self.build(self.deals())

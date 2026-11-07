@@ -729,6 +729,35 @@ def collections_index(p, groups):
     return layout(p, f"{p.t('deals_title')} | {p.site['name']}", p.t("deals_lead"), "vols-pas-chers/", body)
 
 
+LATIN_LANGS = ("fr", "en", "es", "de", "it", "pt", "nl", "tr")
+SHARED_NAME_FIXES = {
+    "AYQ": "Uluru", "BOB": "Bora-Bora", "CAE": "Columbia", "DPS": "Bali", "EAS": "San Sebastián", "EIS": "Tortola", "FAE": "Vágar",
+    "GNY": "Şanlıurfa", "IGD": "Iğdır", "JER": "Jersey", "LOP": "Lombok", "OST": "Ostende", "POS": "Port of Spain", "TAB": "Tobago",
+}
+NAME_FIXES = {
+    "en": {"AER": "Sochi", "LAX": "Los Angeles", "OST": "Ostend"},
+    "de": {"LAX": "Los Angeles"}, "it": {"LAX": "Los Angeles", "OST": "Ostenda"}, "pt": {"LAX": "Los Angeles"},
+    "fr": {
+        "AAR": "Aarhus", "ACE": "Lanzarote", "ACH": "Saint-Gall", "AER": "Sotchi", "AES": "Ålesund", "AGH": "Ängelholm", "AJI": "Ağrı",
+        "AUA": "Aruba", "AZS": "Samaná", "BDS": "Brindisi", "BJM": "Bujumbura", "BJX": "León (Mexique)", "BLA": "Barcelona (Venezuela)",
+        "BNI": "Benin City", "BOC": "Bocas del Toro", "BON": "Bonaire", "BRN": "Berne", "BXU": "Butuan", "BZE": "Belize City",
+        "CGY": "Cagayan de Oro", "CIY": "Comiso", "CJM": "Chumphon", "CJU": "Jeju", "CPC": "San Martín de los Andes", "CUR": "Curaçao",
+        "DLU": "Dali", "DOM": "Dominique", "DYG": "Zhangjiajie", "DZA": "Mayotte", "EBL": "Erbil", "ECP": "Panama City (Floride)",
+        "EDI": "Édimbourg", "EYP": "El Yopal", "FDF": "Fort-de-France", "FEN": "Fernando de Noronha", "FEZ": "Fès", "FNC": "Madère",
+        "FUO": "Foshan", "GCI": "Guernesey", "GND": "La Grenade", "GPS": "Îles Galápagos", "GRO": "Gérone", "GRV": "Grozny", "GRX": "Grenade",
+        "HAS": "Haïl", "IAS": "Iași", "IOM": "Île de Man", "IWA": "Ivanovo", "JDF": "Juiz de Fora", "JDO": "Juazeiro do Norte",
+        "JSI": "Skiathos", "JTR": "Santorin", "KGS": "Cos", "KKC": "Khon Kaen", "KOP": "Nakhon Phanom", "LAX": "Los Angeles", "LCA": "Larnaca",
+        "LDY": "Derry", "LEN": "León (Espagne)", "LJG": "Lijiang", "LPA": "Las Palmas de Gran Canaria", "LZY": "Nyingchi", "NOJ": "Noïabrsk",
+        "NSK": "Norilsk", "NTG": "Nantong", "OSA": "Osaka", "PAP": "Port-au-Prince", "PAS": "Paros", "POS": "Port-d'Espagne", "PTY": "Panama",
+        "PUS": "Busan", "RJL": "Logroño", "RRG": "Rodrigues", "RUN": "La Réunion", "SAP": "San Pedro Sula", "SBH": "Saint-Barthélemy",
+        "SCQ": "Saint-Jacques-de-Compostelle", "SDQ": "Saint-Domingue", "SEZ": "Mahé (Seychelles)", "SFG": "Saint-Martin (Grand-Case)",
+        "SJP": "São José do Rio Preto", "SMS": "Île Sainte-Marie", "SRQ": "Sarasota", "STL": "Saint-Louis", "SVD": "Saint-Vincent",
+        "TAC": "Tacloban", "TCI": "Tenerife", "TIF": "Taïf", "TRR": "Trincomalee", "TUC": "Tucumán", "VXE": "São Vicente", "ZTH": "Zante",
+        "ZVK": "Savannakhet", "EAS": "Saint-Sébastien",
+    },
+}
+
+
 def clean_names(names):
     """Corrige les noms de ville manquants ou erronés de la source."""
     english = names.get("en", {})
@@ -740,6 +769,8 @@ def clean_names(names):
         }
         if "BUD" in cleaned[lang]:
             cleaned[lang]["BUD"] = "Budapest"
+        fixes = {**(SHARED_NAME_FIXES if lang in LATIN_LANGS else {}), **NAME_FIXES.get(lang, {})}
+        cleaned[lang].update({code: name for code, name in fixes.items() if code in cleaned[lang]})
     return cleaned
 
 
@@ -1173,9 +1204,10 @@ def build(data, site, catalog=None):
     names = json.loads(names_path.read_text()) if names_path.exists() else {}
     for lang, (places, countries) in (catalog or {}).items():
         names[lang] = {code: place["name"] for code, place in places.items() if place["airports"]}
-        rows = city_index(places, countries)
-        write(DOCS / "assets" / f"cities-{lang}.json", json.dumps(rows, ensure_ascii=False, separators=(",", ":")))
     names = clean_names(names)
+    for lang, (places, countries) in (catalog or {}).items():
+        rows = [[code, names[lang].get(code, name), *rest] for code, name, *rest in city_index(places, countries)]
+        write(DOCS / "assets" / f"cities-{lang}.json", json.dumps(rows, ensure_ascii=False, separators=(",", ":")))
     if catalog:
         write(names_path, json.dumps(names, ensure_ascii=False, separators=(",", ":")))
     groups = collections(offers)
