@@ -20,6 +20,14 @@ def offer(code, city, region, price, ahead, history=None):
 
 
 class BuildTests(unittest.TestCase):
+    def test_city_without_photo_uses_one_from_its_country(self):
+        from types import SimpleNamespace
+        page = SimpleNamespace(countries={"cities": {"AAA": "FR", "BBB": "FR", "CCC": "JP"}})
+        with mock.patch.object(build_site, "photo_exists", lambda code: code == "BBB"):
+            self.assertEqual(build_site.cover_code(page, "BBB"), "BBB")
+            self.assertEqual(build_site.cover_code(page, "AAA"), "BBB")
+            self.assertEqual(build_site.cover_code(page, "CCC"), "")
+
     def test_row_city_is_clickable_without_its_own_page(self):
         from types import SimpleNamespace
         page = SimpleNamespace(lang="fr", root="/", city=lambda code, name: "Pise", day=lambda *a: "19 nov.", t=lambda *a, **k: "Voir", stops=lambda r: "direct", euro=lambda v: f"{v} €")

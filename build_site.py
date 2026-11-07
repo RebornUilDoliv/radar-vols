@@ -104,6 +104,15 @@ def photo_exists(code):
     return (DOCS / "assets" / "photos" / f"{code}.jpg").exists()
 
 
+def cover_code(p, code):
+    """La photo de la ville, sinon celle d'une autre ville du même pays."""
+    if photo_exists(code):
+        return code
+    cities = p.countries.get("cities", {})
+    country = cities.get(code)
+    return next((other for other, place in sorted(cities.items()) if place == country and photo_exists(other)), "") if country else ""
+
+
 def photo_set(p, code, sizes):
     """Sert la version 4K aux grands écrans, et la version légère aux autres."""
     light = f"{p.base}assets/photos/{code}.jpg"
@@ -564,9 +573,10 @@ def world_places_index(p, places, zones):
     blocks = ""
     for zone in sorted(groups, key=lambda z: (z == "XX", CONTINENTS[p.lang][z])):
         ordered = sorted(groups[zone], key=lambda place: p.city(place["code"], place["code"]))
+        covers = {place["code"]: cover_code(p, place["code"]) for place in ordered}
         cards = "".join(
             f'<li><a class="place" href="{p.root}vers/{place["slug"]}/">'
-            + (f'<img {photo_set(p, place["code"], "(max-width: 640px) 50vw, 25vw")} alt="" loading="lazy">' if photo_exists(place["code"]) else "")
+            + (f'<img {photo_set(p, covers[place["code"]], "(max-width: 640px) 50vw, 25vw")} alt="" loading="lazy">' if covers[place["code"]] else "")
             + f'<span class="place-name">{e(p.city(place["code"], place["code"]))}</span>'
             f'<span class="place-price">{p.t("from_price", price=p.euro(place["routes"][0][1]["price"]))}</span></a></li>'
             for place in ordered
