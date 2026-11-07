@@ -402,6 +402,9 @@ details p { margin-top: 6px; color: var(--g3); }
 }
 .nav nav a.nav-cta { padding: 4px 12px; color: var(--k); background: var(--w); border-radius: 999px; }
 .nav nav a.nav-cta:hover { text-decoration: none; background: var(--g2); }
+.nav nav { align-items: center; }
 @media (max-width: 760px) {
-  .nav nav a.nav-cta { justify-content: center; margin: 6px 0 8px; border-top: 0; border-radius: 10px; }
+  .nav nav { align-items: stretch; }
+  .nav nav a.nav-cta { padding: 0; color: var(--w); background: none; border-radius: 0; }
+  .nav nav a.nav-cta::after { content: "Nouveau"; margin-left: 10px; padding: 2px 8px; color: var(--k); background: var(--w); border-radius: 999px; font-size: 12px; font-weight: 600; }
 }
