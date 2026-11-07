@@ -719,13 +719,29 @@ def collection_page(p, group, groups, by_code, updated):
     return layout(p, f"{title} | {p.site['name']}", p.t("coll_meta", **values), f"vols-pas-chers/{group['slug']}/", body)
 
 
-def collections_index(p, groups):
+def deals_picker(p, origins):
+    """Choix de la ville de départ des bons plans ; les autres villes sont affichées par app.js."""
+    if not origins:
+        return ""
+    chosen = default_origin(p, origins)
+    options = "".join(
+        f'<option value="{o["code"]}"{" selected" if chosen and o["code"] == chosen["code"] else ""}>{e(p.city(o["code"], o["code"]))}</option>'
+        for o in sorted(origins, key=lambda o: p.city(o["code"], o["code"]))
+    )
+    text = {"title": p.t("hub_title"), "months": p.t("deals_months"), "regions": p.t("deals_regions"), "budgets": p.t("deals_budgets"),
+            "under": p.t("under"), "from": p.t("from_price"), "count": p.t("places_count")}
+    return (f'<form class="filters deals-pick"><label>{p.t("f_from")}<select id="deals-origin" data-text="{e(json.dumps(text, ensure_ascii=False))}">'
+            f'{options}</select></label></form>')
+
+
+def collections_index(p, groups, origins=()):
     blocks = ""
     for kind, label in (("month", "deals_months"), ("region", "deals_regions"), ("budget", "deals_budgets")):
         links = collection_links(p, [g for g in groups if g["kind"] == kind])
         if links:
             blocks += f'<section class="dest-group"><h2>{p.t(label)}</h2><ul class="links">{links}</ul></section>'
-    body = f'<section class="page wrap"><h1>{p.t("deals_title")}</h1><p class="lead">{p.t("deals_lead")}</p>{blocks}</section>'
+    body = (f'<section class="page wrap"><h1 id="deals-title">{p.t("deals_title")}</h1><p class="lead">{p.t("deals_lead")}</p>'
+            f'{deals_picker(p, origins)}<div id="deals-list">{blocks}</div></section>')
     return layout(p, f"{p.t('deals_title')} | {p.site['name']}", p.t("deals_lead"), "vols-pas-chers/", body)
 
 
@@ -1163,7 +1179,7 @@ def build_language(p, data, cities, updated_at, groups, origins=()):
     if deals.exists():
         shutil.rmtree(deals)
     by_code = {c["code"]: c for c in cities}
-    write(deals / "index.html", collections_index(p, groups))
+    write(deals / "index.html", collections_index(p, groups, origins))
     for group in groups:
         write(deals / group["slug"] / "index.html", collection_page(p, group, groups, by_code, updated))
     if lang in FULL_LANGS:

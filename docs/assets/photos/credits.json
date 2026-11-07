@@ -3177,5 +3177,71 @@
    3968,
    2976
   ]
+ },
+ "NQZ": {
+  "city": "Astana",
+  "artist": "Ilya Varlamov",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Nur-Sultan_-_190217_DSC_3720.jpg",
+  "size": [
+   4887,
+   3258
+  ]
+ },
+ "AMM": {
+  "city": "Amman",
+  "artist": "Deror_avi",
+  "license": "CC BY-SA 3.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Amman_Citadel_View_P1090364.JPG",
+  "size": [
+   4000,
+   3000
+  ]
+ },
+ "DKR": {
+  "city": "Dakar",
+  "artist": "Issiaga_Photography",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Corniche_Dakar_couch%C3%A9_de_soleil.jpg",
+  "size": [
+   5184,
+   3456
+  ]
+ },
+ "ABV": {
+  "city": "Abuja",
+  "artist": "Aduragbemio Oladapo",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:A_Rock_in_Abuja,_Dei_Dei.jpg",
+  "size": [
+   3840,
+   1848
+  ]
+ },
+ "ABJ": {
+  "city": "Abidjan",
+  "artist": "Zenman stitched by Marku1988  This  panoramic image was created with Autostitch (stitched images may differ from reality).",
+  "license": "CC BY-SA 3.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Abidjan.JPG",
+  "size": [
+   2745,
+   956
+  ]
+ },
+ "FIH": {
+  "city": "Kinshasa",
+  "artist": "EdwinAlden.1995",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:A_view_of_Congo_River_from_Kinshasa,_Democratic_Republic_of_the_Congo_(DRC).jpg",
+  "size": [
+   2048,
+   1536
+  ]
  }
 }

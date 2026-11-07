@@ -404,6 +404,72 @@
     });
   }
 
+  /* Bons plans : regroupe les prix de la ville choisie par mois, région et budget */
+  function initDeals() {
+    var pick = $("deals-origin"), list = $("deals-list");
+    if (!pick || !list) return;
+    var text = JSON.parse(pick.getAttribute("data-text"));
+    var wanted = new URLSearchParams(location.search).get("origin");
+    if (wanted && Array.prototype.some.call(pick.options, function (o) { return o.value === wanted; })) pick.value = wanted;
+    function block(title, items) {
+      var section = el("section", "dest-group"), ul = el("ul", "links");
+      section.appendChild(el("h2", "", title));
+      items.forEach(function (item) {
+        var li = el("li"), a = el("a");
+        a.href = item.href;
+        a.appendChild(el("span", "", item.label));
+        a.appendChild(el("span", "", text.from.replace("{price}", euro(item.price)) + " · " + text.count.replace("{count}", item.count)));
+        li.appendChild(a);
+        ul.appendChild(li);
+      });
+      section.appendChild(ul);
+      return section;
+    }
+    function show() {
+      var code = pick.value, city = pick.options[pick.selectedIndex].text;
+      fetch(BASE + "assets/routes/" + RF.lang + "/" + code + ".json")
+        .then(function (r) { if (!r.ok) throw new Error(); return r.json(); })
+        .then(function (rows) {
+          if (!rows.length) return;
+          var link = function (key, value) { return ROOT + "vols/?" + new URLSearchParams([["origin", code], [key, value]]).toString(); };
+          var group = function (keyOf) {
+            var found = {};
+            rows.forEach(function (o) {
+              var key = keyOf(o), seen = found[key] || (found[key] = { price: o.price, cities: {} });
+              seen.price = Math.min(seen.price, o.price);
+              seen.cities[o.city] = 1;
+            });
+            return found;
+          };
+          var months = group(function (o) { return o.depart.slice(0, 7); });
+          var regions = group(function (o) { return o.region; });
+          var monthItems = Object.keys(months).sort().map(function (m) {
+            var label = fmt(m + "-15", { month: "long", year: "numeric" });
+            return { label: label.charAt(0).toUpperCase() + label.slice(1), href: link("month", m), price: months[m].price, count: Object.keys(months[m].cities).length };
+          });
+          var regionItems = Object.keys(regions).sort(function (a, b) { return regions[a].price - regions[b].price; }).map(function (r) {
+            return { label: r, href: link("region", r), price: regions[r].price, count: Object.keys(regions[r].cities).length };
+          });
+          var budgetItems = [100, 200, 300, 400, 600, 1000].map(function (limit) {
+            var inside = rows.filter(function (o) { return o.price <= limit; }), cities = {};
+            inside.forEach(function (o) { cities[o.city] = 1; });
+            return inside.length && { label: text.under.replace("{price}", euro(limit)), href: link("budget", limit), price: Math.min.apply(null, inside.map(function (o) { return o.price; })), count: Object.keys(cities).length };
+          }).filter(Boolean);
+          list.textContent = "";
+          list.appendChild(block(text.months, monthItems));
+          list.appendChild(block(text.regions, regionItems));
+          if (budgetItems.length) list.appendChild(block(text.budgets, budgetItems));
+          $("deals-title").textContent = text.title.replace("{city}", city);
+        })
+        .catch(function () {});
+    }
+    if (pick.value !== "PAR") show();
+    pick.addEventListener("change", function () {
+      try { history.replaceState(null, "", "?origin=" + pick.value); } catch (error) {}
+      show();
+    });
+  }
+
   function rotatePhotos(today) {
     var cards = Array.prototype.slice.call(document.querySelectorAll(".mosaic .card"));
     if (cards.length < 2) return;
@@ -426,4 +492,5 @@
   highlightMonth();
   initCharts();
   initFlights();
+  initDeals();
 })();

@@ -20,6 +20,15 @@ def offer(code, city, region, price, ahead, history=None):
 
 
 class BuildTests(unittest.TestCase):
+    def test_deals_page_lets_visitors_pick_a_departure_city(self):
+        from types import SimpleNamespace
+        page = SimpleNamespace(lang="fr", t=lambda key, **k: key, city=lambda code, name: {"PAR": "Paris", "NBO": "Nairobi"}[code])
+        html = build_site.deals_picker(page, [{"code": "NBO"}, {"code": "PAR"}])
+        self.assertIn('id="deals-origin"', html)
+        self.assertIn('<option value="PAR" selected>Paris</option>', html)
+        self.assertIn('<option value="NBO">Nairobi</option>', html)
+        self.assertEqual(build_site.deals_picker(page, []), "")
+
     def test_city_without_photo_uses_one_from_its_country(self):
         from types import SimpleNamespace
         page = SimpleNamespace(countries={"cities": {"AAA": "FR", "BBB": "FR", "CCC": "JP"}})
