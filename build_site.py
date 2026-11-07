@@ -223,7 +223,10 @@ def layout(p, title, description, path, body, noindex=False, extra="", photo=Non
         f'<link rel="alternate" hreflang="{lang}" href="{e(site["url"] + ("" if lang == "fr" else lang + "/") + path)}">'
         for lang in page_langs(path)
     )
-    custom_nav = f'<a href="{root}{CUSTOM_PATH}">Sur mesure</a>\n    ' if p.lang == "fr" else ""
+    flights_nav = f'<a href="{root}vols/">{p.t("nav_flights")}</a>'
+    custom = p.lang == "fr"
+    first_nav = f'<a class="nav-cta" href="{root}{CUSTOM_PATH}">Voyage sur mesure</a>' if custom else flights_nav
+    late_nav = flights_nav + "\n    " if custom else ""
     switch = "".join(
         f'<a href="{base}{"" if lang == "fr" else lang + "/"}{path}" lang="{lang}" hreflang="{lang}"'
         f'{" aria-current=\"true\"" if lang == p.lang else ""} title="{LANG_NAMES[lang]}">{LANG_NAMES[lang]}</a>'
@@ -271,11 +274,11 @@ def layout(p, title, description, path, body, noindex=False, extra="", photo=Non
 <header class="nav">
   <a class="logo" href="{root}" aria-label="{name}">{LOGO}{name}</a>
   <nav aria-label="Menu" id="menu">
-    <a href="{root}vols/">{p.t('nav_flights')}</a>
+    {first_nav}
     <a href="{root}depuis/">{p.t('nav_world')}</a>
     <a href="{root}destinations/">{p.t('nav_places')}</a>
     <a href="{root}vols-pas-chers/">{p.t('nav_deals')}</a>
-    {custom_nav}<a href="{root}a-propos/">{p.t('nav_info')}</a>
+    {late_nav}<a href="{root}a-propos/">{p.t('nav_info')}</a>
   </nav>
   <details class="langs"><summary aria-label="Langue">{p.lang.upper()}</summary><div class="langs-list">{switch}</div></details>
   <button class="menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="menu" aria-label="{p.t('menu')}"><span></span><span></span><span></span></button>
@@ -447,8 +450,8 @@ def home(p, cities, offers, updated, origins=()):
   <li><strong>{p.t('perk_2')}</strong><span>{p.t('perk_2b')}</span></li>
   <li><strong>{p.t('perk_3')}</strong><span>{p.t('perk_3b')}</span></li>
 </ul>
-{tools_block(p)}
 {custom_block(p)}
+{tools_block(p)}
 {world}
 <section class="trip" id="preparer">
   <img class="hero-img" {photo_set(p, "BKK" if photo_exists("BKK") else hero_code, "100vw")} alt="" loading="lazy">

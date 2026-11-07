@@ -400,3 +400,8 @@ details p { margin-top: 6px; color: var(--g3); }
   .trip .custom-steps .stay span { display: block; font-size: 13px; }
   .custom-form button { justify-self: stretch; justify-content: center; }
 }
+.nav nav a.nav-cta { padding: 4px 12px; color: var(--k); background: var(--w); border-radius: 999px; }
+.nav nav a.nav-cta:hover { text-decoration: none; background: var(--g2); }
+@media (max-width: 760px) {
+  .nav nav a.nav-cta { justify-content: center; margin: 6px 0 8px; border-top: 0; border-radius: 10px; }
+}
