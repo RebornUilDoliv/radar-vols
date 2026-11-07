@@ -4739,5 +4739,401 @@
       8613,
       5291
     ]
+  },
+  "BKO": {
+    "city": "Bamako",
+    "artist": "upyernoz",
+    "license": "CC BY 2.0",
+    "license_url": "https://creativecommons.org/licenses/by/2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Bamako_bridge1.jpg",
+    "size": [
+      2814,
+      1816
+    ]
+  },
+  "OUA": {
+    "city": "Ouagadougou",
+    "artist": "Sputniktilt",
+    "license": "CC BY-SA 3.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Cathedrale_Ouagadougou.jpg",
+    "size": [
+      4467,
+      2513
+    ]
+  },
+  "CLT": {
+    "city": "Charlotte",
+    "artist": "Precisionviews; edits (perspective correction and colour cor",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Uptown_Charlotte_2018_taking_by_DJI_Phantom_4_pro_-_Perspective_Corrected_Edit.jpg",
+    "size": [
+      4853,
+      3065
+    ]
+  },
+  "PAE": {
+    "city": "Everett",
+    "artist": "Photo by Joe Mabel",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Promenade_at_Everett_Marina_01.jpg",
+    "size": [
+      6000,
+      4000
+    ]
+  },
+  "BNA": {
+    "city": "Nashville",
+    "artist": "Kaldari",
+    "license": "Public domain",
+    "license_url": "",
+    "source": "https://commons.wikimedia.org/wiki/File:Nashville_skyline_2009.jpg",
+    "size": [
+      3770,
+      2360
+    ]
+  },
+  "MSY": {
+    "city": "Nouvelle-Orléans",
+    "artist": "Diego Delso",
+    "license": "CC BY-SA 3.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Bourbon_St,_French_Quarter,_New_Orleans,_USA2.jpg",
+    "size": [
+      3770,
+      2513
+    ]
+  },
+  "PHX": {
+    "city": "Phoenix",
+    "artist": "Wikimedia Commons",
+    "license": "Public domain",
+    "license_url": "",
+    "source": "https://commons.wikimedia.org/wiki/File:Phoenix_skyline_Arizona_USA.jpg",
+    "size": [
+      2048,
+      1500
+    ]
+  },
+  "SXM": {
+    "city": "Saint-Martin",
+    "artist": "Richie Diesterheft from Santa Barbara, CA, USA",
+    "license": "CC BY-SA 2.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Maho_Beach_3_(6543966713).jpg",
+    "size": [
+      1600,
+      1200
+    ]
+  },
+  "ATQ": {
+    "city": "Amritsar",
+    "artist": "Jasleen Kaur",
+    "license": "CC BY-SA 2.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Akal_Takht_and_Harmandir_Sahib,_Amritsar,_Punjab,_India.jpg",
+    "size": [
+      3637,
+      2117
+    ]
+  },
+  "AZN": {
+    "city": "Andizhan",
+    "artist": "4pf3154f7",
+    "license": "CC0",
+    "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "source": "https://commons.wikimedia.org/wiki/File:Jami_Mosque_in_Andijan.jpg",
+    "size": [
+      4032,
+      3024
+    ]
+  },
+  "CRK": {
+    "city": "City of Angeles",
+    "artist": "Elmer B. Domingo",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Pamintuan_Mansion_in_Angeles_City,_Pampanga.jpg",
+    "size": [
+      4052,
+      2702
+    ]
+  },
+  "DMM": {
+    "city": "Dammam",
+    "artist": "Radosław Botev",
+    "license": "CC BY 3.0 pl",
+    "license_url": "https://creativecommons.org/licenses/by/3.0/pl/deed.en",
+    "source": "https://commons.wikimedia.org/wiki/File:Dammam_Corniche_(2).jpg",
+    "size": [
+      4000,
+      3000
+    ]
+  },
+  "FEG": {
+    "city": "Ferghana",
+    "artist": "Stephanieadams99",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Margilan_.jpg",
+    "size": [
+      5472,
+      3078
+    ]
+  },
+  "HPH": {
+    "city": "Hải Phòng",
+    "artist": "Tran Anh Khoa (zorrotran)",
+    "license": "CC BY-SA 2.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Haiphong_Opera_House.jpg",
+    "size": [
+      2048,
+      1152
+    ]
+  },
+  "CJU": {
+    "city": "Jeju",
+    "artist": "Basile Morin",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Hydrangea_macrophylla_in_front_of_Seongsan_Ilchulbong_volcano_at_blue_hour_in_Jeju_Island_South_Korea.jpg",
+    "size": [
+      6114,
+      3821
+    ]
+  },
+  "KLO": {
+    "city": "Kalibo",
+    "artist": "Jhun Sacapano",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Boracay_White_Beach.png",
+    "size": [
+      1828,
+      1218
+    ]
+  },
+  "NGO": {
+    "city": "Nagoya",
+    "artist": "Base64",
+    "license": "CC BY-SA 3.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Nagoya_Castle(Larger).jpg",
+    "size": [
+      3840,
+      2160
+    ]
+  },
+  "SKD": {
+    "city": "Samarcande",
+    "artist": "Stomac",
+    "license": "CC BY-SA 2.0 fr",
+    "license_url": "https://creativecommons.org/licenses/by-sa/2.0/fr/deed.en",
+    "source": "https://commons.wikimedia.org/wiki/File:Registan_Samarkand_Uzbekistan.JPG",
+    "size": [
+      2326,
+      1017
+    ]
+  },
+  "SGC": {
+    "city": "Sourgout",
+    "artist": "Александр Попрыгин",
+    "license": "CC BY 3.0",
+    "license_url": "https://creativecommons.org/licenses/by/3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Yugra_Bridge.jpg",
+    "size": [
+      3264,
+      2448
+    ]
+  },
+  "URC": {
+    "city": "Ürümqi",
+    "artist": "Radosław Botev",
+    "license": "CC BY 3.0 pl",
+    "license_url": "https://creativecommons.org/licenses/by/3.0/pl/deed.en",
+    "source": "https://commons.wikimedia.org/wiki/File:Urumqi_skyline_(2).jpg",
+    "size": [
+      4000,
+      3000
+    ]
+  },
+  "CAG": {
+    "city": "Cagliari",
+    "artist": "Municipality of Cagliari",
+    "license": "CC BY-SA 3.0 it",
+    "license_url": "https://creativecommons.org/licenses/by-sa/3.0/it/deed.en",
+    "source": "https://commons.wikimedia.org/wiki/File:Castello_(Cagliari).jpg",
+    "size": [
+      3008,
+      2000
+    ]
+  },
+  "GLA": {
+    "city": "Glasgow",
+    "artist": "Richard Sutcliffe",
+    "license": "CC BY-SA 2.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:The_Riverside_Museum_and_the_River_Clyde_-_geograph.org.uk_-_7736594.jpg",
+    "size": [
+      1600,
+      942
+    ]
+  },
+  "KUN": {
+    "city": "Kaunas",
+    "artist": "Pudelek (Marcin Szala)",
+    "license": "CC BY-SA 3.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Kaunas_Castle_in_2011.JPG",
+    "size": [
+      2592,
+      1757
+    ]
+  },
+  "NBC": {
+    "city": "Naberezhnye Chelny",
+    "artist": "Brücke-Osteuropa",
+    "license": "Public domain",
+    "license_url": "",
+    "source": "https://commons.wikimedia.org/wiki/File:Naberezhnye_Tchelny_1.JPG",
+    "size": [
+      3328,
+      1872
+    ]
+  },
+  "NUE": {
+    "city": "Nuremberg",
+    "artist": "Fred Romero from Paris, France",
+    "license": "CC BY 2.0",
+    "license_url": "https://creativecommons.org/licenses/by/2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:N%C3%BCrnberg_-_River_Pegnitz_and_Old_Town.jpg",
+    "size": [
+      4000,
+      3000
+    ]
+  },
+  "PMF": {
+    "city": "Parme",
+    "artist": "Norbert Nagel",
+    "license": "CC BY-SA 3.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Parma_-_Italy_-_July_7th_2013_-_07.jpg",
+    "size": [
+      5894,
+      3934
+    ]
+  },
+  "PRN": {
+    "city": "Prishtina",
+    "artist": "Bdx",
+    "license": "CC0",
+    "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "source": "https://commons.wikimedia.org/wiki/File:Pristina,_view_of_Bill_Clinton_Boulevard,_2025.jpg",
+    "size": [
+      4032,
+      3024
+    ]
+  },
+  "RMI": {
+    "city": "Rimini",
+    "artist": "Terragio67",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Rimini_-_Ponte_di_Tiberio_e_centro_storico_-_2024-09-28_20-34-19_001.jpg",
+    "size": [
+      14419,
+      6015
+    ]
+  },
+  "SCQ": {
+    "city": "Saint-Jacques-de-Compostelle",
+    "artist": "Xosé Antonio",
+    "license": "CC BY-SA 3.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Roofs_of_Santiago_de_Compostela.JPG",
+    "size": [
+      2816,
+      2112
+    ]
+  },
+  "SCV": {
+    "city": "Suceava",
+    "artist": "John",
+    "license": "CC BY 2.0",
+    "license_url": "https://creativecommons.org/licenses/by/2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:View_on_Suceava_(Romania)_from_Fortess.jpg",
+    "size": [
+      3264,
+      2448
+    ]
+  },
+  "TRD": {
+    "city": "Trondheim",
+    "artist": "Leonhard Lenz",
+    "license": "CC0",
+    "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "source": "https://commons.wikimedia.org/wiki/File:Bakklandet_Trondheim_2022-08-18_01.jpg",
+    "size": [
+      8384,
+      5612
+    ]
+  },
+  "VOG": {
+    "city": "Volgograd",
+    "artist": "Arne Müseler",
+    "license": "CC BY-SA 3.0 de",
+    "license_url": "https://creativecommons.org/licenses/by-sa/3.0/de/deed.en",
+    "source": "https://commons.wikimedia.org/wiki/File:Volgograd_Russia.jpg",
+    "size": [
+      5464,
+      3070
+    ]
+  },
+  "ADL": {
+    "city": "Adélaïde",
+    "artist": "Ardash Muradian from Australia",
+    "license": "CC BY-SA 2.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Adelaide_skyline,_December_2022.jpg",
+    "size": [
+      2048,
+      983
+    ]
+  },
+  "APW": {
+    "city": "Apia",
+    "artist": "Stephen Glauser",
+    "license": "CC BY-SA 2.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Beach_on_Upolu_Island,_Samoa,_2009.jpg",
+    "size": [
+      3648,
+      2736
+    ]
+  },
+  "PPT": {
+    "city": "Papeete",
+    "artist": "Lizzy Saldana",
+    "license": "CC BY 2.0",
+    "license_url": "https://creativecommons.org/licenses/by/2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Papeete_Town_Hall,_Papeete,_2009.jpg",
+    "size": [
+      4000,
+      3000
+    ]
+  },
+  "RAR": {
+    "city": "Rarotonga",
+    "artist": "Christopher Johnson from Tokyo, Japan",
+    "license": "CC BY-SA 2.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Cook_Islands_IMG_4554_-_Version_2_(8453053518).jpg",
+    "size": [
+      5184,
+      3456
+    ]
   }
 }
