@@ -356,9 +356,19 @@
   }
 
   function initHeroVideo() {
-    var hero = document.querySelector(".hero[data-videos]");
-    var saveData = navigator.connection && navigator.connection.saveData;
-    if (!hero || saveData) return;
+    if (navigator.connection && navigator.connection.saveData) return;
+    Array.prototype.forEach.call(document.querySelectorAll("[data-videos]"), function (hero) {
+      if (hero.classList.contains("hero") || hero.classList.contains("page-hero") || !("IntersectionObserver" in window)) return startVideo(hero);
+      var watch = new IntersectionObserver(function (entries) {
+        if (!entries[0].isIntersecting) return;
+        watch.disconnect();
+        startVideo(hero);
+      }, { rootMargin: "300px" });
+      watch.observe(hero);
+    });
+  }
+
+  function startVideo(hero) {
     var calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
     var video = document.createElement("video");
     video.className = "hero-video";
@@ -376,7 +386,7 @@
     var names = hero.dataset.names.split(",");
     var name = names[Math.floor(Math.random() * names.length)];
     video.src = hero.dataset.videos + name + (bigScreen ? "-4k" : "") + ".mp4";
-    hero.insertBefore(video, hero.querySelector(".hero-in"));
+    hero.insertBefore(video, hero.querySelector(".hero-in, .page-hero-in, .trip-in"));
     hero.appendChild(pause);
     if (calm) return;
     var played = video.play();

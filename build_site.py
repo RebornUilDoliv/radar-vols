@@ -162,7 +162,8 @@ def page_hero(p, path, body, photo=None):
         city_page = path.startswith(("vers/", "destinations/")) and path != "destinations/"
         photo = own[1] if own else "" if city_page else photos[sum(path.encode()) % len(photos)] if photos else ""
     image = f'<img class="hero-img" {photo_set(p, photo, "100vw").replace("async", "sync")} fetchpriority="high" alt="">' if photo else ""
-    hero = (f'<section class="page-hero">{image}'
+    videos = f' data-videos="{p.base}assets/video/" data-names="{CUSTOM_VIDEOS}"' if path == CUSTOM_PATH else ""
+    hero = (f'<section class="page-hero"{videos}>{image}'
             f'<div class="page-hero-in wrap">{top["crumb"] or ""}<h1>{top["title"]}</h1>{top["lead"] or ""}{top["cta"] or ""}</div></section>'
             f'<section class="page wrap{top["narrow"] or ""}">')
     return body[:top.start()] + hero + body[top.end():]
@@ -460,12 +461,12 @@ def home(p, cities, offers, updated, origins=()):
     <div class="stays">{stay_links(p, "")}</div>
   </div>
 </section>
-{world}
 <section class="band wrap">
   <h2>{p.t('offers')}</h2>
   <p class="sub">{e(p.t('offers_sub', date=updated))}</p>
   {mosaic}
 </section>
+{world}
 <section class="dark"><div class="wrap">
   <div class="head"><h2>{p.t('cheapest')}</h2><a href="{p.root}vols/">{p.t('see_all')}</a></div>
   <ul class="rows">{deals}</ul>
@@ -1089,6 +1090,7 @@ def destination_page(p, city, cities):
 
 
 CUSTOM_PATH = "voyage-sur-mesure/"
+CUSTOM_VIDEOS = "sm-lagon,sm-route,sm-dunes,sm-mer"
 CUSTOM_STEPS = [
     ("Ton envie", "Destination, dates, budget et ce que tu aimes, en 3 minutes."),
     ("Ton prix", "Une réponse sous 24 h, avec le prix et le contenu de ton plan."),
@@ -1116,7 +1118,7 @@ def custom_block(p):
     photo = "LIS" if photo_exists("LIS") else ""
     image = f'<img class="hero-img" {photo_set(p, photo, "100vw")} alt="" loading="lazy">' if photo else ""
     steps = "".join(f'<div class="stay"><strong>{e(t)}</strong><span>{e(d)}</span></div>' for t, d in CUSTOM_STEPS)
-    return f"""<section class="trip custom" id="sur-mesure">
+    return f"""<section class="trip custom" id="sur-mesure" data-videos="{p.base}assets/video/" data-names="{CUSTOM_VIDEOS}">
   {image}
   <div class="trip-in wrap">
     <p class="kicker">Nouveau · voyage sur mesure</p>
