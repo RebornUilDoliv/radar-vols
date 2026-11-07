@@ -461,6 +461,8 @@
           if (budgetItems.length) list.appendChild(block(text.budgets, budgetItems));
           var title = document.querySelector(".page-hero h1") || document.querySelector("h1");
           if (title) title.textContent = text.title.replace("{city}", city);
+          var hero = document.querySelector(".page-hero .hero-img");
+          if (hero) { hero.srcset = BASE + "assets/photos/" + code + "-m.jpg 640w, " + BASE + "assets/photos/" + code + ".jpg 1600w"; hero.src = BASE + "assets/photos/" + code + ".jpg"; }
         })
         .catch(function () {});
     }
