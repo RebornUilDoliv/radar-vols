@@ -408,3 +408,8 @@ details p { margin-top: 6px; color: var(--g3); }
   .nav nav a.nav-cta { padding: 0; color: var(--w); background: none; border-radius: 0; }
   .nav nav a.nav-cta::after { content: "Nouveau"; margin-left: 10px; padding: 2px 8px; color: var(--k); background: var(--w); border-radius: 999px; font-size: 12px; font-weight: 600; }
 }
+.custom-gives { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.custom-gives li { position: relative; padding: 14px 14px 14px 46px; background: var(--g1); border-radius: 12px; font-size: 15px; line-height: 1.4; }
+.custom-gives li::before { content: ""; position: absolute; left: 14px; top: 14px; width: 20px; height: 20px; border-radius: 50%; background: var(--k) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M6 10.5l2.6 2.6L14 7.6' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 20px no-repeat; }
+.custom-two { grid-template-columns: 3fr 2fr; }
+@media (max-width: 760px) { .custom-gives { grid-template-columns: 1fr; } }

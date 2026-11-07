@@ -1090,10 +1090,10 @@ def destination_page(p, city, cities):
 
 CUSTOM_PATH = "voyage-sur-mesure/"
 CUSTOM_STEPS = [
-    ("Tu me racontes ton envie", "Destination, dates, budget, ce que tu aimes. Le formulaire prend 3 minutes."),
-    ("Je te propose un prix", "Je te réponds sous 24 h avec le prix et ce que contiendra ton plan."),
-    ("Je prépare ton voyage", "Programme jour par jour, vols, quartiers, activités, budget. Livré en 3 jours."),
-    ("Tu réserves toi-même", "Avec mes liens, au prix affiché par les sites. Une retouche est incluse."),
+    ("Ton envie", "Destination, dates, budget et ce que tu aimes, en 3 minutes."),
+    ("Ton prix", "Une réponse sous 24 h, avec le prix et le contenu de ton plan."),
+    ("Ton plan", "Programme jour par jour, vols, quartiers, activités et budget, livré en 3 jours."),
+    ("Ta réservation", "Tu réserves toi-même, au prix affiché par les sites. Une retouche est incluse."),
 ]
 CUSTOM_GIVES = [
     "Un programme jour par jour, du matin au soir",
@@ -1105,7 +1105,7 @@ CUSTOM_GIVES = [
     "Un budget total estimé, poste par poste",
     "Une retouche incluse si tu veux changer quelque chose",
 ]
-CUSTOM_PRICES = [("Jusqu'à 7 jours", "49 €"), ("8 à 14 jours", "89 €"), ("Plus long ou plusieurs pays", "sur devis")]
+CUSTOM_PRICES = [("Jusqu'à 7 jours", "60 €"), ("8 à 14 jours", "95 €"), ("Plus long ou plusieurs pays", "Sur devis")]
 CUSTOM_TASTES = ["Plage", "Culture", "Nature", "Gastronomie", "Fête", "Aventure", "Détente", "Petit budget"]
 
 
@@ -1121,7 +1121,7 @@ def custom_block(p):
   <div class="trip-in wrap">
     <p class="kicker">Nouveau · voyage sur mesure</p>
     <h2>Je prépare ton voyage pour toi.</h2>
-    <p>Tu me dis ce que tu aimes, je te livre un plan complet, jour par jour. Dès 49 €.</p>
+    <p>Tu me dis ce que tu aimes, je te livre un plan complet, jour par jour. Dès 60 €.</p>
     <div class="stays custom-steps">{steps}</div>
     <p><a class="go big" href="{p.root}{CUSTOM_PATH}">Demander mon voyage</a></p>
   </div>
@@ -1136,11 +1136,11 @@ def custom_page(p):
     tastes = "".join(f'<label class="chip"><input type="checkbox" name="envies" value="{e(t)}"> {e(t)}</label>' for t in CUSTOM_TASTES)
     body = f"""<section class="page wrap">
   <h1>Ton voyage sur mesure</h1>
-  <p class="lead">Tu me dis ce que tu aimes, je te prépare un plan complet, jour par jour. Tu réserves ensuite toi-même, au prix affiché par les sites.</p>
+  <p class="lead">Tu dis ce que tu aimes, tu reçois un plan complet, jour par jour. Tu réserves ensuite toi-même, au prix affiché par les sites.</p>
   <a class="go" href="#demande">Demander mon voyage</a>
   <section class="panel"><h2>Comment ça marche</h2><ol class="custom-flow">{steps}</ol></section>
   <section class="panel custom-two">
-    <div><h2>Ce que tu reçois</h2><ul class="guide">{gives}</ul></div>
+    <div><h2>Ce que tu reçois</h2><ul class="custom-gives">{gives}</ul></div>
     <div><h2>Prix</h2><ul class="custom-prices">{prices}</ul>
       <p class="sub">Tu paies seulement après avoir validé le prix, par virement. Tes vols, hôtels et activités, tu les paies directement aux sites, sans frais en plus.</p></div>
   </section>
@@ -1156,15 +1156,15 @@ def custom_page(p):
         <label>Budget total, vols compris<select id="c-budget" name="budget"><option>Moins de 1 000 €</option><option selected>1 000 à 2 000 €</option><option>2 000 à 4 000 €</option><option>Plus de 4 000 €</option></select></label>
       </div>
       <fieldset class="chips"><legend>Ce que tu aimes</legend>{tastes}</fieldset>
-      <label>Raconte-moi ton voyage idéal<textarea id="c-more" name="message" rows="4" placeholder="Rythme, envies, ce que tu veux éviter…"></textarea></label>
+      <label>Ton voyage idéal<textarea id="c-more" name="message" rows="4" placeholder="Rythme, envies, ce que tu veux éviter…"></textarea></label>
       <button class="go big" type="submit">Envoyer ma demande</button>
-      <p class="custom-done" id="custom-done" role="status" hidden>Ton e-mail est prêt dans ta messagerie : il ne reste qu'à l'envoyer. Si rien ne s'ouvre, écris-moi à <strong>contact@eunodia.com</strong>.</p>
+      <p class="custom-done" id="custom-done" role="status" hidden>Ton e-mail est prêt dans ta messagerie : il ne reste qu'à l'envoyer. Si rien ne s'ouvre, écris à <strong>contact@eunodia.com</strong>.</p>
     </form>
   </section>
   <p class="sub custom-legal">Eunodia propose un service de conseil et de préparation de voyage. Les réservations et paiements des vols, hébergements et activités sont faits par le voyageur, directement auprès des prestataires. Certains liens sont partenaires : Eunodia peut toucher une commission, sans frais pour toi.</p>
 </section>"""
     return layout(p, f"Voyage sur mesure | {p.site['name']}",
-                  "Je prépare ton voyage selon tes envies : programme jour par jour, vols, quartiers, activités et budget. Dès 49 €.",
+                  "Un voyage préparé selon tes envies : programme jour par jour, vols, quartiers, activités et budget. Dès 60 €.",
                   CUSTOM_PATH, body, photo="LIS" if photo_exists("LIS") else None)
 
 
