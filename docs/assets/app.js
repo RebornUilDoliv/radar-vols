@@ -473,6 +473,24 @@
     });
   }
 
+  /* Voyage sur mesure : prépare l'e-mail de demande avec les réponses du formulaire */
+  function initCustom() {
+    var form = $("custom-form");
+    if (!form) return;
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+      var data = new FormData(form), tastes = data.getAll("envies").join(", ") || "-";
+      var lines = [
+        "Prénom : " + data.get("prenom"), "E-mail : " + data.get("email"), "Destination : " + data.get("destination"),
+        "Départ : " + (data.get("depart") || "-"), "Quand : " + data.get("dates"), "Voyageurs : " + data.get("voyageurs"),
+        "Budget : " + data.get("budget"), "Envies : " + tastes, "", data.get("message") || ""
+      ];
+      var subject = "Voyage sur mesure : " + data.get("destination");
+      location.href = "mailto:" + form.getAttribute("data-to") + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(lines.join("\n"));
+      $("custom-done").hidden = false;
+    });
+  }
+
   function rotatePhotos(today) {
     var cards = Array.prototype.slice.call(document.querySelectorAll(".mosaic .card"));
     if (cards.length < 2) return;
@@ -496,4 +514,5 @@
   initCharts();
   initFlights();
   initDeals();
+  initCustom();
 })();

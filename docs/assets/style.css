@@ -367,3 +367,36 @@ details p { margin-top: 6px; color: var(--g3); }
 }
 .deals-pick { grid-template-columns: 1fr; margin: 0 0 8px; max-width: 360px; }
 .deals-pick select { width: 100%; }
+.kicker { font-size: 13px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: #dcdcdc; }
+.go.big { min-height: 52px; padding: 12px 24px; font-size: 16px; margin-top: 22px; }
+.trip .go.big { color: var(--k); background: var(--w); }
+.trip .go.big:hover { color: var(--w); background: var(--k); }
+.custom-steps { grid-template-columns: repeat(4, 1fr); }
+.trip .custom-steps .stay:hover { color: var(--k); background: var(--w); }
+.trip .custom-steps .stay:hover span { color: var(--g3); }
+.custom-flow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; counter-reset: step; }
+.custom-flow li { counter-increment: step; display: grid; gap: 4px; padding: 18px; background: var(--g1); border-radius: 12px; }
+.custom-flow li::before { content: counter(step); font-family: "Clash Display", "Geist", sans-serif; font-size: 28px; font-weight: 600; }
+.custom-flow strong { font-size: 17px; }
+.custom-flow span { color: var(--g3); font-size: 14px; }
+.custom-two { display: grid; grid-template-columns: 3fr 2fr; gap: 32px; }
+.custom-prices li { display: flex; justify-content: space-between; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--g2); }
+.custom-prices strong { font-size: 18px; white-space: nowrap; }
+.custom-form { display: grid; gap: 16px; padding: 22px; background: var(--g1); border-radius: 16px; }
+.custom-form label, .chips legend { display: block; color: var(--g3); font-size: 14px; font-weight: 500; }
+.custom-form input, .custom-form select, .custom-form textarea { background: var(--w); }
+.custom-form textarea { width: 100%; margin-top: 3px; padding: 10px 12px; border: 1px solid transparent; border-radius: 10px; font: inherit; resize: vertical; }
+.custom-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; border: 0; }
+.chips legend { width: 100%; margin-bottom: 6px; }
+.chip { display: inline-flex !important; align-items: center; gap: 6px; padding: 8px 12px; color: var(--k) !important; background: var(--w); border-radius: 999px; cursor: pointer; }
+.chip input { width: auto; min-height: 0; margin: 0; }
+.custom-form button { justify-self: start; border: 0; cursor: pointer; }
+.custom-done { font-weight: 500; }
+.custom-legal { margin-top: 32px; }
+@media (max-width: 760px) {
+  .custom-steps { grid-template-columns: 1fr 1fr; }
+  .custom-flow, .custom-two, .custom-grid { grid-template-columns: 1fr; }
+  .trip .custom-steps .stay span { display: block; font-size: 13px; }
+  .custom-form button { justify-self: stretch; justify-content: center; }
+}

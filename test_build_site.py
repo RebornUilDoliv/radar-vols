@@ -207,6 +207,15 @@ class BuildTests(unittest.TestCase):
                                         "en": {"ZZZ": "Zedville", "MAD": "Madrid", "BUD": "Budapest", "LCA": "Larnaca"}})
         self.assertEqual(names["fr"], {"ZZZ": "Zedville", "MAD": "Madrid", "BUD": "Budapest", "LCA": "Larnaca"})
 
+    def test_custom_trip_page_is_french_only(self):
+        docs = self.build(self.deals())
+        page = (docs / "voyage-sur-mesure" / "index.html").read_text()
+        self.assertIn('id="custom-form"', page)
+        self.assertIn("Tu réserves", page)
+        self.assertIn("voyage-sur-mesure/", (docs / "index.html").read_text())
+        self.assertFalse((docs / "en" / "voyage-sur-mesure").exists())
+        self.assertNotIn("voyage-sur-mesure", (docs / "en" / "index.html").read_text())
+
     def test_test_booking_is_hidden_from_public_pages(self):
         docs = self.build(self.deals())
         self.assertNotIn("test-reservation", (docs / "index.html").read_text())

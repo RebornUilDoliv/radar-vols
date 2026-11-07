@@ -210,6 +210,8 @@ def time_difference(a, b, day):
 
 def page_langs(path):
     """Les pages de route et la réservation test n'existent que dans les langues principales."""
+    if path.startswith("voyage-sur-mesure"):
+        return ("fr",)
     return FULL_LANGS if path.startswith("test-reservation") or re.fullmatch(r"depuis/[^/]+/[^/]+/", path) else LANGS
 
 
@@ -219,8 +221,9 @@ def layout(p, title, description, path, body, noindex=False, extra="", photo=Non
     name = e(site["name"])
     links = "".join(
         f'<link rel="alternate" hreflang="{lang}" href="{e(site["url"] + ("" if lang == "fr" else lang + "/") + path)}">'
-        for lang in LANGS
+        for lang in page_langs(path)
     )
+    custom_nav = f'<a href="{root}{CUSTOM_PATH}">Sur mesure</a>\n    ' if p.lang == "fr" else ""
     switch = "".join(
         f'<a href="{base}{"" if lang == "fr" else lang + "/"}{path}" lang="{lang}" hreflang="{lang}"'
         f'{" aria-current=\"true\"" if lang == p.lang else ""} title="{LANG_NAMES[lang]}">{LANG_NAMES[lang]}</a>'
@@ -272,7 +275,7 @@ def layout(p, title, description, path, body, noindex=False, extra="", photo=Non
     <a href="{root}depuis/">{p.t('nav_world')}</a>
     <a href="{root}destinations/">{p.t('nav_places')}</a>
     <a href="{root}vols-pas-chers/">{p.t('nav_deals')}</a>
-    <a href="{root}a-propos/">{p.t('nav_info')}</a>
+    {custom_nav}<a href="{root}a-propos/">{p.t('nav_info')}</a>
   </nav>
   <details class="langs"><summary aria-label="Langue">{p.lang.upper()}</summary><div class="langs-list">{switch}</div></details>
   <button class="menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="menu" aria-label="{p.t('menu')}"><span></span><span></span><span></span></button>
@@ -445,6 +448,7 @@ def home(p, cities, offers, updated, origins=()):
   <li><strong>{p.t('perk_3')}</strong><span>{p.t('perk_3b')}</span></li>
 </ul>
 {tools_block(p)}
+{custom_block(p)}
 {world}
 <section class="trip" id="preparer">
   <img class="hero-img" {photo_set(p, "BKK" if photo_exists("BKK") else hero_code, "100vw")} alt="" loading="lazy">
@@ -1081,6 +1085,86 @@ def destination_page(p, city, cities):
     return layout(p, title, p.t("dest_meta", city=p.city(city["code"], city["city"])), f"destinations/{city['slug']}/", body)
 
 
+CUSTOM_PATH = "voyage-sur-mesure/"
+CUSTOM_STEPS = [
+    ("Tu me racontes ton envie", "Destination, dates, budget, ce que tu aimes. Le formulaire prend 3 minutes."),
+    ("Je te propose un prix", "Je te réponds sous 24 h avec le prix et ce que contiendra ton plan."),
+    ("Je prépare ton voyage", "Programme jour par jour, vols, quartiers, activités, budget. Livré en 3 jours."),
+    ("Tu réserves toi-même", "Avec mes liens, au prix affiché par les sites. Une retouche est incluse."),
+]
+CUSTOM_GIVES = [
+    "Un programme jour par jour, du matin au soir",
+    "Le meilleur moment pour partir, d'après les prix relevés par Eunodia",
+    "Les vols à surveiller, avec le lien pour réserver",
+    "Le quartier où dormir et des hôtels adaptés à ton budget",
+    "Les activités à réserver, et celles à éviter",
+    "Comment te déplacer sur place, et quelle eSIM prendre",
+    "Un budget total estimé, poste par poste",
+    "Une retouche incluse si tu veux changer quelque chose",
+]
+CUSTOM_PRICES = [("Jusqu'à 7 jours", "49 €"), ("8 à 14 jours", "89 €"), ("Plus long ou plusieurs pays", "sur devis")]
+CUSTOM_TASTES = ["Plage", "Culture", "Nature", "Gastronomie", "Fête", "Aventure", "Détente", "Petit budget"]
+
+
+def custom_block(p):
+    """Encart de l'accueil pour le voyage sur mesure, en français seulement."""
+    if p.lang != "fr":
+        return ""
+    photo = "LIS" if photo_exists("LIS") else ""
+    image = f'<img class="hero-img" {photo_set(p, photo, "100vw")} alt="" loading="lazy">' if photo else ""
+    steps = "".join(f'<div class="stay"><strong>{e(t)}</strong><span>{e(d)}</span></div>' for t, d in CUSTOM_STEPS)
+    return f"""<section class="trip custom" id="sur-mesure">
+  {image}
+  <div class="trip-in wrap">
+    <p class="kicker">Nouveau · voyage sur mesure</p>
+    <h2>Je prépare ton voyage pour toi.</h2>
+    <p>Tu me dis ce que tu aimes, je te livre un plan complet, jour par jour. Dès 49 €.</p>
+    <div class="stays custom-steps">{steps}</div>
+    <p><a class="go big" href="{p.root}{CUSTOM_PATH}">Demander mon voyage</a></p>
+  </div>
+</section>"""
+
+
+def custom_page(p):
+    """Page du service de préparation de voyage (conseil seulement : le client réserve lui-même)."""
+    steps = "".join(f'<li><strong>{e(t)}</strong><span>{e(d)}</span></li>' for t, d in CUSTOM_STEPS)
+    gives = "".join(f"<li>{e(g)}</li>" for g in CUSTOM_GIVES)
+    prices = "".join(f'<li><span>{e(a)}</span><strong>{e(b)}</strong></li>' for a, b in CUSTOM_PRICES)
+    tastes = "".join(f'<label class="chip"><input type="checkbox" name="envies" value="{e(t)}"> {e(t)}</label>' for t in CUSTOM_TASTES)
+    body = f"""<section class="page wrap">
+  <h1>Ton voyage sur mesure</h1>
+  <p class="lead">Tu me dis ce que tu aimes, je te prépare un plan complet, jour par jour. Tu réserves ensuite toi-même, au prix affiché par les sites.</p>
+  <a class="go" href="#demande">Demander mon voyage</a>
+  <section class="panel"><h2>Comment ça marche</h2><ol class="custom-flow">{steps}</ol></section>
+  <section class="panel custom-two">
+    <div><h2>Ce que tu reçois</h2><ul class="guide">{gives}</ul></div>
+    <div><h2>Prix</h2><ul class="custom-prices">{prices}</ul>
+      <p class="sub">Tu paies seulement après avoir validé le prix, par virement. Tes vols, hôtels et activités, tu les paies directement aux sites, sans frais en plus.</p></div>
+  </section>
+  <section class="panel" id="demande"><h2>Ta demande</h2>
+    <form class="custom-form" id="custom-form" data-to="contact@eunodia.com">
+      <div class="custom-grid">
+        <label>Prénom<input id="c-name" name="prenom" autocomplete="given-name" required></label>
+        <label>E-mail<input id="c-email" name="email" type="email" autocomplete="email" required></label>
+        <label>Où veux-tu aller ?<input id="c-where" name="destination" placeholder="Japon, Mexique… ou « je ne sais pas »" required></label>
+        <label>Ville de départ<input id="c-from" name="depart" placeholder="Paris"></label>
+        <label>Quand ?<input id="c-when" name="dates" placeholder="Avril 2027, 10 jours" required></label>
+        <label>Combien de voyageurs ?<select id="c-pax" name="voyageurs"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5 ou plus</option></select></label>
+        <label>Budget total, vols compris<select id="c-budget" name="budget"><option>Moins de 1 000 €</option><option selected>1 000 à 2 000 €</option><option>2 000 à 4 000 €</option><option>Plus de 4 000 €</option></select></label>
+      </div>
+      <fieldset class="chips"><legend>Ce que tu aimes</legend>{tastes}</fieldset>
+      <label>Raconte-moi ton voyage idéal<textarea id="c-more" name="message" rows="4" placeholder="Rythme, envies, ce que tu veux éviter…"></textarea></label>
+      <button class="go big" type="submit">Envoyer ma demande</button>
+      <p class="custom-done" id="custom-done" role="status" hidden>Ton e-mail est prêt dans ta messagerie : il ne reste qu'à l'envoyer. Si rien ne s'ouvre, écris-moi à <strong>contact@eunodia.com</strong>.</p>
+    </form>
+  </section>
+  <p class="sub custom-legal">Eunodia propose un service de conseil et de préparation de voyage. Les réservations et paiements des vols, hébergements et activités sont faits par le voyageur, directement auprès des prestataires. Certains liens sont partenaires : Eunodia peut toucher une commission, sans frais pour toi.</p>
+</section>"""
+    return layout(p, f"Voyage sur mesure | {p.site['name']}",
+                  "Je prépare ton voyage selon tes envies : programme jour par jour, vols, quartiers, activités et budget. Dès 49 €.",
+                  CUSTOM_PATH, body, photo="LIS" if photo_exists("LIS") else None)
+
+
 def about_page(p):
     items = "".join(f"<details><summary>{e(q)}</summary><p>{e(a)}</p></details>" for q, a in TEXT[p.lang]["faq"])
     body = f'<section class="page wrap narrow"><h1>{p.t("info_title")}</h1><p class="lead">{p.t("info_lead")}</p><div class="faq">{items}</div><p class="info-contact"><a href="mailto:contact@eunodia.com">contact@eunodia.com</a></p><a class="search-go" href="{p.root}">{p.t("info_go")}</a></section>'
@@ -1172,6 +1256,8 @@ def build_language(p, data, cities, updated_at, groups, origins=()):
     for origin in origins:
         write(DOCS / "assets" / "routes" / lang / f"{origin['code']}.json", json.dumps(route_rows(p, origin), ensure_ascii=False, separators=(",", ":")))
     write(folder / "a-propos" / "index.html", about_page(p))
+    if lang == "fr":
+        write(folder / "voyage-sur-mesure" / "index.html", custom_page(p))
     if origins:
         write(folder / "barometre" / "index.html", barometer_page(p, origins, updated))
     write(folder / "newsletter-confirmee" / "index.html", news_done_page(p))
@@ -1251,6 +1337,7 @@ def build(data, site, catalog=None):
         f"<url><loc>{e(site['url'] + ('' if lang == 'fr' else lang + '/') + page)}</loc></url>"
         for lang in LANGS for page in pages + (route_pages if lang in FULL_LANGS else [])
     )
+    urls += f"<url><loc>{e(site['url'] + CUSTOM_PATH)}</loc></url>"
     write(DOCS / "sitemap.xml", f'<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{urls}</urlset>\n')
     write(DOCS / "manifest.webmanifest", json.dumps({
         "name": site["name"], "short_name": site["name"], "start_url": site["root"], "display": "standalone",
