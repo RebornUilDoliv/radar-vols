@@ -20,6 +20,14 @@ def offer(code, city, region, price, ahead, history=None):
 
 
 class BuildTests(unittest.TestCase):
+    def test_row_city_is_clickable_without_its_own_page(self):
+        from types import SimpleNamespace
+        page = SimpleNamespace(lang="fr", root="/", city=lambda code, name: "Pise", day=lambda *a: "19 nov.", t=lambda *a, **k: "Voir", stops=lambda r: "direct", euro=lambda v: f"{v} €")
+        origin = {"code": "PAR", "slug": "paris", "pages": []}
+        route = {"to": "PSA", "price": 37, "depart": "2026-11-19", "back": "2026-11-21", "link": "https://tp.media/r?x=1"}
+        html = build_site.world_row(page, origin, route)
+        self.assertIn('<h3><a href="https://tp.media/r?x=1" rel="nofollow sponsored noopener" target="_blank">Pise</a></h3>', html)
+
     def build(self, offers):
         folder = tempfile.TemporaryDirectory()
         self.addCleanup(folder.cleanup)

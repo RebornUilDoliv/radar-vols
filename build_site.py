@@ -776,8 +776,9 @@ def has_page(p, origin, route):
 def world_row(p, origin, route, label=None):
     name = e(label or p.city(route["to"], route["to"]))
     detail = f'{e(p.day(route["depart"], False))} → {e(p.day(route["back"]))} · {e(p.t("days", count=nights(route)))} · {e(p.stops(route))}'
-    title = f'<a href="{p.root}{route_path(origin, route)}">{name}</a>' if has_page(p, origin, route) else name
-    action = f'<a class="go buy" href="{e(route["link"])}" rel="nofollow sponsored noopener" target="_blank">{p.t("check")}</a>'
+    outside = f'href="{e(route["link"])}" rel="nofollow sponsored noopener" target="_blank"'
+    title = f'<a href="{p.root}{route_path(origin, route)}">{name}</a>' if has_page(p, origin, route) else f'<a {outside}>{name}</a>'
+    action = f'<a class="go buy" {outside}>{p.t("check")}</a>'
     return f"""<li class="row"><div class="row-info"><h3>{title}</h3><p>{detail}</p></div><p class="row-price">{p.euro(route['price'])}</p>{action}</li>"""
 
 
