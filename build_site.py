@@ -452,7 +452,6 @@ def home(p, cities, offers, updated, origins=()):
 </ul>
 {custom_block(p)}
 {tools_block(p)}
-{world}
 <section class="trip" id="preparer">
   <img class="hero-img" {photo_set(p, "BKK" if photo_exists("BKK") else hero_code, "100vw")} alt="" loading="lazy">
   <div class="trip-in wrap">
@@ -461,6 +460,7 @@ def home(p, cities, offers, updated, origins=()):
     <div class="stays">{stay_links(p, "")}</div>
   </div>
 </section>
+{world}
 <section class="band wrap">
   <h2>{p.t('offers')}</h2>
   <p class="sub">{e(p.t('offers_sub', date=updated))}</p>
