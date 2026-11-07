@@ -740,7 +740,7 @@ def collections_index(p, groups, origins=()):
         links = collection_links(p, [g for g in groups if g["kind"] == kind])
         if links:
             blocks += f'<section class="dest-group"><h2>{p.t(label)}</h2><ul class="links">{links}</ul></section>'
-    body = (f'<section class="page wrap"><h1 id="deals-title">{p.t("deals_title")}</h1><p class="lead">{p.t("deals_lead")}</p>'
+    body = (f'<section class="page wrap"><h1>{p.t("deals_title")}</h1><p class="lead">{p.t("deals_lead")}</p>'
             f'{deals_picker(p, origins)}<div id="deals-list">{blocks}</div></section>')
     return layout(p, f"{p.t('deals_title')} | {p.site['name']}", p.t("deals_lead"), "vols-pas-chers/", body)
 

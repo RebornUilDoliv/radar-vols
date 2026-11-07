@@ -365,4 +365,5 @@ details p { margin-top: 6px; color: var(--g3); }
   .hero .hero-in h1 { max-width: 900px; font-size: 64px; line-height: 1.08; }
   .hero .hero-in p { font-size: 20px; }
 }
-.deals-pick { margin: 22px 0 6px; max-width: 360px; }
+.deals-pick { grid-template-columns: 1fr; margin: 0 0 8px; max-width: 360px; }
+.deals-pick select { width: 100%; }

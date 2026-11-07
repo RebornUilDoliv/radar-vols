@@ -459,7 +459,8 @@
           list.appendChild(block(text.months, monthItems));
           list.appendChild(block(text.regions, regionItems));
           if (budgetItems.length) list.appendChild(block(text.budgets, budgetItems));
-          $("deals-title").textContent = text.title.replace("{city}", city);
+          var title = document.querySelector(".page-hero h1") || document.querySelector("h1");
+          if (title) title.textContent = text.title.replace("{city}", city);
         })
         .catch(function () {});
     }
