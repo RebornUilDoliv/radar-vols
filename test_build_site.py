@@ -66,6 +66,12 @@ class BuildTests(unittest.TestCase):
         self.assertIn('"FAQPage"', schema)
         self.assertIn("Combien coûte un vol pour Tokyo ?", schema)
 
+    def test_old_partner_links_move_to_current_project(self):
+        old = {"offers": [{"link": "https://tp.media/r?marker=1&trs=595480&p=4114&u=x"}], "other": "https://example.com/?trs=1"}
+        new = build_site.retrack(old, "597805")
+        self.assertEqual(new["offers"][0]["link"], "https://tp.media/r?marker=1&trs=597805&p=4114&u=x")
+        self.assertEqual(new["other"], "https://example.com/?trs=1")
+
     def test_row_city_is_clickable_without_its_own_page(self):
         from types import SimpleNamespace
         page = SimpleNamespace(lang="fr", root="/", city=lambda code, name: "Pise", day=lambda *a: "19 nov.", t=lambda *a, **k: "Voir", stops=lambda r: "direct", euro=lambda v: f"{v} €")

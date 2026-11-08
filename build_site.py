@@ -869,12 +869,25 @@ def clean_names(names):
     return cleaned
 
 
-def load_world(names):
+def retrack(value, project):
+    """Rattache les liens Travelpayouts déjà enregistrés au projet actuel."""
+    if not project:
+        return value
+    if isinstance(value, dict):
+        return {key: retrack(item, project) for key, item in value.items()}
+    if isinstance(value, list):
+        return [retrack(item, project) for item in value]
+    if isinstance(value, str) and value.startswith("https://tp.media/r?"):
+        return re.sub(r"([?&]trs=)[^&]*", lambda m: m.group(1) + str(project), value)
+    return value
+
+
+def load_world(names, project=None):
     """Regroupe les prix mondiaux par ville de départ, si le relevé existe."""
     path = DOCS / "world.json"
     if not path.exists():
         return []
-    routes = [r for r in json.loads(path.read_text())["routes"] if r["price"] <= MAX_ROUTE_PRICE and r["from"] in names and r["to"] in names]
+    routes = [r for r in retrack(json.loads(path.read_text()), project)["routes"] if r["price"] <= MAX_ROUTE_PRICE and r["from"] in names and r["to"] in names]
     served = {}
     for route in routes:
         served.setdefault(route["to"], set()).add(route["from"])
@@ -1371,6 +1384,7 @@ def build(data, site, catalog=None):
     after = site["url"].split("//", 1)[1]
     site["root"] = "/" + after.split("/", 1)[1] if "/" in after else "/"
     site["version"] = asset_version()
+    data = retrack(data, site.get("project"))
     offers = data["offers"]
     cities = destinations(offers)
     slugs = {c["code"]: c["slug"] for c in cities}
@@ -1389,7 +1403,7 @@ def build(data, site, catalog=None):
     if catalog:
         write(names_path, json.dumps(names, ensure_ascii=False, separators=(",", ":")))
     groups = collections(offers)
-    origins = load_world(names.get("fr", {}))
+    origins = load_world(names.get("fr", {}), site.get("project"))
     zones_path = DOCS / "assets" / "zones.json"
     zones = json.loads(zones_path.read_text()) if zones_path.exists() else {}
     geo_path = DOCS / "assets" / "geo.json"
