@@ -119,7 +119,7 @@
         ($("back").value ? part($("back").value) : "") + $("pax").value;
       if (form.dataset.results) {
         location.href = form.dataset.results + "?" + new URLSearchParams({
-          flightSearch: url.slice(form.dataset.target.length), locale: RF.lang, currency: RF.lang === "en" ? "USD" : "EUR"
+          flightSearch: url.slice(form.dataset.target.length), locale: RF.lang, currency: form.dataset.currency || "EUR"
         }).toString();
         return;
       }

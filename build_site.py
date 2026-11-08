@@ -213,8 +213,6 @@ def page_langs(path):
     """Les pages de route et la réservation test n'existent que dans les langues principales."""
     if path.startswith("voyage-sur-mesure"):
         return ("fr",)
-    if path.startswith(PREVIEW_PATH):
-        return ("fr", "en")
     return FULL_LANGS if path.startswith("test-reservation") or re.fullmatch(r"depuis/[^/]+/[^/]+/", path) else LANGS
 
 
@@ -352,7 +350,8 @@ def newsletter_block(p):
 
 
 def search_form(p):
-    return f"""<form class="search" id="search" data-target="https://www.aviasales.com/search/" autocomplete="off">
+    currency = WHITE_LABEL_CURRENCY.get(p.lang, "eur").upper()
+    return f"""<form class="search" id="search" data-target="https://www.aviasales.com/search/" data-results="{p.root}{RESULTS_PATH}" data-currency="{currency}" autocomplete="off">
   <div class="field grow"><label for="from">{p.t('search_from')}</label><input id="from" placeholder="{p.t('search_place')}" required>
     <ul class="suggest" hidden></ul></div>
   <div class="field grow"><label for="to">{p.t('search_to')}</label><input id="to" placeholder="{e(p.t('search_place'))}" required>
@@ -1293,14 +1292,13 @@ def missing_page(p):
     return layout(p, f"{p.t('missing')} | {p.site['name']}", p.t("missing_lead"), "404.html", body)
 
 
-PREVIEW_PATH = "apercu-moteur-7k3q/"
-PREVIEW_HOME_PATH = "apercu-accueil-7k3q/"
+RESULTS_PATH = "recherche/"
 WHITE_LABEL_ID = "24366"
-WHITE_LABEL_CURRENCY = {"en": "usd"}
+WHITE_LABEL_CURRENCY = {"en": "usd", "ar": "usd", "ko": "usd", "zh": "usd"}
 
 
-def preview_page(p):
-    """Page privée (non indexée, liée nulle part) pour tester le moteur de vols Travelpayouts avant de le rendre public."""
+def results_page(p):
+    """Résultats de recherche de vols : moteur Travelpayouts intégré au site (non indexé, comme toute page de résultats)."""
     fr = p.lang == "fr"
     currency = WHITE_LABEL_CURRENCY.get(p.lang, "eur").upper()
     title = "Trouve ton vol" if fr else "Find your flight"
@@ -1324,7 +1322,7 @@ def preview_page(p):
 </section>"""
     extra = f"""<script>["tpwl_locale={p.lang}", "tpwl_currency={currency}"].forEach(function (c) {{ document.cookie = c + "; path=/; max-age=31536000; SameSite=Lax"; document.cookie = c + "; path=/; domain=." + location.hostname.replace(/^www\\./, "") + "; max-age=31536000; SameSite=Lax"; }});</script>
 <script type="module" async src="https://tpembd.com/wl_web/main.js?wl_id={WHITE_LABEL_ID}"></script>"""
-    return layout(p, f"{title} | {p.site['name']}", lead, PREVIEW_PATH, body, noindex=True, extra=extra, photo="TYO" if photo_exists("TYO") else None)
+    return layout(p, f"{title} | {p.site['name']}", lead, RESULTS_PATH, body, noindex=True, extra=extra, photo="TYO" if photo_exists("TYO") else None)
 
 
 def test_booking_page(p):
@@ -1360,14 +1358,7 @@ def build_language(p, data, cities, updated_at, groups, origins=()):
     ]
     if lang != "fr":
         write(folder / "prices.json", json.dumps({**data, "offers": translated}, ensure_ascii=False, separators=(",", ":")) + "\n")
-    home_html = home(p, cities, offers, updated, origins)
-    write(folder / "index.html", home_html)
-    if lang in ("fr", "en"):
-        # Copie privée de l'accueil : la recherche mène au moteur intégré au lieu d'Aviasales.
-        private = home_html.replace('data-target="https://www.aviasales.com/search/"',
-                                    f'data-target="https://www.aviasales.com/search/" data-results="{p.root}{PREVIEW_PATH}"', 1)
-        private = private.replace("<head>", '<head>\n<meta name="robots" content="noindex, nofollow">', 1)
-        write(folder / PREVIEW_HOME_PATH / "index.html", private)
+    write(folder / "index.html", home(p, cities, offers, updated, origins))
     world = folder / "depuis"
     if world.exists():
         shutil.rmtree(world)
@@ -1402,8 +1393,7 @@ def build_language(p, data, cities, updated_at, groups, origins=()):
         write(deals / group["slug"] / "index.html", collection_page(p, group, groups, by_code, updated))
     if lang in FULL_LANGS:
         write(folder / "test-reservation" / "index.html", test_booking_page(p))
-    if lang in ("fr", "en"):
-        write(folder / PREVIEW_PATH / "index.html", preview_page(p))
+    write(folder / RESULTS_PATH / "index.html", results_page(p))
     write(folder / "credits" / "index.html", credits_page(p))
     keep = {c["slug"] for c in cities}
     for child in (folder / "destinations").iterdir():
