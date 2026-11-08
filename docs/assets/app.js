@@ -150,7 +150,8 @@
     '[class*="cardLeftPrice"]{font-family:"Clash Display","Geist",sans-serif!important;font-weight:600!important;color:#0b0b0b!important}',
     '[class*="cardFlightTime"]{font-family:"Clash Display","Geist",sans-serif!important;font-weight:500!important;color:#0b0b0b!important}',
     '[class*="cardLeftButton"],[class*="Button-module__primary"]{background:#0b0b0b!important;border-radius:10px!important;font-family:"Clash Display","Geist",sans-serif!important;font-weight:600!important}',
-    '[class*="cardBadges"]>*{background:#0b0b0b!important;color:#fff!important;border-radius:999px!important}',
+    '[class*="cardBadges"] *{background:#0b0b0b!important;color:#fff!important;border-radius:999px!important}',
+    '[class*="cancelButton"] svg *,[class*="iconContainer"] svg *{stroke:#0b0b0b!important}',
     '[class*="Button-module__secondary"]{border-radius:10px!important;border-color:#e4e4e4!important;color:#0b0b0b!important}',
     '[class*="FlightFiltersMobileMenu-module__chip"]{border-radius:999px!important}'
   ].join("");
