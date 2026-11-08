@@ -145,7 +145,7 @@
     '[class*="DefaultSearch-module__submitBtn"]:hover{background:#333!important}',
     '[class*="LocalizationDropdown-module__btn"]{font-family:"Geist",sans-serif!important;font-size:13px!important;font-weight:600!important;color:#6a6a6a!important}',
     '[class*="SearchEdit-module__line"]{font-family:"Geist",sans-serif!important;font-size:14px!important;color:#6a6a6a!important}',
-    '[class*="SearchEdit-module__referral"]{display:none!important}',
+    '[class*="SearchEdit-module__referral"],[class*="SearchEdit-module__hotelsLabel"]{display:none!important}',
     '[class*="FlightCard-module__card___"]{border:1px solid #e4e4e4!important;border-radius:16px!important;box-shadow:none!important}',
     '[class*="cardLeftPrice"]{font-family:"Clash Display","Geist",sans-serif!important;font-weight:600!important;color:#0b0b0b!important}',
     '[class*="cardFlightTime"]{font-family:"Clash Display","Geist",sans-serif!important;font-weight:500!important;color:#0b0b0b!important}',
@@ -186,6 +186,8 @@
   function initWhiteLabel() {
     var ids = ["tpwl-search", "tpwl-tickets", "tpwl-modals"];
     if (!$("tpwl-search")) return;
+    /* La case « hôtels » du moteur ouvre Hotellook, fermé depuis 2025 : on la décoche. */
+    document.cookie = "hide_hotels=true; max-age=31536000; path=/; SameSite=Lax";
     var tries = 0;
     var timer = setInterval(function () {
       tries += 1;

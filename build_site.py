@@ -1320,7 +1320,7 @@ def results_page(p):
     <div id="tpwl-tickets"></div>
   </div>
 </section>"""
-    extra = f"""<script>["tpwl_locale={p.lang}", "tpwl_currency={currency}"].forEach(function (c) {{ document.cookie = c + "; path=/; max-age=31536000; SameSite=Lax"; document.cookie = c + "; path=/; domain=." + location.hostname.replace(/^www\\./, "") + "; max-age=31536000; SameSite=Lax"; }});</script>
+    extra = f"""<script>document.cookie = "hide_hotels=true; max-age=31536000; path=/; SameSite=Lax"; ["tpwl_locale={p.lang}", "tpwl_currency={currency}"].forEach(function (c) {{ document.cookie = c + "; path=/; max-age=31536000; SameSite=Lax"; document.cookie = c + "; path=/; domain=." + location.hostname.replace(/^www\\./, "") + "; max-age=31536000; SameSite=Lax"; }});</script>
 <script type="module" async src="https://tpembd.com/wl_web/main.js?wl_id={WHITE_LABEL_ID}"></script>"""
     return layout(p, f"{title} | {p.site['name']}", lead, RESULTS_PATH, body, noindex=True, extra=extra, photo="TYO" if photo_exists("TYO") else None)
 
