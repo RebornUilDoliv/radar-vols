@@ -604,6 +604,66 @@ def world_places_index(p, places, zones):
     return layout(p, f"{p.t('places_title')} | {p.site['name']}", lead, "destinations/", body)
 
 
+def duration_label(p, hours):
+    """3.5 → « 3 h 30 » (« 3h 30m » en anglais), arrondi à la demi-heure."""
+    total = max(30, round(hours * 2) * 30)
+    h, m = divmod(total, 60)
+    if p.lang == "en":
+        return f"{h}h {m:02d}m" if m else f"{h}h"
+    return f"{h} h {m:02d}" if m else f"{h} h"
+
+
+def place_facts(p, place, now=None):
+    """Bloc « en bref » et questions fréquentes d'une destination, calculés à partir des prix et de la géographie."""
+    origin, route = place["routes"][0]
+    city = p.city(place["code"], place["code"])
+    start = p.city(origin["code"], origin["code"])
+    values = {"city": city, "origin": start, "price": p.euro(route["price"]),
+              "depart": p.day(route["depart"]), "back": p.day(route["back"])}
+    others = []
+    for other, _ in place["routes"]:
+        name = p.city(other["code"], other["code"])
+        if name not in others:
+            others.append(name)
+    facts = [(p.t("fact_price"), p.t("fact_price_v", **values))]
+    faq = [(p.t("q_price", **values), p.t("a_price", **values))]
+    here, there = p.geo.get(origin["code"]), p.geo.get(place["code"])
+    if here and there:
+        lat1, lon1, lat2, lon2 = map(math.radians, (here[0], here[1], there[0], there[1]))
+        km = 6371 * 2 * math.asin(math.sqrt(math.sin((lat2 - lat1) / 2) ** 2 + math.cos(lat1) * math.cos(lat2) * math.sin((lon2 - lon1) / 2) ** 2))
+        if km >= 150:
+            label = f"{round(km, -1):,.0f}"
+            label = label if p.lang == "en" else label.replace(",", " ")
+            time = duration_label(p, km / 800 + 0.5)
+            facts.append((p.t("fact_flight"), p.t("fact_flight_v", time=time, km=label, **values)))
+            faq.append((p.t("q_time", **values), p.t("a_time", time=time, **values)))
+        try:
+            moment = now or datetime.now(ZoneInfo("UTC"))
+            gap = (moment.astimezone(ZoneInfo(there[2])).utcoffset() - moment.astimezone(ZoneInfo(here[2])).utcoffset()).total_seconds() / 3600
+        except Exception:
+            gap = None
+        if gap is not None:
+            if gap:
+                sign = "+" if gap > 0 else "−"
+                diff = sign + duration_label(p, abs(gap)).replace("h 00", "h")
+                facts.append((p.t("fact_tz"), p.t("fact_tz_v", diff=diff, **values)))
+                faq.append((p.t("q_tz", **values), p.t("a_tz", diff=diff, **values)))
+            else:
+                facts.append((p.t("fact_tz"), p.t("fact_tz_none", **values)))
+                faq.append((p.t("q_tz", **values), p.t("a_tz_none", **values)))
+    if len(others) > 1:
+        shown = ", ".join(others[:4])
+        facts.append((p.t("fact_from"), p.t("fact_from_v", count=len(others), list=shown)))
+        faq.append((p.t("q_from", **values), p.t("a_from", count=len(others), list=shown, **values)))
+    rows = "".join(f"<div><dt>{e(label)}</dt><dd>{e(value)}</dd></div>" for label, value in facts)
+    questions = "".join(f"<details><summary>{e(q)}</summary><p>{e(a)}</p></details>" for q, a in faq)
+    block = (f'<section class="panel"><h2>{e(p.t("facts_title", city=city))}</h2><dl class="facts">{rows}</dl></section>'
+             f'<section class="panel"><h2>{p.t("place_faq")}</h2><div class="faq">{questions}</div></section>')
+    schema = schema_tag({"@context": "https://schema.org", "@type": "FAQPage",
+                         "mainEntity": [{"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in faq]})
+    return block, schema
+
+
 def world_place_page(p, place):
     city = p.city(place["code"], place["code"])
     values = {"count": len(place["routes"]), "price": p.euro(place["routes"][0][1]["price"])}
@@ -611,6 +671,7 @@ def world_place_page(p, place):
     cover = ""
     if place["code"] in load_credits() and photo_exists(place["code"]):
         cover = f'<figure class="cover"><img {photo_set(p, place["code"], "(max-width: 1200px) 100vw, 1200px")} alt="{e(city)}"></figure>'
+    facts, faq_schema = place_facts(p, place)
     body = f"""<section class="page wrap">
   <p class="crumb"><a href="{p.root}destinations/">{p.t('nav_places')}</a></p>
   <h1>{e(p.t('to_title', city=city))}</h1>
@@ -619,10 +680,11 @@ def world_place_page(p, place):
   <p><a class="go" href="{e(place['routes'][0][1]['link'])}" rel="nofollow sponsored noopener" target="_blank">{p.t('check')}</a></p>
   <h2>{p.t('to_list')}</h2>
   <ul class="rows">{rows}</ul>
+  {facts}
   <section class="panel"><h2>{e(p.t('stay_title', city=city))}</h2><p class="sub">{p.t('stay_lead')}</p><div class="stays">{stay_links(p, city)}</div></section>
 </section>"""
     return layout(p, f"{p.t('to_title', city=city)} | {p.site['name']}", p.t("to_meta", city=city, **values), f"vers/{place['slug']}/", body,
-                  extra=breadcrumbs(p, [(p.t("nav_places"), "destinations/"), (city, f"vers/{place['slug']}/")]))
+                  extra=breadcrumbs(p, [(p.t("nav_places"), "destinations/"), (city, f"vers/{place['slug']}/")]) + faq_schema)
 
 
 def route_rows(p, origin):

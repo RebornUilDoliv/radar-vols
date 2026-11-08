@@ -181,6 +181,10 @@ img { max-width: 100%; }
 .empty { padding: 20px 0; color: var(--g3); }
 .panel { margin-top: 48px; }
 .panel h2 { margin-bottom: 12px; font-size: 28px; }
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin: 0; }
+.facts div { padding: 18px 20px; border-radius: 16px; background: var(--g1); }
+.facts dt { font-size: 14px; color: var(--g3); }
+.facts dd { margin: 6px 0 0; font-weight: 600; line-height: 1.35; }
 .scroll { overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; }
 th, td { padding: 11px 14px 11px 0; text-align: left; border-bottom: 1px solid var(--g2); white-space: nowrap; font-weight: 400; }

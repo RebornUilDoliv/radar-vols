@@ -48,6 +48,24 @@ class BuildTests(unittest.TestCase):
         self.assertEqual(html.count("photos/BBB.jpg"), 1)
         self.assertEqual(html.count('class="place"'), 3)
 
+    def test_destination_page_has_unique_facts_and_faq(self):
+        from types import SimpleNamespace
+        from datetime import datetime, timezone
+        names = {"PAR": "Paris", "TYO": "Tokyo", "LIS": "Lisbonne"}
+        page = SimpleNamespace(lang="fr", geo={"PAR": [48.86, 2.35, "Europe/Paris"], "TYO": [35.68, 139.65, "Asia/Tokyo"]},
+                               city=lambda code, name: names.get(code, name), euro=lambda v: f"{v} €", day=lambda iso, year=True: iso,
+                               t=lambda key, **v: build_site.TEXT["fr"][key].format(**v) if v else build_site.TEXT["fr"][key])
+        route = {"price": 512, "depart": "2026-12-01", "back": "2026-12-15"}
+        place = {"code": "TYO", "routes": [({"code": "PAR"}, route), ({"code": "LIS"}, route)]}
+        block, schema = build_site.place_facts(page, place, now=datetime(2026, 11, 8, tzinfo=timezone.utc))
+        self.assertIn("Tokyo en bref", block)
+        self.assertIn("512 € depuis Paris", block)
+        self.assertIn("9 710 km", block)
+        self.assertIn("+8 h par rapport à Paris", block)
+        self.assertIn("2 villes, dont Paris, Lisbonne", block)
+        self.assertIn('"FAQPage"', schema)
+        self.assertIn("Combien coûte un vol pour Tokyo ?", schema)
+
     def test_row_city_is_clickable_without_its_own_page(self):
         from types import SimpleNamespace
         page = SimpleNamespace(lang="fr", root="/", city=lambda code, name: "Pise", day=lambda *a: "19 nov.", t=lambda *a, **k: "Voir", stops=lambda r: "direct", euro=lambda v: f"{v} €")
