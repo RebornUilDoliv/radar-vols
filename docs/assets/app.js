@@ -141,7 +141,7 @@
     '[class*="cancelButton"]{opacity:.55}[class*="cancelButton"]:hover{opacity:1}',
     '[class*="cancelButton"] svg,[class*="swapButton"] svg,[class*="iconContainer"] svg{color:#0b0b0b!important}',
     '[class*="cancelButton"] svg [fill]:not([fill="none"]),[class*="swapButton"] svg [fill]:not([fill="none"]),[class*="iconContainer"] svg [fill]:not([fill="none"]){fill:#0b0b0b!important}',
-    '[class*="DefaultSearch-module__submitBtn"]{min-height:54px!important;border-radius:12px!important;background:#0b0b0b!important;font-family:"Clash Display","Geist",sans-serif!important;font-size:18px!important;font-weight:600!important}',
+    '[class*="DefaultSearch-module__submitBtn"]{display:flex!important;align-items:center!important;justify-content:center!important;line-height:1!important;min-height:46px!important;height:46px!important;padding:0 24px!important;border-radius:10px!important;background:#0b0b0b!important;font-family:"Clash Display","Geist",sans-serif!important;font-size:15px!important;font-weight:600!important;letter-spacing:.01em!important}',
     '[class*="DefaultSearch-module__submitBtn"]:hover{background:#333!important}',
     '[class*="LocalizationDropdown-module__btn"]{font-family:"Geist",sans-serif!important;font-size:13px!important;font-weight:600!important;color:#6a6a6a!important}',
     '[class*="SearchEdit-module__line"]{font-family:"Geist",sans-serif!important;font-size:14px!important;color:#6a6a6a!important}',
@@ -155,6 +155,18 @@
     '[class*="Button-module__secondary"]{border-radius:10px!important;border-color:#e4e4e4!important;color:#0b0b0b!important}',
     '[class*="FlightFiltersMobileMenu-module__chip"]{border-radius:999px!important}'
   ].join("");
+  /* « 1 passagers » → « 1 passager » (texte du moteur Travelpayouts) */
+  function singular(root) {
+    var fix = function (text) { return text.replace(/\b1 passagers\b/, "1 passager").replace(/\b1 passengers\b/, "1 passenger"); };
+    var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    var node;
+    while ((node = walker.nextNode())) {
+      if (fix(node.nodeValue) !== node.nodeValue) node.nodeValue = fix(node.nodeValue);
+    }
+    Array.prototype.forEach.call(root.querySelectorAll("input"), function (input) {
+      if (fix(input.value) !== input.value) input.value = fix(input.value);
+    });
+  }
   function initWhiteLabel() {
     var ids = ["tpwl-search", "tpwl-tickets", "tpwl-modals"];
     if (!$("tpwl-search")) return;
@@ -169,6 +181,9 @@
           style.id = "eu-style";
           style.textContent = WL_STYLE;
           root.appendChild(style);
+          singular(root);
+          new MutationObserver(function () { singular(root); }).observe(root, { childList: true, subtree: true, characterData: true });
+          setInterval(function () { singular(root); }, 400);
         }
       });
       if (tries > 100) clearInterval(timer);
