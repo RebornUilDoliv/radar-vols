@@ -213,6 +213,8 @@ def page_langs(path):
     """Les pages de route et la réservation test n'existent que dans les langues principales."""
     if path.startswith("voyage-sur-mesure"):
         return ("fr",)
+    if path.startswith(PREVIEW_PATH):
+        return ("fr", "en")
     return FULL_LANGS if path.startswith("test-reservation") or re.fullmatch(r"depuis/[^/]+/[^/]+/", path) else LANGS
 
 
@@ -1291,6 +1293,28 @@ def missing_page(p):
     return layout(p, f"{p.t('missing')} | {p.site['name']}", p.t("missing_lead"), "404.html", body)
 
 
+PREVIEW_PATH = "apercu-moteur-7k3q/"
+WHITE_LABEL_ID = "24366"
+WHITE_LABEL_CURRENCY = {"en": "usd"}
+
+
+def preview_page(p):
+    """Page privée (non indexée, liée nulle part) pour tester le moteur de vols Travelpayouts avant de le rendre public."""
+    currency = WHITE_LABEL_CURRENCY.get(p.lang, "eur")
+    title = "Aperçu privé : moteur de vols" if p.lang == "fr" else "Private preview: flight search"
+    lead = ("Version de test, visible seulement avec cette adresse. Cherche un vol : les résultats s'affichent ici, et « Acheter » mène directement chez la compagnie ou l'agence."
+            if p.lang == "fr" else "Test version, only visible with this address. Search a flight: results show here, and Buy goes straight to the airline or agency.")
+    body = f"""<section class="page wrap">
+  <p class="notice"><strong>{e(title)}</strong></p>
+  <p class="lead">{e(lead)}</p>
+  <div id="tpwl-search" data-locale="{p.lang}" data-currency="{currency}"></div>
+  <div id="tpwl-tickets"></div>
+</section>"""
+    extra = f"""<script>window.TPWL_CONFIGURATION = {{ locale: "{p.lang}", currency: "{currency}" }};</script>
+<script type="module" async src="https://tpembd.com/wl_web/main.js?wl_id={WHITE_LABEL_ID}&locale={p.lang}&currency={currency}"></script>"""
+    return layout(p, f"{title} | {p.site['name']}", lead, PREVIEW_PATH, body, noindex=True, extra=extra)
+
+
 def test_booking_page(p):
     mode = p.t("test_server") if p.site.get("test_api") else p.t("test_demo")
     body = f"""<section class="page wrap narrow">
@@ -1359,6 +1383,8 @@ def build_language(p, data, cities, updated_at, groups, origins=()):
         write(deals / group["slug"] / "index.html", collection_page(p, group, groups, by_code, updated))
     if lang in FULL_LANGS:
         write(folder / "test-reservation" / "index.html", test_booking_page(p))
+    if lang in ("fr", "en"):
+        write(folder / PREVIEW_PATH / "index.html", preview_page(p))
     write(folder / "credits" / "index.html", credits_page(p))
     keep = {c["slug"] for c in cities}
     for child in (folder / "destinations").iterdir():
