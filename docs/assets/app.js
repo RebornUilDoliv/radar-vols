@@ -208,6 +208,63 @@
     }, 300);
   }
 
+  /* Recherche d'hôtels Klook (onglet à côté des vols) */
+  function initHotels() {
+    var form = $("hotel-search");
+    if (!form) return;
+    var flights = $("search");
+    document.querySelectorAll(".search-tabs button").forEach(function (button) {
+      button.addEventListener("click", function () {
+        document.querySelectorAll(".search-tabs button").forEach(function (b) { b.classList.toggle("on", b === button); });
+        flights.hidden = button.dataset.show !== "search";
+        form.hidden = button.dataset.show !== "hotel-search";
+      });
+    });
+    var cities = JSON.parse(form.dataset.cities || "[]");
+    var input = $("h-city");
+    var list = input.parentNode.querySelector(".suggest");
+    var clean = function (text) { return text.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim(); };
+    var close = function () { list.hidden = true; list.textContent = ""; };
+    var pick = function (row) { input.value = row[0]; input.dataset.id = row[1]; close(); $("hotel-error").hidden = true; };
+    var show = function () {
+      var wanted = clean(input.value);
+      var found = wanted ? cities.filter(function (row) { return clean(row[0]).indexOf(wanted) === 0; })
+        .concat(cities.filter(function (row) { return clean(row[0]).indexOf(wanted) > 0; })).slice(0, 8) : cities.slice(0, 8);
+      list.textContent = "";
+      list.hidden = !found.length;
+      found.forEach(function (row) {
+        var option = el("button");
+        option.type = "button";
+        option.textContent = row[0];
+        option.addEventListener("mousedown", function (event) { event.preventDefault(); pick(row); });
+        option.addEventListener("click", function () { pick(row); });
+        list.appendChild(option);
+      });
+    };
+    input.addEventListener("focus", show);
+    input.addEventListener("input", function () { delete input.dataset.id; show(); });
+    input.addEventListener("blur", function () { setTimeout(close, 120); });
+    var today = new Date().toISOString().slice(0, 10);
+    $("h-in").min = today; $("h-out").min = today;
+    $("h-in").addEventListener("change", function () {
+      $("h-out").min = $("h-in").value;
+      if ($("h-out").value && $("h-out").value < $("h-in").value) $("h-out").value = "";
+    });
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+      var id = input.dataset.id;
+      if (!id) { $("hotel-error").hidden = false; return; }
+      var params = { adult_num: $("h-guests").value, child_num: "0", room_num: "1" };
+      if (id.charAt(0) === "p") { params.stype = "province"; params.svalue = id.slice(1); params.city_id = ""; }
+      else { params.city_id = id; params.stype = "city"; params.svalue = id; }
+      if ($("h-in").value) params.check_in = $("h-in").value;
+      if ($("h-out").value) params.check_out = $("h-out").value;
+      var url = "https://www.klook.com/" + form.dataset.lang + "/hotels/searchresult/?" + new URLSearchParams(params).toString();
+      var link = "https://tp.media/r?" + new URLSearchParams({ marker: "800338", trs: "597805", p: "4110", campaign_id: "137", u: url }).toString();
+      window.open(link, "_blank", "noopener");
+    });
+  }
+
   /* Graphique du prix */
   function drawChart(box, points) {
     var W = Math.max(280, Math.round(box.clientWidth)), H = 170, left = 56, right = 12, top = 12, bottom = 26;
@@ -611,5 +668,5 @@
   initCharts();
   initFlights();
   initDeals();
-  initCustom(); initWhiteLabel();
+  initCustom(); initWhiteLabel(); initHotels();
 })();

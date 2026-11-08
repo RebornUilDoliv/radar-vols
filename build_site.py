@@ -364,6 +364,44 @@ def search_form(p):
 </form>"""
 
 
+HOTELS_PREVIEW_PATH = "apercu-hotels-7k3q/"
+KLOOK_LANG = {"fr": "fr", "en": "en-US", "es": "es", "de": "de", "it": "it", "pt": "pt-BR", "nl": "nl", "ko": "ko", "zh": "zh-CN"}
+
+
+def klook_cities():
+    path = ROOT / "klook_cities.json"
+    if not path.exists():
+        return {}
+    return {code: value for code, value in json.loads(path.read_text()).items() if not code.startswith("_")}
+
+
+def hotel_search(p):
+    """Onglets Vols / Hôtels et recherche d'hôtels Klook (villes relevées dans klook_cities.json)."""
+    fr = p.lang == "fr"
+    words = ({"flights": "Vols", "hotels": "Hôtels", "city": "Ville", "place": "Lisbonne, Tokyo, Marrakech…", "in": "Arrivée",
+              "out": "Départ", "guests": "Voyageurs", "go": "Chercher", "pick": "Choisis une ville dans la liste.",
+              "note": "Tu réserves sur Klook, au prix affiché. Plus de villes arrivent bientôt."} if fr else
+             {"flights": "Flights", "hotels": "Hotels", "city": "City", "place": "Lisbon, Tokyo, Marrakech…", "in": "Check-in",
+              "out": "Check-out", "guests": "Guests", "go": "Search", "pick": "Pick a city from the list.",
+              "note": "You book on Klook, at the price shown. More cities coming soon."})
+    rows = sorted(([p.city(code, code), str(value), code] for code, value in klook_cities().items()), key=lambda row: row[0])
+    data = e(json.dumps(rows, ensure_ascii=False, separators=(",", ":")))
+    guests = "".join(f"<option{' selected' if n == 2 else ''}>{n}</option>" for n in range(1, 7))
+    tabs = (f'<div class="search-tabs" role="tablist"><button type="button" class="on" data-show="search">{words["flights"]}</button>'
+            f'<button type="button" data-show="hotel-search">{words["hotels"]}</button></div>')
+    form = f"""<form class="search hotel-search" id="hotel-search" data-cities="{data}" data-lang="{KLOOK_LANG.get(p.lang, "en-US")}" autocomplete="off" hidden>
+  <div class="field grow"><label for="h-city">{words['city']}</label><input id="h-city" placeholder="{e(words['place'])}" required>
+    <ul class="suggest" hidden></ul></div>
+  <div class="field"><label for="h-in">{words['in']}</label><input id="h-in" type="date"></div>
+  <div class="field"><label for="h-out">{words['out']}</label><input id="h-out" type="date"></div>
+  <div class="field small"><label for="h-guests">{words['guests']}</label><select id="h-guests">{guests}</select></div>
+  <button class="search-go" type="submit">{words['go']}</button>
+  <p class="form-error" id="hotel-error" role="alert" hidden>{words['pick']}</p>
+  <p class="hotel-note">{words['note']}</p>
+</form>"""
+    return tabs, form
+
+
 def home(p, cities, offers, updated, origins=()):
     today = date.today()
     by_code = {c["code"]: c for c in cities}
@@ -1358,7 +1396,15 @@ def build_language(p, data, cities, updated_at, groups, origins=()):
     ]
     if lang != "fr":
         write(folder / "prices.json", json.dumps({**data, "offers": translated}, ensure_ascii=False, separators=(",", ":")) + "\n")
-    write(folder / "index.html", home(p, cities, offers, updated, origins))
+    home_html = home(p, cities, offers, updated, origins)
+    write(folder / "index.html", home_html)
+    if lang in ("fr", "en"):
+        # Copie privée de l'accueil (non indexée, liée nulle part) pour tester la recherche d'hôtels.
+        tabs, hotels = hotel_search(p)
+        flights = search_form(p)
+        private = home_html.replace(flights, tabs + flights + hotels, 1)
+        private = private.replace("<head>", '<head>\n<meta name="robots" content="noindex, nofollow">', 1)
+        write(folder / HOTELS_PREVIEW_PATH / "index.html", private)
     world = folder / "depuis"
     if world.exists():
         shutil.rmtree(world)
