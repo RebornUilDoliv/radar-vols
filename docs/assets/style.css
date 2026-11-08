@@ -418,3 +418,18 @@ details p { margin-top: 6px; color: var(--g3); }
 .custom-two { grid-template-columns: 3fr 2fr; }
 @media (max-width: 760px) { .custom-gives { grid-template-columns: 1fr; } }
 .page-hero .video-pause, .trip .video-pause { inset-block-end: 20px; }
+
+.wl { margin-top: -96px; position: relative; z-index: 2; }
+.wl-badge { display: inline-block; margin: 0 0 10px; padding: 4px 10px; color: var(--w); background: rgba(11, 11, 11, .72); border-radius: 999px; font-size: 13px; font-weight: 500; }
+.wl-card { padding: 18px; background: var(--w); border: 1px solid var(--g2); border-radius: 16px; box-shadow: 0 14px 40px rgba(0, 0, 0, .13); }
+.wl-perks { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 20px 0 8px; padding: 0; list-style: none; }
+.wl-perks li { padding: 16px 18px; background: var(--g1); border-radius: 14px; }
+.wl-perks strong { display: block; font-family: "Clash Display", "Geist", sans-serif; font-size: 18px; font-weight: 500; }
+.wl-perks span { display: block; margin-top: 4px; color: var(--g3); font-size: 14px; line-height: 1.45; }
+#tpwl-tickets { margin-top: 24px; }
+#tpwl-search, #tpwl-tickets, #tpwl-modals { --main-accent: #0b0b0b; --main-accent-darken: #333; --main-accent-contrast-color: #fff; --main-accent-opacified: rgba(11, 11, 11, .08); --main-accent-contrast-opacified: rgba(255, 255, 255, .7); --search-form-icon-color: #0b0b0b; --search-form-link-color: #6a6a6a; --link-color: #0b0b0b; --link-color-darken: #333; --rdp-accent-color: #0b0b0b; --rdp-selected-color: #fff; --rdp-background-color: #f4f4f4; --font-main: "Geist", system-ui, sans-serif; --font-family: "Geist", system-ui, sans-serif; --font-color: #0b0b0b; --text-color: #0b0b0b; --border-radius: 10px; --border-color: #e4e4e4; --general-border: #e4e4e4; --ticket-cards-background: #fff; }
+@media (max-width: 760px) {
+  .wl { margin-top: -48px; }
+  .wl-card { padding: 10px; }
+  .wl-perks { grid-template-columns: 1fr; }
+}

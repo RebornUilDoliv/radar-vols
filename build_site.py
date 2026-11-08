@@ -1300,19 +1300,32 @@ WHITE_LABEL_CURRENCY = {"en": "usd"}
 
 def preview_page(p):
     """Page privée (non indexée, liée nulle part) pour tester le moteur de vols Travelpayouts avant de le rendre public."""
-    currency = WHITE_LABEL_CURRENCY.get(p.lang, "eur")
-    title = "Aperçu privé : moteur de vols" if p.lang == "fr" else "Private preview: flight search"
-    lead = ("Version de test, visible seulement avec cette adresse. Cherche un vol : les résultats s'affichent ici, et « Acheter » mène directement chez la compagnie ou l'agence."
-            if p.lang == "fr" else "Test version, only visible with this address. Search a flight: results show here, and Buy goes straight to the airline or agency.")
+    fr = p.lang == "fr"
+    currency = WHITE_LABEL_CURRENCY.get(p.lang, "eur").upper()
+    title = "Trouve ton vol" if fr else "Find your flight"
+    lead = ("Compare les compagnies et les agences, bagages compris. Tu réserves directement chez le vendeur, au prix affiché."
+            if fr else "Compare airlines and agencies, bags included. You book directly with the seller, at the price shown.")
+    perks = (("Prix bagages compris", "Choisis tes bagages : le prix affiché devient le prix final."),
+             ("Achat direct", "Le bouton t'envoie chez la compagnie ou l'agence qui vend le billet."),
+             ("Aucuns frais Eunodia", "Tu paies le prix du vendeur, rien de plus.")) if fr else (
+             ("Bags included", "Pick your bags: the price shown becomes the final price."),
+             ("Book direct", "The button takes you to the airline or agency selling the ticket."),
+             ("No Eunodia fees", "You pay the seller's price, nothing more."))
+    items = "".join(f"<li><strong>{e(a)}</strong><span>{e(b)}</span></li>" for a, b in perks)
+    badge = "Aperçu privé" if fr else "Private preview"
     body = f"""<section class="page wrap">
-  <p class="notice"><strong>{e(title)}</strong></p>
+  <h1>{e(title)}</h1>
   <p class="lead">{e(lead)}</p>
-  <div id="tpwl-search" data-locale="{p.lang}" data-currency="{currency}"></div>
-  <div id="tpwl-tickets"></div>
+  <div class="wl">
+    <p class="wl-badge">{badge}</p>
+    <div class="wl-card"><div id="tpwl-search"></div></div>
+    <ul class="wl-perks">{items}</ul>
+    <div id="tpwl-tickets"></div>
+  </div>
 </section>"""
-    extra = f"""<script>window.TPWL_CONFIGURATION = {{ locale: "{p.lang}", currency: "{currency}" }};</script>
-<script type="module" async src="https://tpembd.com/wl_web/main.js?wl_id={WHITE_LABEL_ID}&locale={p.lang}&currency={currency}"></script>"""
-    return layout(p, f"{title} | {p.site['name']}", lead, PREVIEW_PATH, body, noindex=True, extra=extra)
+    extra = f"""<script>document.cookie = "tpwl_locale={p.lang}; path=/; max-age=31536000; SameSite=Lax"; document.cookie = "tpwl_currency={currency}; path=/; max-age=31536000; SameSite=Lax";</script>
+<script type="module" async src="https://tpembd.com/wl_web/main.js?wl_id={WHITE_LABEL_ID}"></script>"""
+    return layout(p, f"{title} | {p.site['name']}", lead, PREVIEW_PATH, body, noindex=True, extra=extra, photo="TYO" if photo_exists("TYO") else None)
 
 
 def test_booking_page(p):
