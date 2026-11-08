@@ -117,6 +117,10 @@
       var part = function (iso) { return iso.slice(8, 10) + iso.slice(5, 7); };
       var url = form.dataset.target + from + part($("out").value) + to +
         ($("back").value ? part($("back").value) : "") + $("pax").value;
+      if (form.dataset.results) {
+        location.href = form.dataset.results + "?flightSearch=" + encodeURIComponent(url.slice(form.dataset.target.length));
+        return;
+      }
       location.href = partner(url);
     });
   }

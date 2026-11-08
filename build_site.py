@@ -1294,6 +1294,7 @@ def missing_page(p):
 
 
 PREVIEW_PATH = "apercu-moteur-7k3q/"
+PREVIEW_HOME_PATH = "apercu-accueil-7k3q/"
 WHITE_LABEL_ID = "24366"
 WHITE_LABEL_CURRENCY = {"en": "usd"}
 
@@ -1359,7 +1360,14 @@ def build_language(p, data, cities, updated_at, groups, origins=()):
     ]
     if lang != "fr":
         write(folder / "prices.json", json.dumps({**data, "offers": translated}, ensure_ascii=False, separators=(",", ":")) + "\n")
-    write(folder / "index.html", home(p, cities, offers, updated, origins))
+    home_html = home(p, cities, offers, updated, origins)
+    write(folder / "index.html", home_html)
+    if lang in ("fr", "en"):
+        # Copie privée de l'accueil : la recherche mène au moteur intégré au lieu d'Aviasales.
+        private = home_html.replace('data-target="https://www.aviasales.com/search/"',
+                                    f'data-target="https://www.aviasales.com/search/" data-results="{p.root}{PREVIEW_PATH}"', 1)
+        private = private.replace("<head>", '<head>\n<meta name="robots" content="noindex, nofollow">', 1)
+        write(folder / PREVIEW_HOME_PATH / "index.html", private)
     world = folder / "depuis"
     if world.exists():
         shutil.rmtree(world)
