@@ -149,15 +149,31 @@
     '[class*="FlightCard-module__card___"]{border:1px solid #e4e4e4!important;border-radius:16px!important;box-shadow:none!important}',
     '[class*="cardLeftPrice"]{font-family:"Clash Display","Geist",sans-serif!important;font-weight:600!important;color:#0b0b0b!important}',
     '[class*="cardFlightTime"]{font-family:"Clash Display","Geist",sans-serif!important;font-weight:500!important;color:#0b0b0b!important}',
-    '[class*="cardLeftButton"],[class*="Button-module__primary"]{background:#0b0b0b!important;border-radius:10px!important;font-family:"Clash Display","Geist",sans-serif!important;font-weight:600!important}',
+    '[class*="cardLeftButton"],[class*="Button-module__primary"]{background:#0b0b0b!important;border-radius:10px!important;font-family:"Clash Display","Geist",sans-serif!important;font-weight:600!important;font-size:15px!important}',
+    '[class*="Button-module__primary"]:not([class*="cardLeftButton"]):not([class*="submitBtn"]){min-height:46px!important;height:46px!important;display:flex!important;align-items:center!important;justify-content:center!important}',
     '[class*="cardBadges"],[class*="cardBadges"] *{background:#0b0b0b!important;background-color:#0b0b0b!important;color:#fff!important;border-radius:999px!important}',
     '[class*="cancelButton"] svg *,[class*="iconContainer"] svg *{stroke:#0b0b0b!important}',
     '[class*="Button-module__secondary"]{border-radius:10px!important;border-color:#e4e4e4!important;color:#0b0b0b!important}',
     '[class*="FlightFiltersMobileMenu-module__chip"]{border-radius:999px!important}'
   ].join("");
-  /* « 1 passagers » → « 1 passager » (texte du moteur Travelpayouts) */
+  /* Textes que le moteur Travelpayouts laisse en anglais */
+  var WL_WORDS = {
+    fr: { "Show more options": "Voir plus d'options", "Show": "Afficher", "Show more": "Voir plus" },
+    es: { "Show more options": "Ver más opciones", "Show": "Mostrar", "Show more": "Ver más" },
+    de: { "Show more options": "Weitere Optionen", "Show": "Anzeigen", "Show more": "Mehr anzeigen" },
+    it: { "Show more options": "Mostra altre opzioni", "Show": "Mostra", "Show more": "Mostra altro" },
+    pt: { "Show more options": "Ver mais opções", "Show": "Mostrar", "Show more": "Ver mais" },
+    nl: { "Show more options": "Meer opties", "Show": "Tonen", "Show more": "Meer tonen" },
+    tr: { "Show more options": "Daha fazla seçenek", "Show": "Göster", "Show more": "Daha fazla" }
+  };
+  /* « 1 passagers » → « 1 passager », et traductions manquantes */
   function singular(root) {
-    var fix = function (text) { return text.replace(/\b1 passagers\b/, "1 passager").replace(/\b1 passengers\b/, "1 passenger"); };
+    var words = WL_WORDS[RF.lang] || {};
+    var fix = function (text) {
+      var trimmed = text.trim();
+      if (words[trimmed]) return text.replace(trimmed, words[trimmed]);
+      return text.replace(/\b1 passagers\b/, "1 passager").replace(/\b1 passengers\b/, "1 passenger");
+    };
     var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
     var node;
     while ((node = walker.nextNode())) {
