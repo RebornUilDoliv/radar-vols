@@ -127,6 +127,53 @@
     });
   }
 
+  /* Moteur de vols intégré : mêmes formes et couleurs que le reste du site */
+  var WL_STYLE = [
+    '[class*="DefaultSearch-module__root"]{gap:10px!important}',
+    '[class*="DefaultSearch-module__mergedInputs"],[class*="DateRangePicker-module__mergedInputs"]{gap:10px!important;background:transparent!important;border:0!important;box-shadow:none!important}',
+    '[class*="Input-module__root"]{background:#f4f4f4!important;border:1px solid transparent!important;border-radius:12px!important;box-shadow:none!important}',
+    '[class*="Input-module__root"]:hover{border-color:#e4e4e4!important}',
+    '[class*="Input-module__button"],[class*="Input-module__button"] *{background:transparent!important}',
+    '[class*="Input-module__input"]{font-family:"Geist",system-ui,sans-serif!important;font-size:16px!important;font-weight:500!important;color:#0b0b0b!important}',
+    '[class*="Input-module__valueHint"]{color:#9a9a9a!important;font-size:13px!important;font-weight:500!important}',
+    '[class*="Input-module__subvalue"]{color:#6a6a6a!important;font-size:13px!important}',
+    '[class*="swapButton"]{background:#fff!important;border:1px solid #e4e4e4!important;border-radius:50%!important;z-index:2}',
+    '[class*="cancelButton"]{opacity:.55}[class*="cancelButton"]:hover{opacity:1}',
+    '[class*="cancelButton"] svg,[class*="swapButton"] svg,[class*="iconContainer"] svg{color:#0b0b0b!important}',
+    '[class*="cancelButton"] svg [fill]:not([fill="none"]),[class*="swapButton"] svg [fill]:not([fill="none"]),[class*="iconContainer"] svg [fill]:not([fill="none"]){fill:#0b0b0b!important}',
+    '[class*="DefaultSearch-module__submitBtn"]{min-height:54px!important;border-radius:12px!important;background:#0b0b0b!important;font-family:"Clash Display","Geist",sans-serif!important;font-size:18px!important;font-weight:600!important}',
+    '[class*="DefaultSearch-module__submitBtn"]:hover{background:#333!important}',
+    '[class*="LocalizationDropdown-module__btn"]{font-family:"Geist",sans-serif!important;font-size:13px!important;font-weight:600!important;color:#6a6a6a!important}',
+    '[class*="SearchEdit-module__line"]{font-family:"Geist",sans-serif!important;font-size:14px!important;color:#6a6a6a!important}',
+    '[class*="SearchEdit-module__referral"]{display:none!important}',
+    '[class*="FlightCard-module__card___"]{border:1px solid #e4e4e4!important;border-radius:16px!important;box-shadow:none!important}',
+    '[class*="cardLeftPrice"]{font-family:"Clash Display","Geist",sans-serif!important;font-weight:600!important;color:#0b0b0b!important}',
+    '[class*="cardFlightTime"]{font-family:"Clash Display","Geist",sans-serif!important;font-weight:500!important;color:#0b0b0b!important}',
+    '[class*="cardLeftButton"],[class*="Button-module__primary"]{background:#0b0b0b!important;border-radius:10px!important;font-family:"Clash Display","Geist",sans-serif!important;font-weight:600!important}',
+    '[class*="cardBadges"]>*{background:#0b0b0b!important;color:#fff!important;border-radius:999px!important}',
+    '[class*="Button-module__secondary"]{border-radius:10px!important;border-color:#e4e4e4!important;color:#0b0b0b!important}',
+    '[class*="FlightFiltersMobileMenu-module__chip"]{border-radius:999px!important}'
+  ].join("");
+  function initWhiteLabel() {
+    var ids = ["tpwl-search", "tpwl-tickets", "tpwl-modals"];
+    if (!$("tpwl-search")) return;
+    var tries = 0;
+    var timer = setInterval(function () {
+      tries += 1;
+      ids.forEach(function (id) {
+        var host = $(id);
+        var root = host && host.shadowRoot;
+        if (root && !root.getElementById("eu-style")) {
+          var style = document.createElement("style");
+          style.id = "eu-style";
+          style.textContent = WL_STYLE;
+          root.appendChild(style);
+        }
+      });
+      if (tries > 100) clearInterval(timer);
+    }, 300);
+  }
+
   /* Graphique du prix */
   function drawChart(box, points) {
     var W = Math.max(280, Math.round(box.clientWidth)), H = 170, left = 56, right = 12, top = 12, bottom = 26;
@@ -530,5 +577,5 @@
   initCharts();
   initFlights();
   initDeals();
-  initCustom();
+  initCustom(); initWhiteLabel();
 })();
