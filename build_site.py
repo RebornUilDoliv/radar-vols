@@ -1312,12 +1312,10 @@ def preview_page(p):
              ("Book direct", "The button takes you to the airline or agency selling the ticket."),
              ("No Eunodia fees", "You pay the seller's price, nothing more."))
     items = "".join(f"<li><strong>{e(a)}</strong><span>{e(b)}</span></li>" for a, b in perks)
-    badge = "Aperçu privé" if fr else "Private preview"
     body = f"""<section class="page wrap">
   <h1>{e(title)}</h1>
   <p class="lead">{e(lead)}</p>
   <div class="wl">
-    <p class="wl-badge">{badge}</p>
     <div class="wl-card"><div id="tpwl-search"></div></div>
     <ul class="wl-perks">{items}</ul>
     <div id="tpwl-tickets"></div>
