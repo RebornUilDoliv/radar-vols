@@ -34,7 +34,7 @@
   };
   var partner = function (url) {
     return "https://tp.media/r?" + new URLSearchParams({
-      marker: "800338", trs: "595480", p: "4114", campaign_id: "100", u: url
+      marker: "800338", trs: "597805", p: "4114", campaign_id: "100", u: url
     }).toString();
   };
 
