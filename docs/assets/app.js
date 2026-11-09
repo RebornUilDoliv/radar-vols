@@ -255,7 +255,7 @@
       var id = input.dataset.id;
       if (!id) { $("hotel-error").hidden = false; return; }
       var params = { adult_num: $("h-guests").value, child_num: "0", room_num: "1" };
-      if (id.charAt(0) === "p") { params.stype = "province"; params.svalue = id.slice(1); params.city_id = ""; }
+      if (id.charAt(0) === "p" || id.charAt(0) === "d") { params.stype = id.charAt(0) === "p" ? "province" : "district"; params.svalue = id.slice(1); params.city_id = ""; }
       else { params.city_id = id; params.stype = "city"; params.svalue = id; }
       if ($("h-in").value) params.check_in = $("h-in").value;
       if ($("h-out").value) params.check_out = $("h-out").value;

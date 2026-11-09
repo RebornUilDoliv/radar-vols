@@ -1550,6 +1550,53 @@ def load_catalog():
     return catalog
 
 
+MOVED_MARK = "<!-- eunodia:page-deplacee -->"
+GONE_PAGES = [  # pages signalées en 404 par Google avant la mise en place des redirections
+    "it/vers/st-domingue/", "de/depuis/miami/baltimore/", "nl/depuis/new-york/punta-cana/", "nl/depuis/madrid/edinbourg/",
+    "nl/depuis/miami/nassau/", "nl/depuis/buenos-aires/quito/", "de/depuis/barcelone/palma-de-mallorca/",
+    "ar/depuis/paris/bucarest/", "zh/depuis/dubai/makhatchkala/", "nl/depuis/dubai/makhatchkala/",
+]
+
+
+def built_pages():
+    """Dossiers (relatifs au site) qui ont une vraie page dans cette construction."""
+    pages = set()
+    for path in DOCS.rglob("index.html"):
+        if MOVED_MARK not in path.read_text(errors="ignore")[:400]:
+            folder = path.parent.relative_to(DOCS).as_posix()
+            pages.add("" if folder == "." else folder + "/")
+    return pages
+
+
+def moved_target(page, pages):
+    """Page la plus proche encore en ligne : le dossier parent, ou les destinations pour /vers/."""
+    parts = page.strip("/").split("/")
+    while parts:
+        parts.pop()
+        if parts and parts[-1] == "vers":
+            parts[-1] = "destinations"
+        candidate = "/".join(parts) + "/" if parts else ""
+        if candidate in pages:
+            return candidate
+    return ""
+
+
+def keep_moved_pages(state, url="/"):
+    """Une page qui disparaît (trajet sans prix, ville renommée…) redirige vers la page la plus proche au lieu d'une erreur 404."""
+    pages = built_pages()
+    known = set(json.loads(state.read_text())) if state.exists() else set()
+    known |= set(GONE_PAGES) | pages
+    moved = sorted(known - pages)
+    for page in moved:
+        target = e(url + moved_target(page, pages))
+        write(DOCS / page / "index.html", f'<!doctype html>{MOVED_MARK}<html><head><meta charset="utf-8"><title>Eunodia</title>'
+              f'<link rel="canonical" href="{target}"><meta name="robots" content="noindex">'
+              f'<meta http-equiv="refresh" content="0; url={target}"></head>'
+              f'<body><a href="{target}">Eunodia</a></body></html>\n')
+    write(state, json.dumps(sorted(known), ensure_ascii=False, separators=(",", ":")) + "\n")
+    return moved
+
+
 def main():
     config = tomllib.loads((ROOT / "config.toml").read_text())
     path = DOCS / "prices.json"
@@ -1564,6 +1611,8 @@ def main():
         catalog = None
     count = build(data, config["site"], catalog)
     print(f"{count} destinations générées en {len(LANGS)} langues.")
+    moved = keep_moved_pages(ROOT / "data" / "pages_connues.json", config["site"]["url"])
+    print(f"{len(moved)} anciennes pages redirigées.")
     return 0
 
 

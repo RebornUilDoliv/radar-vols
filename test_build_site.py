@@ -319,5 +319,23 @@ class BuildTests(unittest.TestCase):
         self.assertEqual(build_site.slug("Montréal – Dorval"), "montreal-dorval")
 
 
+    def test_vanished_pages_redirect_to_closest_page(self):
+        with tempfile.TemporaryDirectory() as folder:
+            docs, state = Path(folder) / "docs", Path(folder) / "pages.json"
+            for page in ("", "de/", "de/depuis/miami/", "de/destinations/"):
+                build_site.write(docs / page / "index.html", "<html>page</html>")
+            state.write_text(json.dumps(["de/depuis/miami/", "de/depuis/miami/oslo/"]))
+            with mock.patch.object(build_site, "DOCS", docs), mock.patch.object(build_site, "GONE_PAGES", ["it/vers/rome/"]):
+                moved = build_site.keep_moved_pages(state, "https://eunodia.com/")
+                self.assertEqual(moved, ["de/depuis/miami/oslo/", "it/vers/rome/"])
+                stub = (docs / "de/depuis/miami/oslo/index.html").read_text()
+                self.assertIn('url=https://eunodia.com/de/depuis/miami/"', stub)
+                self.assertIn("noindex", stub)
+                self.assertIn('url=https://eunodia.com/"', (docs / "it/vers/rome/index.html").read_text())
+                build_site.write(docs / "de/depuis/miami/oslo/index.html", "<html>retour</html>")
+                self.assertEqual(build_site.keep_moved_pages(state, "https://eunodia.com/"), ["it/vers/rome/"])
+            self.assertIn("de/depuis/miami/oslo/", json.loads(state.read_text()))
+
+
 if __name__ == "__main__":
     unittest.main()
