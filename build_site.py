@@ -1358,7 +1358,7 @@ WHO = {
            "meta": "José Luis Cardozo Pintos, Parisien, diplômé en tourisme et hôtellerie, fondateur d'Eunodia : pourquoi j'ai créé le site.",
            "alt": "José Luis Cardozo Pintos, fondateur d'Eunodia", "job": "Fondateur d'Eunodia",
            "paras": [
-               "Le voyage, c'est ma passion. J'ai fait mes études dans le tourisme, jusqu'au **master en gestion des activités touristiques et hôtelières à l'IREST, Sorbonne Paris 1**. Je parle français, anglais et espagnol, et j'ai des notions d'italien.",
+               "Le voyage, c'est ma passion. J'ai fait mes études dans le tourisme, jusqu'au master en gestion des activités touristiques et hôtelières à l'IREST, Sorbonne Paris 1. Je parle français, anglais et espagnol, et j'ai des notions d'italien.",
                "Durant mes études en alternance, j'ai découvert les coulisses du voyage : réserver des hébergements pour de grands événements internationaux, organiser des séjours de groupe, reloger des voyageurs à la dernière minute, échanger chaque jour avec des hôtels et des agences de voyage du monde entier. J'y ai appris comment se construisent les prix… et où se cachent les bonnes affaires.",
                "**Pourquoi Eunodia ?** Au départ, je voulais simplement créer un petit outil qui affiche les meilleurs prix de vols. Puis je me suis dit que ce serait vraiment fou de construire un vrai site, pour partager avec tout le monde les bons plans du moment : vols, hôtels, activités. Eunodia est né comme ça.",
                "Ce qui me passionne le plus, c'est de **préparer des voyages sur mesure** : imaginer l'itinéraire, trouver le bon vol et le bon hôtel au bon prix… et voir quelqu'un partir heureux. Parce qu'un voyage réussi, c'est du bonheur, et c'est pour ça que je fais ce métier.",
@@ -1371,7 +1371,7 @@ WHO = {
            "meta": "José Luis Cardozo Pintos, from Paris, graduate in tourism and hospitality, founder of Eunodia: why I created the site.",
            "alt": "José Luis Cardozo Pintos, founder of Eunodia", "job": "Founder of Eunodia",
            "paras": [
-               "Travel is my passion. I studied tourism up to a **master's degree in tourism and hotel management at IREST, Sorbonne Paris 1**. I speak French, English and Spanish, plus some Italian.",
+               "Travel is my passion. I studied tourism up to a master's degree in tourism and hotel management at IREST, Sorbonne Paris 1. I speak French, English and Spanish, plus some Italian.",
                "During my work-study years, I discovered what happens behind the scenes of travel: booking accommodation for major international events, organising group trips, rehousing travellers at the last minute, and working every day with hotels and online travel agencies around the world. That's where I learned how prices are built… and where the real deals hide.",
                "**Why Eunodia?** At first, I just wanted to build a small tool showing the best flight prices. Then I thought it would be amazing to build a real website and share the best deals of the moment with everyone: flights, hotels, activities. That's how Eunodia was born.",
                "What I love most is **planning tailor-made trips**: designing the itinerary, finding the right flight and hotel at the right price… and seeing someone leave happy. A great trip brings happiness, and that's why I do this.",
@@ -1384,7 +1384,7 @@ WHO = {
            "meta": "José Luis Cardozo Pintos, de París, titulado en turismo y hostelería, fundador de Eunodia: por qué creé el sitio.",
            "alt": "José Luis Cardozo Pintos, fundador de Eunodia", "job": "Fundador de Eunodia",
            "paras": [
-               "Viajar es mi pasión. Estudié turismo hasta el **máster en gestión de actividades turísticas y hoteleras en el IREST, Sorbona París 1**. Hablo francés, inglés y español, y tengo nociones de italiano.",
+               "Viajar es mi pasión. Estudié turismo hasta el máster en gestión de actividades turísticas y hoteleras en el IREST, Sorbona París 1. Hablo francés, inglés y español, y tengo nociones de italiano.",
                "Durante mis estudios en alternancia, descubrí los entresijos del mundo del viaje: reservando alojamientos para grandes eventos internacionales, organizando viajes de grupo, recolocando viajeros a última hora y trabajando a diario con hoteles y agencias de viajes en línea de todo el mundo. Ahí aprendí cómo se forman los precios… y dónde se esconden las gangas.",
                "**¿Por qué Eunodia?** Al principio solo quería crear una pequeña herramienta con los mejores precios de vuelos. Luego pensé que sería increíble construir un sitio de verdad para compartir con todo el mundo las mejores ofertas del momento: vuelos, hoteles, actividades. Así nació Eunodia.",
                "Lo que más me apasiona es **preparar viajes a medida**: imaginar el itinerario, encontrar el vuelo y el hotel adecuados al mejor precio… y ver a alguien irse feliz. Un buen viaje da felicidad, y por eso hago este trabajo.",
