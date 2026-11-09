@@ -1328,7 +1328,8 @@ def custom_page(p):
       <p class="sub">Tu paies seulement après avoir validé le prix, par virement. Tes vols, hôtels et activités, tu les paies directement aux sites, sans frais en plus.</p></div>
   </section>
   <section class="panel" id="demande"><h2>Ta demande</h2>
-    <form class="custom-form" id="custom-form" data-to="contact@eunodia.com">
+    <form class="custom-form" id="custom-form" data-to="contact@eunodia.com" data-endpoint="https://formsubmit.co/ajax/contact@eunodia.com">
+      <input class="hp" type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true">
       <div class="custom-grid">
         <label>Prénom<input id="c-name" name="prenom" autocomplete="given-name" required></label>
         <label>E-mail<input id="c-email" name="email" type="email" autocomplete="email" required></label>
@@ -1341,7 +1342,8 @@ def custom_page(p):
       <fieldset class="chips"><legend>Ce que tu aimes</legend>{tastes}</fieldset>
       <label>Ton voyage idéal<textarea id="c-more" name="message" rows="4" placeholder="Rythme, envies, ce que tu veux éviter…"></textarea></label>
       <button class="go big" type="submit">Envoyer ma demande</button>
-      <p class="custom-done" id="custom-done" role="status" hidden>Ton e-mail est prêt dans ta messagerie : il ne reste qu'à l'envoyer. Si rien ne s'ouvre, écris à <strong>contact@eunodia.com</strong>.</p>
+      <p class="custom-done" id="custom-done" role="status" hidden>Merci, ta demande est bien envoyée ! Je te réponds par e-mail sous 48 h.</p>
+      <p class="custom-done" id="custom-fail" role="alert" hidden>L'envoi n'a pas marché. <a href="mailto:contact@eunodia.com">Envoie ta demande par e-mail</a> ou écris à <strong>contact@eunodia.com</strong>.</p>
     </form>
   </section>
   <p class="sub custom-legal">Eunodia propose un service de conseil et de préparation de voyage. Les réservations et paiements des vols, hébergements et activités sont faits par le voyageur, directement auprès des prestataires. Certains liens sont partenaires : Eunodia peut toucher une commission, sans frais pour toi.</p>

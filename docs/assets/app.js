@@ -627,21 +627,40 @@
     });
   }
 
-  /* Voyage sur mesure : prépare l'e-mail de demande avec les réponses du formulaire */
+  /* Voyage sur mesure : envoie la demande à contact@eunodia.com via FormSubmit (sans ouvrir de messagerie) */
   function initCustom() {
     var form = $("custom-form");
     if (!form) return;
+    var button = form.querySelector("button[type=submit]"), done = $("custom-done"), fail = $("custom-fail");
     form.addEventListener("submit", function (event) {
       event.preventDefault();
       var data = new FormData(form), tastes = data.getAll("envies").join(", ") || "-";
-      var lines = [
-        "Prénom : " + data.get("prenom"), "E-mail : " + data.get("email"), "Destination : " + data.get("destination"),
-        "Départ : " + (data.get("depart") || "-"), "Quand : " + data.get("dates"), "Voyageurs : " + data.get("voyageurs"),
-        "Budget : " + data.get("budget"), "Envies : " + tastes, "", data.get("message") || ""
-      ];
-      var subject = "Voyage sur mesure : " + data.get("destination");
-      location.href = "mailto:" + form.getAttribute("data-to") + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(lines.join("\n"));
-      $("custom-done").hidden = false;
+      if (data.get("_honey")) return;
+      var subject = "Voyage sur mesure : " + data.get("destination") + " (" + data.get("prenom") + ")";
+      var payload = {
+        "Prénom": data.get("prenom"), "E-mail": data.get("email"), "Destination": data.get("destination"),
+        "Départ": data.get("depart") || "-", "Quand": data.get("dates"), "Voyageurs": data.get("voyageurs"),
+        "Budget": data.get("budget"), "Envies": tastes, "Message": data.get("message") || "-",
+        _subject: subject, _replyto: data.get("email"), _template: "table", _captcha: "false"
+      };
+      var mailto = "mailto:" + form.getAttribute("data-to") + "?subject=" + encodeURIComponent(subject) + "&body=" +
+        encodeURIComponent(Object.keys(payload).filter(function (k) { return k.charAt(0) !== "_"; }).map(function (k) { return k + " : " + payload[k]; }).join("\n"));
+      button.disabled = true;
+      button.textContent = "Envoi en cours…";
+      fetch(form.getAttribute("data-endpoint"), {
+        method: "POST", headers: { "Content-Type": "application/json", "Accept": "application/json" }, body: JSON.stringify(payload)
+      }).then(function (response) { return response.json(); }).then(function (result) {
+        if (String(result.success) !== "true") throw new Error(result.message || "envoi refusé");
+        form.reset();
+        form.querySelector(".custom-grid").hidden = true;
+        done.hidden = false; fail.hidden = true;
+        button.hidden = true;
+      }).catch(function () {
+        fail.querySelector("a").href = mailto;
+        fail.hidden = false;
+        button.disabled = false;
+        button.textContent = "Envoyer ma demande";
+      });
     });
   }
 

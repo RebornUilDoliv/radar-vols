@@ -401,6 +401,8 @@ details p { margin-top: 6px; color: var(--g3); }
 .chip input { width: auto; min-height: 0; margin: 0; }
 .custom-form button { justify-self: start; border: 0; cursor: pointer; }
 .custom-done { font-weight: 500; }
+.custom-form [hidden] { display: none !important; }
+.custom-form .hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
 .custom-legal { margin-top: 32px; }
 @media (max-width: 760px) {
   .custom-steps { grid-template-columns: 1fr 1fr; }
