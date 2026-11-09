@@ -28,6 +28,7 @@ MIN_COLLECTION_CITIES = 3
 COLLECTION_ROWS = 40
 ROUTES_PER_ORIGIN = 40           # pages de route créées par ville de départ
 POPULAR_ORIGINS = 10             # une destination doit être desservie depuis autant de villes
+ALWAYS_LISTED = {"YQB"}          # destinations affichées même desservies depuis moins de villes
 MAX_ROUTE_PRICE = 3000           # écarte les prix aberrants
 HUB_ROWS = 60
 DEFAULT_ORIGIN = {"fr": "PAR", "en": "LON", "es": "MAD", "de": "BER", "it": "ROM", "pt": "LIS", "nl": "AMS", "tr": "IST", "ar": "RUH", "zh": "HKG", "ko": "SEL"}
@@ -940,7 +941,7 @@ def load_world(names, project=None):
         origin = origins.setdefault(route["from"], {"code": route["from"], "slug": slugs[route["from"]], "routes": [], "pages": []})
         row = {**route, "to_slug": slugs[route["to"]]}
         origin["routes"].append(row)
-        if len(served[route["to"]]) >= POPULAR_ORIGINS and len(origin["pages"]) < ROUTES_PER_ORIGIN:
+        if route["to"] in ALWAYS_LISTED or (len(served[route["to"]]) >= POPULAR_ORIGINS and len(origin["pages"]) < ROUTES_PER_ORIGIN):
             origin["pages"].append(row)
     return sorted(origins.values(), key=lambda o: slugs[o["code"]])
 
