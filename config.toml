@@ -34,10 +34,16 @@ analytics_token = "71176418a1124737b274a50c21f6e2a5"  # identifiant public de Cl
 test_api = "https://radar-flight-test.joseluiscardozopintos.workers.dev"                    # adresse du serveur de test ; vide = mode démonstration
 
 [world]
-origins = ["LON", "PAR", "MAD", "BCN", "ROM", "BER", "AMS", "LIS", "IST", "DXB", "RUH", "DEL", "BKK", "SIN", "HKG", "TYO", "SEL", "SYD", "JNB", "CAI", "CMN", "NYC", "LAX", "MIA", "YTO", "YQB", "MEX", "BOG", "LIM", "SAO", "BUE", "SCL",
-           "WAS", "BJS", "JKT", "MNL", "KUL", "HAN", "DAC", "ISB", "TPE", "TAS", "ALA", "NQZ", "DOH", "AUH", "AMM", "LOS", "ABV", "NBO",
-           "ACC", "ADD", "ALG", "TUN", "DKR", "ABJ", "FIH", "LAD", "WAW", "BUH", "ATH", "VIE", "BRU", "PRG", "BUD", "STO", "CPH", "DUB",
-           "PTY", "UIO", "SJO", "SDQ", "MVD", "AKL"]
+origins = ["LON", "PAR", "MAD", "BCN", "ROM", "BER", "AMS", "LIS", "IST", "DXB", "RUH", "DEL", "BKK", "SIN", "HKG", "TYO", "SEL", "SYD", "JNB", "CAI",
+           "CMN", "NYC", "LAX", "MIA", "YTO", "YQB", "MEX", "BOG", "LIM", "SAO", "BUE", "SCL", "WAS", "BJS", "JKT", "MNL", "KUL", "HAN", "DAC", "ISB",
+           "TPE", "TAS", "ALA", "NQZ", "DOH", "AUH", "AMM", "LOS", "ABV", "NBO", "ACC", "ADD", "ALG", "TUN", "DKR", "ABJ", "FIH", "LAD", "WAW", "BUH",
+           "ATH", "VIE", "BRU", "PRG", "BUD", "STO", "CPH", "DUB", "PTY", "UIO", "SJO", "SDQ", "MVD", "AKL", "MIL", "VCE", "NAP", "OPO", "SVQ", "AGP",
+           "VLC", "PMI", "MUC", "FRA", "HAM", "DUS", "STR", "ZRH", "GVA", "LYS", "MRS", "NCE", "TLS", "BOD", "NTE", "MAN", "EDI", "BHX", "OSL", "HEL",
+           "KRK", "BEG", "SOF", "ZAG", "RIX", "VNO", "TLL", "SKG", "TBS", "EVN", "BAK", "LCA", "MLA", "JED", "KWI", "BAH", "MCT", "TLV", "BEY", "RAK",
+           "DAR", "EBB", "KGL", "CPT", "MRU", "RUN", "TNR", "COO", "BKO", "OUA", "BOM", "BLR", "MAA", "CCU", "HYD", "CMB", "KTM", "MLE", "SGN", "PNH",
+           "RGN", "HKT", "DPS", "CEB", "SHA", "CAN", "SZX", "CTU", "OSA", "PUS", "MFM", "KHI", "LHE", "CHI", "SFO", "SEA", "LAS", "ORL", "BOS", "ATL",
+           "DFW", "HOU", "DEN", "YMQ", "YVR", "YYC", "GDL", "CUN", "MTY", "HAV", "SJU", "GUA", "RIO", "BSB", "REC", "SSA", "ASU", "LPB", "MDE", "CTG",
+           "GYE", "MEL", "BNE", "PER", "CHC", "NAN", "PPT", "NOU", "HNL", "PTP", "FDF", "CAY"]
 
 [schedule]
 min_hours = 0.75                 # le radar relève les prix une fois par heure
