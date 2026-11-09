@@ -164,7 +164,8 @@ class BuildTests(unittest.TestCase):
     def test_destination_links_to_hotels_and_activities(self):
         docs = self.build([offer("BCN", "Barcelone", "Europe", 43, 30)])
         page = (docs / "en/destinations/barcelone/index.html").read_text()
-        self.assertIn("booking.com/searchresults.en-gb.html?ss=Barcelona", page)
+        self.assertNotIn("booking.com", page)
+        self.assertIn("klook.com%2Fen-US%2Fhotels%2Fsearchresult%2F%3Fcity_id%3D108", page)
         self.assertIn("tp.media/r?", page)
         self.assertIn("campaign_id=89", page)
         self.assertIn("tiqets.com%2Fen%2Fsearch%3Fq%3DBarcelona", page)

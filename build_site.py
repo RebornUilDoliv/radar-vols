@@ -740,7 +740,7 @@ def world_place_page(p, place):
   <h2>{p.t('to_list')}</h2>
   <ul class="rows">{rows}</ul>
   {facts}
-  <section class="panel"><h2>{e(p.t('stay_title', city=city))}</h2><p class="sub">{p.t('stay_lead')}</p><div class="stays">{stay_links(p, city)}</div></section>
+  <section class="panel"><h2>{e(p.t('stay_title', city=city))}</h2><p class="sub">{p.t('stay_lead')}</p><div class="stays">{stay_links(p, city, place['code'])}</div></section>
 </section>"""
     return layout(p, f"{p.t('to_title', city=city)} | {p.site['name']}", p.t("to_meta", city=city, **values), f"vers/{place['slug']}/", body,
                   extra=breadcrumbs(p, [(p.t("nav_places"), "destinations/"), (city, f"vers/{place['slug']}/")]) + faq_schema)
@@ -1105,7 +1105,7 @@ def route_page(p, origin, route, origins, updated):
   <p class="lead">{p.t('route_lead', price=price, out=e(p.day(route['depart'], False)), back=e(p.day(route['back'])))}</p>
   <p><a class="go" href="{e(route['link'])}" rel="nofollow sponsored noopener" target="_blank">{p.t('check')}</a></p>
   <section class="panel"><h2>{p.t('route_key')}</h2><ul class="guide">{items}</ul><p class="sub">{p.t('route_note', updated=e(updated))}</p></section>
-  <section class="panel"><h2>{e(p.t('stay_title', city=end))}</h2><p class="sub">{p.t('stay_lead')}</p><div class="stays">{stay_links(p, end)}</div></section>
+  <section class="panel"><h2>{e(p.t('stay_title', city=end))}</h2><p class="sub">{p.t('stay_lead')}</p><div class="stays">{stay_links(p, end, route['to'])}</div></section>
   {others_block}
   {more_block}
 </section>"""
@@ -1125,10 +1125,24 @@ STAY_ICONS = {
 }
 
 
-def stay_items(p, name):
+def klook_hotels_url(p, code=""):
+    """Hôtels Klook de la ville si on connaît son numéro Klook, sinon la page hôtels de Klook."""
+    lang = KLOOK_LANG.get(p.lang, "en-US")
+    value = str(klook_cities().get(code, ""))
+    if not value:
+        return f"https://www.klook.com/{lang}/hotels/"
+    if value[0] in "pd":
+        params = {"city_id": "", "stype": "province" if value[0] == "p" else "district", "svalue": value[1:]}
+    else:
+        params = {"city_id": value, "stype": "city", "svalue": value}
+    params.update(adult_num=2, child_num=0, room_num=1)
+    return f"https://www.klook.com/{lang}/hotels/searchresult/?{urllib.parse.urlencode(params)}"
+
+
+def stay_items(p, name, code=""):
     """Liens partenaires, suivis dès que le programme est renseigné dans config.toml."""
     query = urllib.parse.quote(name)
-    hotel = f"https://www.booking.com/searchresults.{BOOKING_LOCALES[p.lang]}.html?ss={query}"
+    hotel = klook_hotels_url(p, code)
     code = p.lang if p.lang in PARTNER_LANGS else "en"
     tour = f"https://www.tiqets.com/{code}/search?q={query}"
 
@@ -1150,11 +1164,11 @@ def stay_items(p, name):
             (tracked(claim, "claims"), p.t("stay_claim"), p.t("stay_claim_b"), "claim")]
 
 
-def stay_links(p, name):
+def stay_links(p, name, code=""):
     return "".join(
         f'<a class="stay" href="{e(url)}" rel="nofollow sponsored noopener" target="_blank">'
         f'<svg class="stay-icon" viewBox="0 0 24 24" aria-hidden="true">{STAY_ICONS[icon]}</svg><strong>{title}</strong><span>{text}</span></a>'
-        for url, title, text, icon in stay_items(p, name)
+        for url, title, text, icon in stay_items(p, name, code)
     )
 
 
@@ -1224,7 +1238,7 @@ def destination_page(p, city, cities):
     <div class="scroll"><table><thead><tr><th scope="col">{p.t('t_month')}</th><th scope="col">{p.t('t_dates')}</th><th scope="col">{p.t('t_stops')}</th><th scope="col" class="num">{p.t('t_price')}</th><th scope="col"><span class="sr">{p.t('t_link')}</span></th></tr></thead><tbody>{rows}</tbody></table></div>
   </section>
   {guide_block(p, city, months)}
-  <section class="panel"><h2>{e(p.t('stay_title', city=p.city(city['code'], city['city'])))}</h2><p class="sub">{p.t('stay_lead')}</p><div class="stays">{stay_links(p, p.city(city['code'], city['city']))}</div></section>
+  <section class="panel"><h2>{e(p.t('stay_title', city=p.city(city['code'], city['city'])))}</h2><p class="sub">{p.t('stay_lead')}</p><div class="stays">{stay_links(p, p.city(city['code'], city['city']), city['code'])}</div></section>
   {chart}
   {related_block}
 </section>"""
