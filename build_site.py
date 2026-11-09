@@ -184,12 +184,36 @@ def breadcrumbs(p, items):
     })
 
 
+SOCIAL_ICONS = {
+    "instagram": '<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r=".6" fill="currentColor"/>',
+    "tiktok": '<path d="M14 3v11.5a3.5 3.5 0 1 1-3.5-3.5M14 3c.4 2.6 2.2 4.4 5 4.6"/>',
+}
+
+
+def social_profiles(site):
+    """Comptes Instagram et TikTok renseignés dans config.toml : (nom, adresse, icône)."""
+    rows = []
+    if site.get("instagram"):
+        rows.append(("Instagram", f"https://www.instagram.com/{site['instagram']}/", "instagram"))
+    if site.get("tiktok"):
+        rows.append(("TikTok", f"https://www.tiktok.com/@{site['tiktok']}", "tiktok"))
+    return rows
+
+
+def social_links(site):
+    links = "".join(
+        f'<a href="{e(url)}" rel="me noopener" target="_blank" aria-label="{name}">'
+        f'<svg viewBox="0 0 24 24" aria-hidden="true">{SOCIAL_ICONS[icon]}</svg></a>'
+        for name, url, icon in social_profiles(site))
+    return f'<p class="foot-social">{links}</p>' if links else ""
+
+
 def site_schema(p):
     url = p.site["url"]
     return schema_tag([
         {"@context": "https://schema.org", "@type": "WebSite", "name": p.site["name"], "url": url, "inLanguage": LOCALES[p.lang]},
         {"@context": "https://schema.org", "@type": "Organization", "name": p.site["name"], "url": url,
-         "logo": f"{url}assets/icon-512.png", "email": "contact@eunodia.com"},
+         "logo": f"{url}assets/icon-512.png", "email": "contact@eunodia.com", "sameAs": [u for _, u, _ in social_profiles(p.site)]},
     ])
 
 
@@ -290,7 +314,7 @@ def layout(p, title, description, path, body, noindex=False, extra="", photo=Non
 </main>
 <footer class="foot">
   <div class="wrap foot-in">
-    <p class="foot-brand">{LOGO}{name}</p>
+    <div><p class="foot-brand">{LOGO}{name}</p>{social_links(p.site)}</div>
     <div>
       <p>{p.t('foot_1')}</p>
       <p>{p.t('foot_2', name=name)}</p>

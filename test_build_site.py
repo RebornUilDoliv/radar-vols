@@ -103,6 +103,13 @@ class BuildTests(unittest.TestCase):
         self.assertIn(">فنادق</button>", (docs / "ar" / "index.html").read_text())
         self.assertNotIn("noindex", fr)
 
+    def test_footer_links_social_accounts(self):
+        docs = self.build([offer("BCN", "Barcelone", "Europe", 43, 30)])
+        page = (docs / "index.html").read_text()
+        self.assertIn('href="https://www.instagram.com/eunodia_travel/"', page)
+        self.assertIn('href="https://www.tiktok.com/@eunodia_travel"', page)
+        self.assertIn('"sameAs": ["https://www.instagram.com/eunodia_travel/"', page)
+
     def test_builds_all_pages_and_removes_old_destinations(self):
         docs = self.build([offer("BCN", "Barcelone", "Europe", 43, 30), offer("LON", "Londres", "Europe", 59, 200)])
         for page in ("index.html", "vols/index.html", "destinations/index.html", "a-propos/index.html",

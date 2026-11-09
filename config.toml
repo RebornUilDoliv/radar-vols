@@ -13,6 +13,8 @@ adults = 1
 [site]
 name = "Eunodia"
 url = "https://eunodia.com/"
+instagram = "eunodia_travel"       # comptes affichés en bas de chaque page
+tiktok = "eunodia_travel"
 marker = "800338"                # identifiant partenaire Travelpayouts
 project = "597805"
 program = "4114"
