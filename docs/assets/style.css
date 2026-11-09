@@ -434,8 +434,8 @@ details p { margin-top: 6px; color: var(--g3); }
 }
 
 .search-tabs { display: flex; gap: 6px; margin-bottom: 10px; }
-.search-tabs button { padding: 9px 18px; color: var(--k); background: rgba(255, 255, 255, .92); border: 0; border-radius: 999px; font: inherit; font-weight: 600; cursor: pointer; }
-.search-tabs button.on { color: var(--w); background: var(--k); }
+.search-tabs button { padding: 9px 18px; color: #fff; background: rgba(0, 0, 0, .35); border: 1px solid rgba(255, 255, 255, .45); border-radius: 999px; font: inherit; font-weight: 600; cursor: pointer; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+.search-tabs button.on { color: #0b0b0b; background: #fff; border-color: #fff; }
 .hotel-search { grid-template-columns: 2fr 1fr 1fr .7fr auto; }
 .hotel-search .hotel-note { grid-column: 1 / -1; margin: 0; color: var(--g3); font-size: 13px; }
 .hotel-search[hidden], .search[hidden] { display: none; }
