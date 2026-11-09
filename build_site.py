@@ -365,7 +365,31 @@ def search_form(p):
 </form>"""
 
 
-HOTELS_PREVIEW_PATH = "apercu-hotels-7k3q/"
+HOTEL_KEYS = ("flights", "hotels", "city", "place", "in", "out", "guests", "go", "pick", "note")
+HOTEL_WORDS = {
+    "fr": ("Vols", "Hôtels", "Ville", "Lisbonne, Tokyo, Marrakech…", "Arrivée", "Départ", "Voyageurs", "Chercher",
+           "Choisis une ville dans la liste.", "Tu réserves sur Klook, au prix affiché. Plus de villes arrivent bientôt."),
+    "en": ("Flights", "Hotels", "City", "Lisbon, Tokyo, Marrakech…", "Check-in", "Check-out", "Guests", "Search",
+           "Pick a city from the list.", "You book on Klook, at the price shown. More cities coming soon."),
+    "es": ("Vuelos", "Hoteles", "Ciudad", "Lisboa, Tokio, Marrakech…", "Llegada", "Salida", "Viajeros", "Buscar",
+           "Elige una ciudad de la lista.", "Reservas en Klook, al precio indicado. Pronto habrá más ciudades."),
+    "pt": ("Voos", "Hotéis", "Cidade", "Lisboa, Tóquio, Marraquexe…", "Check-in", "Check-out", "Viajantes", "Pesquisar",
+           "Escolhe uma cidade da lista.", "Reservas na Klook, ao preço indicado. Mais cidades em breve."),
+    "it": ("Voli", "Hotel", "Città", "Lisbona, Tokyo, Marrakech…", "Arrivo", "Partenza", "Viaggiatori", "Cerca",
+           "Scegli una città dall'elenco.", "Prenoti su Klook, al prezzo indicato. Presto altre città."),
+    "de": ("Flüge", "Hotels", "Stadt", "Lissabon, Tokio, Marrakesch…", "Anreise", "Abreise", "Reisende", "Suchen",
+           "Wähle eine Stadt aus der Liste.", "Du buchst bei Klook zum angezeigten Preis. Weitere Städte folgen bald."),
+    "nl": ("Vluchten", "Hotels", "Stad", "Lissabon, Tokio, Marrakesh…", "Inchecken", "Uitchecken", "Reizigers", "Zoeken",
+           "Kies een stad uit de lijst.", "Je boekt bij Klook, tegen de getoonde prijs. Binnenkort meer steden."),
+    "tr": ("Uçuşlar", "Oteller", "Şehir", "Lizbon, Tokyo, Marakeş…", "Giriş", "Çıkış", "Misafir", "Ara",
+           "Listeden bir şehir seç.", "Klook'ta gösterilen fiyattan rezervasyon yaparsın. Yakında daha fazla şehir."),
+    "ar": ("رحلات", "فنادق", "المدينة", "لشبونة، طوكيو، مراكش…", "الوصول", "المغادرة", "المسافرون", "بحث",
+           "اختر مدينة من القائمة.", "تحجز على Klook بالسعر المعروض. المزيد من المدن قريبًا."),
+    "zh": ("机票", "酒店", "城市", "里斯本、东京、马拉喀什…", "入住", "退房", "人数", "搜索",
+           "请从列表中选择城市。", "在 Klook 按显示价格预订。更多城市即将上线。"),
+    "ko": ("항공권", "호텔", "도시", "리스본, 도쿄, 마라케시…", "체크인", "체크아웃", "인원", "검색",
+           "목록에서 도시를 선택하세요.", "Klook에서 표시된 가격으로 예약합니다. 곧 더 많은 도시가 추가됩니다."),
+}
 KLOOK_LANG = {"fr": "fr", "en": "en-US", "es": "es", "de": "de", "it": "it", "pt": "pt-BR", "nl": "nl", "ko": "ko", "zh": "zh-CN"}
 
 
@@ -379,12 +403,7 @@ def klook_cities():
 def hotel_search(p):
     """Onglets Vols / Hôtels et recherche d'hôtels Klook (villes relevées dans klook_cities.json)."""
     fr = p.lang == "fr"
-    words = ({"flights": "Vols", "hotels": "Hôtels", "city": "Ville", "place": "Lisbonne, Tokyo, Marrakech…", "in": "Arrivée",
-              "out": "Départ", "guests": "Voyageurs", "go": "Chercher", "pick": "Choisis une ville dans la liste.",
-              "note": "Tu réserves sur Klook, au prix affiché. Plus de villes arrivent bientôt."} if fr else
-             {"flights": "Flights", "hotels": "Hotels", "city": "City", "place": "Lisbon, Tokyo, Marrakech…", "in": "Check-in",
-              "out": "Check-out", "guests": "Guests", "go": "Search", "pick": "Pick a city from the list.",
-              "note": "You book on Klook, at the price shown. More cities coming soon."})
+    words = dict(zip(HOTEL_KEYS, HOTEL_WORDS.get(p.lang, HOTEL_WORDS["en"])))
     rows = sorted(([p.city(code, code), str(value), code] for code, value in klook_cities().items()), key=lambda row: row[0])
     data = e(json.dumps(rows, ensure_ascii=False, separators=(",", ":")))
     guests = "".join(f"<option{' selected' if n == 2 else ''}>{n}</option>" for n in range(1, 7))
@@ -1398,14 +1417,10 @@ def build_language(p, data, cities, updated_at, groups, origins=()):
     if lang != "fr":
         write(folder / "prices.json", json.dumps({**data, "offers": translated}, ensure_ascii=False, separators=(",", ":")) + "\n")
     home_html = home(p, cities, offers, updated, origins)
+    tabs, hotels = hotel_search(p)  # onglets Vols / Hôtels au-dessus de la recherche
+    flights = search_form(p)
+    home_html = home_html.replace(flights, tabs + flights + hotels, 1)
     write(folder / "index.html", home_html)
-    if lang in ("fr", "en"):
-        # Copie privée de l'accueil (non indexée, liée nulle part) pour tester la recherche d'hôtels.
-        tabs, hotels = hotel_search(p)
-        flights = search_form(p)
-        private = home_html.replace(flights, tabs + flights + hotels, 1)
-        private = private.replace("<head>", '<head>\n<meta name="robots" content="noindex, nofollow">', 1)
-        write(folder / HOTELS_PREVIEW_PATH / "index.html", private)
     world = folder / "depuis"
     if world.exists():
         shutil.rmtree(world)

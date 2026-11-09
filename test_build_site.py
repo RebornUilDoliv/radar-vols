@@ -94,6 +94,15 @@ class BuildTests(unittest.TestCase):
             build_site.build(data, SITE, {"fr": (places, {"FR": "France"}), "en": (english, {"FR": "France"}), "es": (places, {"FR": "Francia"})})
         return docs
 
+    def test_home_pages_offer_hotel_search_in_every_language(self):
+        docs = self.build([offer("BCN", "Barcelone", "Europe", 43, 30)])
+        fr = (docs / "index.html").read_text()
+        self.assertIn('id="hotel-search"', fr)
+        self.assertIn(">Hôtels</button>", fr)
+        self.assertEqual(fr.count('id="hotel-search"'), 1)
+        self.assertIn(">فنادق</button>", (docs / "ar" / "index.html").read_text())
+        self.assertNotIn("noindex", fr)
+
     def test_builds_all_pages_and_removes_old_destinations(self):
         docs = self.build([offer("BCN", "Barcelone", "Europe", 43, 30), offer("LON", "Londres", "Europe", 59, 200)])
         for page in ("index.html", "vols/index.html", "destinations/index.html", "a-propos/index.html",
