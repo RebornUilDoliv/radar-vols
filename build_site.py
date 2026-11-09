@@ -304,7 +304,7 @@ def layout(p, title, description, path, body, noindex=False, extra="", photo=Non
     <a href="{root}depuis/">{p.t('nav_world')}</a>
     <a href="{root}destinations/">{p.t('nav_places')}</a>
     <a href="{root}vols-pas-chers/">{p.t('nav_deals')}</a>
-    {late_nav}<a href="{root}a-propos/">{p.t('nav_info')}</a>
+    {late_nav}<a href="{root}{WHO_PATH}">{e(WHO.get(p.lang, WHO["en"])["nav"])}</a><a href="{root}a-propos/">{p.t('nav_info')}</a>
   </nav>
   <details class="langs"><summary aria-label="Langue">{p.lang.upper()}</summary><div class="langs-list">{switch}</div></details>
   <button class="menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="menu" aria-label="{p.t('menu')}"><span></span><span></span><span></span></button>
@@ -319,7 +319,7 @@ def layout(p, title, description, path, body, noindex=False, extra="", photo=Non
       <p>{p.t('foot_1')}</p>
       <p>{p.t('foot_2', name=name)}</p>
     </div>
-    <p class="foot-links"><a href="{root}depuis/">{p.t('nav_world')}</a><a href="{root}vols/">{p.t('nav_flights')}</a><a href="{root}vols-pas-chers/">{p.t('nav_deals')}</a><a href="{root}barometre/">{e(BAROMETER[p.lang][0])}</a><a href="{root}destinations/">{p.t('nav_places')}</a><a href="{root}a-propos/">{p.t('nav_info')}</a><a href="{root}credits/">{p.t('credits')}</a><a href="mailto:contact@eunodia.com">contact@eunodia.com</a></p>
+    <p class="foot-links"><a href="{root}depuis/">{p.t('nav_world')}</a><a href="{root}vols/">{p.t('nav_flights')}</a><a href="{root}vols-pas-chers/">{p.t('nav_deals')}</a><a href="{root}barometre/">{e(BAROMETER[p.lang][0])}</a><a href="{root}destinations/">{p.t('nav_places')}</a><a href="{root}{WHO_PATH}">{e(WHO.get(p.lang, WHO["en"])["nav"])}</a><a href="{root}a-propos/">{p.t('nav_info')}</a><a href="{root}credits/">{p.t('credits')}</a><a href="mailto:contact@eunodia.com">contact@eunodia.com</a></p>
   </div>
 </footer>
 </body>
@@ -1351,6 +1351,79 @@ def custom_page(p):
                   CUSTOM_PATH, body, photo="LIS" if photo_exists("LIS") else None)
 
 
+WHO_PATH = "qui-suis-je/"
+WHO = {
+    "fr": {"nav": "Qui suis-je ?", "title": "Qui suis-je ?",
+           "lead": "Bonjour, moi c'est José Luis Cardozo Pintos, Parisien et fondateur d'Eunodia.",
+           "meta": "José Luis Cardozo Pintos, Parisien, diplômé en tourisme et hôtellerie, fondateur d'Eunodia : pourquoi j'ai créé le site.",
+           "alt": "José Luis Cardozo Pintos, fondateur d'Eunodia", "job": "Fondateur d'Eunodia",
+           "paras": [
+               "Le voyage, c'est ma passion. J'ai fait mes études dans le tourisme, jusqu'au **master en gestion des activités touristiques et hôtelières à l'IREST, Sorbonne Paris 1**. Je parle français, anglais et espagnol, et j'ai des notions d'italien.",
+               "Durant mes études en alternance, j'ai découvert les coulisses du voyage : réserver des hébergements pour de grands événements internationaux, organiser des séjours de groupe, reloger des voyageurs à la dernière minute, échanger chaque jour avec des hôtels et des agences de voyage du monde entier. J'y ai appris comment se construisent les prix… et où se cachent les bonnes affaires.",
+               "**Pourquoi Eunodia ?** Au départ, je voulais simplement créer un petit outil qui affiche les meilleurs prix de vols. Puis je me suis dit que ce serait vraiment fou de construire un vrai site, pour partager avec tout le monde les bons plans du moment : vols, hôtels, activités. Eunodia est né comme ça.",
+               "Ce qui me passionne le plus, c'est de **préparer des voyages sur mesure** : imaginer l'itinéraire, trouver le bon vol et le bon hôtel au bon prix… et voir quelqu'un partir heureux. Parce qu'un voyage réussi, c'est du bonheur, et c'est pour ça que je fais ce métier.",
+               "Eunodia est un projet indépendant : **je suis auto-entrepreneur** et je m'occupe du site moi-même. Il est gratuit pour toi : il se rémunère grâce à de petites commissions versées par nos partenaires quand tu réserves, sans aucun frais en plus pour toi.",
+           ],
+           "contact": "Une question, une envie de voyage ? Écris-moi à {mail} ou retrouve-moi sur Instagram et TikTok {handle}.",
+           "go": "Préparer mon voyage avec moi"},
+    "en": {"nav": "About me", "title": "About me",
+           "lead": "Hi, I'm José Luis Cardozo Pintos, a Parisian and the founder of Eunodia.",
+           "meta": "José Luis Cardozo Pintos, from Paris, graduate in tourism and hospitality, founder of Eunodia: why I created the site.",
+           "alt": "José Luis Cardozo Pintos, founder of Eunodia", "job": "Founder of Eunodia",
+           "paras": [
+               "Travel is my passion. I studied tourism up to a **master's degree in tourism and hotel management at IREST, Sorbonne Paris 1**. I speak French, English and Spanish, plus some Italian.",
+               "During my work-study years, I discovered what happens behind the scenes of travel: booking accommodation for major international events, organising group trips, rehousing travellers at the last minute, and working every day with hotels and online travel agencies around the world. That's where I learned how prices are built… and where the real deals hide.",
+               "**Why Eunodia?** At first, I just wanted to build a small tool showing the best flight prices. Then I thought it would be amazing to build a real website and share the best deals of the moment with everyone: flights, hotels, activities. That's how Eunodia was born.",
+               "What I love most is **planning tailor-made trips**: designing the itinerary, finding the right flight and hotel at the right price… and seeing someone leave happy. A great trip brings happiness, and that's why I do this.",
+               "Eunodia is an independent project: **I'm self-employed** and I run the site myself. It's free for you: it earns small commissions from our partners when you book, at no extra cost to you.",
+           ],
+           "contact": "A question, a trip in mind? Write to me at {mail} or find me on Instagram and TikTok {handle}.",
+           "go": "Plan my trip with José Luis"},
+    "es": {"nav": "Quién soy", "title": "¿Quién soy?",
+           "lead": "Hola, soy José Luis Cardozo Pintos, parisino y fundador de Eunodia.",
+           "meta": "José Luis Cardozo Pintos, de París, titulado en turismo y hostelería, fundador de Eunodia: por qué creé el sitio.",
+           "alt": "José Luis Cardozo Pintos, fundador de Eunodia", "job": "Fundador de Eunodia",
+           "paras": [
+               "Viajar es mi pasión. Estudié turismo hasta el **máster en gestión de actividades turísticas y hoteleras en el IREST, Sorbona París 1**. Hablo francés, inglés y español, y tengo nociones de italiano.",
+               "Durante mis estudios en alternancia, descubrí los entresijos del mundo del viaje: reservando alojamientos para grandes eventos internacionales, organizando viajes de grupo, recolocando viajeros a última hora y trabajando a diario con hoteles y agencias de viajes en línea de todo el mundo. Ahí aprendí cómo se forman los precios… y dónde se esconden las gangas.",
+               "**¿Por qué Eunodia?** Al principio solo quería crear una pequeña herramienta con los mejores precios de vuelos. Luego pensé que sería increíble construir un sitio de verdad para compartir con todo el mundo las mejores ofertas del momento: vuelos, hoteles, actividades. Así nació Eunodia.",
+               "Lo que más me apasiona es **preparar viajes a medida**: imaginar el itinerario, encontrar el vuelo y el hotel adecuados al mejor precio… y ver a alguien irse feliz. Un buen viaje da felicidad, y por eso hago este trabajo.",
+               "Eunodia es un proyecto independiente: **soy autónomo** y gestiono el sitio yo mismo. Es gratis para ti: se financia con pequeñas comisiones de nuestros socios cuando reservas, sin ningún coste extra para ti.",
+           ],
+           "contact": "¿Una pregunta o un viaje en mente? Escríbeme a {mail} o encuéntrame en Instagram y TikTok {handle}.",
+           "go": "Preparar mi viaje con José Luis"},
+}
+
+
+def who_page(p):
+    """Page « Qui suis-je ? » : le fondateur, son parcours et pourquoi Eunodia existe."""
+    w = WHO.get(p.lang, WHO["en"])
+    bold = lambda text: re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", e(text))
+    handle = f"@{p.site['instagram']}" if p.site.get("instagram") else ""
+    links = social_profiles(p.site)
+    social = " / ".join(f'<a href="{e(url)}" rel="me noopener" target="_blank">{name}</a>' for name, url, _ in links)
+    contact = e(w["contact"]).replace("{mail}", '<a href="mailto:contact@eunodia.com">contact@eunodia.com</a>').replace("{handle}", f"{e(handle)} ({social})" if social else "")
+    paras = "".join(f"<p>{bold(t)}</p>" for t in w["paras"])
+    photo = f"{p.base}assets/jose-luis.jpg"
+    person = schema_tag({"@context": "https://schema.org", "@type": "Person", "name": "José Luis Cardozo Pintos",
+                         "jobTitle": w["job"], "image": f"{p.site['url']}assets/jose-luis.jpg", "homeLocation": "Paris",
+                         "worksFor": {"@type": "Organization", "name": p.site["name"], "url": p.site["url"]},
+                         "sameAs": [url for _, url, _ in links]})
+    body = f"""<section class="page wrap">
+  <h1>{e(w['title'])}</h1>
+  <p class="lead">{e(w['lead'])}</p>
+  <div class="who">
+    <img class="who-photo" src="{photo}" width="800" height="1000" alt="{e(w['alt'])}">
+    <div class="who-text">
+      {paras}
+      <p class="who-contact">{contact}</p>
+      <a class="search-go" href="{p.site['root']}{CUSTOM_PATH}">{e(w['go'])}</a>
+    </div>
+  </div>
+</section>{person}"""
+    return layout(p, f"{w['title']} | {p.site['name']}", w["meta"], WHO_PATH, body, photo="PAR" if photo_exists("PAR") else None)
+
+
 def about_page(p):
     items = "".join(f"<details><summary>{e(q)}</summary><p>{e(a)}</p></details>" for q, a in TEXT[p.lang]["faq"])
     body = f'<section class="page wrap narrow"><h1>{p.t("info_title")}</h1><p class="lead">{p.t("info_lead")}</p><div class="faq">{items}</div><p class="info-contact"><a href="mailto:contact@eunodia.com">contact@eunodia.com</a></p><a class="search-go" href="{p.root}">{p.t("info_go")}</a></section>'
@@ -1479,6 +1552,7 @@ def build_language(p, data, cities, updated_at, groups, origins=()):
     for origin in origins:
         write(DOCS / "assets" / "routes" / lang / f"{origin['code']}.json", json.dumps(route_rows(p, origin), ensure_ascii=False, separators=(",", ":")))
     write(folder / "a-propos" / "index.html", about_page(p))
+    write(folder / WHO_PATH / "index.html", who_page(p))
     if lang == "fr":
         write(folder / "voyage-sur-mesure" / "index.html", custom_page(p))
     if origins:
@@ -1551,7 +1625,7 @@ def build(data, site, catalog=None):
         build_language(page, data, cities, updated_at, groups, origins)
     write(DOCS / "404.html", missing_page(Page(site, "fr", names.get("fr"))))
     route_pages = [route_path(origin, route) for origin in origins for route in origin["pages"]]
-    pages = ["", "vols/", "vols-pas-chers/", "destinations/", "a-propos/"] + [f"destinations/{c['slug']}/" for c in cities]
+    pages = ["", "vols/", "vols-pas-chers/", "destinations/", "a-propos/", WHO_PATH] + [f"destinations/{c['slug']}/" for c in cities]
     pages += [f"vols-pas-chers/{g['slug']}/" for g in groups]
     if origins:
         pages += ["depuis/", "barometre/"]

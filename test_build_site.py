@@ -110,6 +110,17 @@ class BuildTests(unittest.TestCase):
         self.assertIn('href="https://www.tiktok.com/@eunodia_travel"', page)
         self.assertIn('"sameAs": ["https://www.instagram.com/eunodia_travel/"', page)
 
+    def test_who_page_in_every_language(self):
+        docs = self.build([offer("BCN", "Barcelone", "Europe", 43, 30)])
+        fr = (docs / "qui-suis-je" / "index.html").read_text()
+        self.assertIn("José Luis Cardozo Pintos", fr)
+        self.assertIn("<strong>je suis auto-entrepreneur</strong>", fr)
+        self.assertIn("Parisien", fr)
+        self.assertIn('"@type": "Person"', fr)
+        self.assertIn("About me", (docs / "en" / "qui-suis-je" / "index.html").read_text())
+        self.assertIn('href="/qui-suis-je/"', (docs / "index.html").read_text())
+        self.assertIn("qui-suis-je/", (docs / "sitemap.xml").read_text())
+
     def test_builds_all_pages_and_removes_old_destinations(self):
         docs = self.build([offer("BCN", "Barcelone", "Europe", 43, 30), offer("LON", "Londres", "Europe", 59, 200)])
         for page in ("index.html", "vols/index.html", "destinations/index.html", "a-propos/index.html",

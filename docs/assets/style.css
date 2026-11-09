@@ -447,3 +447,14 @@ details p { margin-top: 6px; color: var(--g3); }
   .hotel-search { grid-template-columns: 1fr 1fr; }
   .hotel-search > .field:first-child, .hotel-search .search-go { grid-column: 1 / -1; }
 }
+.who { margin-top: 8px; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 48px; align-items: start; }
+.who-photo { width: 100%; height: auto; border-radius: 22px; position: sticky; top: 96px; }
+.who-text p + p { margin-top: 14px; }
+.who-text p { font-size: 16px; line-height: 1.65; }
+.who-contact { padding-top: 10px; }
+.who-contact a { text-decoration: underline; text-underline-offset: 3px; }
+.who .search-go { display: inline-flex; margin-top: 26px; }
+@media (max-width: 760px) {
+  .who { grid-template-columns: 1fr; gap: 26px; }
+  .who-photo { position: static; max-width: 420px; }
+}
