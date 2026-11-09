@@ -1367,7 +1367,7 @@ WHO = {
                "Eunodia est un projet indépendant : **je suis auto-entrepreneur** et je m'occupe du site moi-même. Il est gratuit pour toi : il se rémunère grâce à de petites commissions versées par nos partenaires quand tu réserves, sans aucun frais en plus pour toi.",
            ],
            "contact": "Une question, une envie de voyage ? Écris-moi à {mail} ou retrouve-moi sur Instagram et TikTok {handle}.",
-           "go": "Préparer mon voyage avec moi"},
+           "go": "Préparer ton voyage avec moi"},
     "en": {"nav": "About me", "title": "About me",
            "lead": "Hi, I'm José Luis Cardozo Pintos, a Parisian and the founder of Eunodia.",
            "meta": "José Luis Cardozo Pintos, from Paris, graduate in tourism and hospitality, founder of Eunodia: why I created the site.",
