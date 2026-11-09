@@ -34,7 +34,7 @@ analytics_token = "71176418a1124737b274a50c21f6e2a5"  # identifiant public de Cl
 test_api = "https://radar-flight-test.joseluiscardozopintos.workers.dev"                    # adresse du serveur de test ; vide = mode démonstration
 
 [world]
-origins = ["LON", "PAR", "MAD", "BCN", "ROM", "BER", "AMS", "LIS", "IST", "DXB", "RUH", "DEL", "BKK", "SIN", "HKG", "TYO", "SEL", "SYD", "JNB", "CAI", "CMN", "NYC", "LAX", "MIA", "YTO", "MEX", "BOG", "LIM", "SAO", "BUE", "SCL",
+origins = ["LON", "PAR", "MAD", "BCN", "ROM", "BER", "AMS", "LIS", "IST", "DXB", "RUH", "DEL", "BKK", "SIN", "HKG", "TYO", "SEL", "SYD", "JNB", "CAI", "CMN", "NYC", "LAX", "MIA", "YTO", "YQB", "MEX", "BOG", "LIM", "SAO", "BUE", "SCL",
            "WAS", "BJS", "JKT", "MNL", "KUL", "HAN", "DAC", "ISB", "TPE", "TAS", "ALA", "NQZ", "DOH", "AUH", "AMM", "LOS", "ABV", "NBO",
            "ACC", "ADD", "ALG", "TUN", "DKR", "ABJ", "FIH", "LAD", "WAW", "BUH", "ATH", "VIE", "BRU", "PRG", "BUD", "STO", "CPH", "DUB",
            "PTY", "UIO", "SJO", "SDQ", "MVD", "AKL"]
