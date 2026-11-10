@@ -453,6 +453,11 @@ details p { margin-top: 6px; color: var(--g3); }
 .train-search .hotel-note { margin: 0; color: var(--g3); font-size: 13px; }
 .train-results { display: grid; gap: 14px; }
 .train-results:empty { display: none; }
+.train-cta { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 18px; color: #fff; text-decoration: none; background: var(--k); border-radius: 14px; transition: transform .15s; }
+.train-cta:hover { transform: translateY(-1px); }
+.train-cta-route { font-family: "Clash Display", "Geist", sans-serif; font-size: 20px; font-weight: 500; }
+.train-cta-go { flex: none; padding: 9px 16px; color: var(--k); background: #fff; border-radius: 999px; font-size: 14px; font-weight: 600; }
+@media (max-width: 640px) { .train-cta { flex-direction: column; align-items: flex-start; } .train-cta-route { font-size: 18px; } }
 .train-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
 .train-card { min-height: 180px; }
 .train-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 0 24px; }

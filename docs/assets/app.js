@@ -441,19 +441,15 @@
     };
     form.addEventListener("submit", function (event) {
       event.preventDefault();
-      /* départ + arrivée renseignés : direct sur les résultats Omio (horaires et prix du jour) */
-      if (form.dataset.redirect && from.value.trim() && to.value.trim()) {
-        error.hidden = true;
-        window.open(searchLink(from.value.trim(), to.value.trim()), "_blank", "noopener");
-        return;
-      }
-      var o = from.dataset.picked || exact(from.value);
-      if (!o) { error.hidden = false; return; }
+      var fromName = from.value.trim(), toName = to.value.trim();
+      var o = from.dataset.picked || exact(fromName);
+      /* départ inconnu du catalogue : on accepte quand même s'il y a une arrivée (lien direct Omio) */
+      if (!o && !(form.dataset.redirect && fromName && toName)) { error.hidden = false; return; }
       error.hidden = true;
-      var target = d.clean(to.value || "");
+      var target = d.clean(toName);
       /* « Paris » regroupe aussi les gares de la ville (Paris Gare de Lyon, Paris Gare du Nord…) */
       var all = [];
-      d.origins.forEach(function (name) { if (name === o || name.indexOf(o + " ") === 0) all = all.concat(d.byOrigin[name]); });
+      if (o) d.origins.forEach(function (name) { if (name === o || name.indexOf(o + " ") === 0) all = all.concat(d.byOrigin[name]); });
       var routes = all.filter(function (r) { return !target || d.clean(d.names[r[1]]).indexOf(target) === 0; });
       /* trajets avec prix d'abord, du moins cher au plus cher, un seul par destination */
       routes.sort(function (a, b) { return (a[2] || 1e9) - (b[2] || 1e9); });
@@ -479,6 +475,16 @@
         var list = el("div", "train-list");
         others.forEach(function (r) { list.appendChild(row(r)); });
         results.appendChild(list);
+      }
+      /* départ + arrivée : en tête, l'accès direct aux horaires et prix du jour chez Omio, pour les dates choisies */
+      if (form.dataset.redirect && fromName && toName) {
+        var cta = el("a", "train-cta");
+        cta.dataset.from = fromName; cta.dataset.to = toName;
+        cta.href = searchLink(fromName, toName); cta.target = "_blank"; cta.rel = "sponsored noopener";
+        cta.appendChild(el("span", "train-cta-route", fromName + " → " + toName));
+        cta.appendChild(el("span", "train-cta-go", words.book + " ↗"));
+        results.insertBefore(cta, results.firstChild);
+        return;
       }
       if (!routes.length) {
         results.appendChild(el("p", "train-none", words.none));
