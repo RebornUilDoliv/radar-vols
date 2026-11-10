@@ -15,8 +15,14 @@ jobs:
         run: |
           python3 - <<'PY'
           import base64, json, os, urllib.request
-          sid, token = os.environ["SID"].strip(), os.environ["TOKEN"].strip()
-          print("SID présent:", bool(sid), "commence par IR:", sid.startswith("IR"), "| token présent:", bool(token))
+          import re
+          raw_sid, raw_tok = os.environ["SID"], os.environ["TOKEN"]
+          for name, v in (("SID", raw_sid), ("TOKEN", raw_tok)):
+              parts = v.split()
+              print(name, "longueur:", len(v), "| morceaux:", [len(x) for x in parts], "| alphanum:", [x.isalnum() for x in parts])
+          sid = max(raw_sid.split(), key=len) if raw_sid.split() else ""
+          token = max(raw_tok.split(), key=len) if raw_tok.split() else ""
+          print("SID retenu longueur", len(sid), "commence par IR:", sid.startswith("IR"))
           def get(url):
               req = urllib.request.Request(url, headers={"Accept": "application/json",
                   "Authorization": "Basic " + base64.b64encode(f"{sid}:{token}".encode()).decode()})
