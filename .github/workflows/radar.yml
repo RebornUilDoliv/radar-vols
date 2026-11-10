@@ -32,6 +32,8 @@ jobs:
       url: https://eunodia.com/
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main  # toujours la dernière version (un passage en attente ne repart pas d'un historique dépassé)
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
