@@ -387,15 +387,29 @@
         return link.toString();
       } catch (e) { return url; }
     };
+    /* Lien de redirection officiel Omio (suivi Impact) : ouvre directement la page de résultats Omio
+       pour le départ, l'arrivée et les dates donnés (date d'aller obligatoire : demain par défaut). */
+    var tomorrow = function () { var t = new Date(); t.setDate(t.getDate() + 1); return t.toISOString().slice(0, 10); };
+    var searchLink = function (fromName, toName) {
+      var out = $("t-out").value || tomorrow(), back = $("t-back").value;
+      var params = new URLSearchParams({ departurePosTerm: fromName, arrivalPosTerm: toName, departureDate: out });
+      if (back && back >= out) params.set("returnDate", back);
+      if (form.dataset.omioLocale) params.set("locale", form.dataset.omioLocale);
+      if (d.raw.currency) params.set("currency", d.raw.currency);
+      return form.dataset.redirect + encodeURIComponent(form.dataset.omioLinks + "?" + params.toString());
+    };
     var linkTo = function (item, route) {
-      item.dataset.base = trainLink(d, route);
-      item.href = withDates(item.dataset.base); item.target = "_blank"; item.rel = "sponsored noopener";
+      item.dataset.from = d.names[route[0]];
+      item.dataset.to = d.names[route[1]];
+      item.href = form.dataset.redirect ? searchLink(item.dataset.from, item.dataset.to) : withDates(trainLink(d, route));
+      item.target = "_blank"; item.rel = "sponsored noopener";
       return item;
     };
     /* si les dates changent après la recherche, les liens affichés suivent */
     ["t-out", "t-back"].forEach(function (id) {
       $(id).addEventListener("change", function () {
-        results.querySelectorAll("a[data-base]").forEach(function (a) { a.href = withDates(a.dataset.base); });
+        if (!form.dataset.redirect) return;
+        results.querySelectorAll("a[data-to]").forEach(function (a) { a.href = searchLink(a.dataset.from, a.dataset.to); });
       });
     });
     var row = function (route) {
@@ -427,6 +441,12 @@
     };
     form.addEventListener("submit", function (event) {
       event.preventDefault();
+      /* départ + arrivée renseignés : direct sur les résultats Omio (horaires et prix du jour) */
+      if (form.dataset.redirect && from.value.trim() && to.value.trim()) {
+        error.hidden = true;
+        window.open(searchLink(from.value.trim(), to.value.trim()), "_blank", "noopener");
+        return;
+      }
       var o = from.dataset.picked || exact(from.value);
       if (!o) { error.hidden = false; return; }
       error.hidden = true;

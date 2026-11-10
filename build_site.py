@@ -457,6 +457,11 @@ def hotel_search(p, cities=()):
 # omio.py récupère chaque jour les catalogues Omio dans docs/omio/<langue>.json ; la recherche se fait sur le site
 # et le bouton de réservation mène chez Omio avec le lien de suivi Impact.
 OMIO_FALLBACK = "en"
+# Lien de redirection officiel Omio (outil d'affiliation, onglet « Redirect link ») : passe par le suivi Impact
+# avec le numéro de partenaire et ouvre directement la page de résultats pour le départ, l'arrivée et les dates.
+OMIO_REDIRECT = "https://omio.sjv.io/c/8164987/4057579/7385?u="
+OMIO_LINKS = "https://www.omio.com/links/626fa8a9-f982-43d0-ace9-9a13f6b14612"
+OMIO_LOCALE = {"fr": "fr", "en": "en", "es": "es", "de": "de", "it": "it", "pt": "pt", "nl": "nl", "tr": "tr", "ar": "ar", "zh": "zh", "ko": "ko"}
 TRAIN_KEYS = ("tab", "note", "from", "from_place", "to", "to_place", "go", "price_from", "book", "none", "pick", "more", "loading")
 TRAIN_DATES = {"fr": ("Aller", "Retour"), "en": ("Depart", "Return"), "es": ("Ida", "Vuelta"), "de": ("Hinfahrt", "Rückfahrt"),
                "it": ("Andata", "Ritorno"), "pt": ("Ida", "Volta"), "nl": ("Heen", "Terug"), "tr": ("Gidiş", "Dönüş"),
@@ -534,7 +539,8 @@ def train_search(p, cities=()):
             photos.setdefault(p.city(code, known[code]).lower(), code)
     photos = e(json.dumps(photos, ensure_ascii=False, separators=(",", ":")))
     return f"""<form class="search train-search" id="train-search" data-src="/omio/{data}.json" data-lang="{p.lang}" data-words="{texts}"
-  data-photos="{photos}" data-photo-root="{p.base}assets/photos/" autocomplete="off" hidden>
+  data-photos="{photos}" data-photo-root="{p.base}assets/photos/" data-redirect="{e(OMIO_REDIRECT)}" data-omio-links="{e(OMIO_LINKS)}"
+  data-omio-locale="{OMIO_LOCALE.get(p.lang, 'en')}" autocomplete="off" hidden>
   <div class="field grow"><label for="t-from">{w['from']}</label><input id="t-from" placeholder="{e(w['from_place'])}" required>
     <ul class="suggest" hidden></ul></div>
   <div class="field grow"><label for="t-to">{w['to']}</label><input id="t-to" placeholder="{e(w['to_place'])}">
