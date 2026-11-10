@@ -152,9 +152,9 @@ PAGE_TOP = re.compile(
     r'(?P<cta><p><a class="go".*?</a></p>)?', re.S)
 
 
-WORLD_PHOTO = "WORLD"
-WORLD_CREDIT = {"city": "Terre vue de l'ISS", "artist": "NASA, équipage de l'Expedition 40", "license": "Domaine public",
-                "license_url": "", "source": "https://commons.wikimedia.org/wiki/File:ISS-40_Thunderheads_near_Borneo.jpg"}
+WORLD_PHOTO = "DEST"
+WORLD_CREDIT = {"city": "Pont du Gard", "artist": "Benh Lieu Song", "license": "CC BY-SA 3.0",
+                "license_url": "https://creativecommons.org/licenses/by-sa/3.0", "source": "https://commons.wikimedia.org/wiki/File:Pont_du_Gard_BLS.jpg"}
 
 
 def page_hero(p, path, body, photo=None):
@@ -165,7 +165,7 @@ def page_hero(p, path, body, photo=None):
         return body
     own = re.search(r"assets/photos/([A-Z]{3})\.jpg", top["cover"] or "")
     if photo is None and path == "destinations/" and photo_exists(WORLD_PHOTO):
-        photo = WORLD_PHOTO  # la Terre vue de l'espace : aucune ville de la liste n'est répétée en en-tête
+        photo = WORLD_PHOTO  # le Pont du Gard : aucune ville de la liste n'est répétée en en-tête
     if photo is None:
         city_page = path.startswith(("vers/", "destinations/")) and path != "destinations/"
         photo = own[1] if own else "" if city_page else photos[sum(path.encode()) % len(photos)] if photos else ""
