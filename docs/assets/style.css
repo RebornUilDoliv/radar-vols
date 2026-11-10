@@ -497,3 +497,38 @@ details p { margin-top: 6px; color: var(--g3); }
   .who { grid-template-columns: 1fr; gap: 26px; }
   .who-photo { position: static; max-width: 420px; }
 }
+
+/* « Les incontournables » : barre dépliable des pages destinations */
+.musts-fold { margin: 28px 0 36px; padding: 0; border: 0; border-radius: 20px; background: var(--w); transition: box-shadow .25s; }
+.musts-fold[open] { box-shadow: 0 18px 50px rgba(0, 0, 0, .12); }
+.musts-fold > summary { position: relative; display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; min-height: 168px; padding: 22px 24px; overflow: hidden; color: #fff; font-weight: 400; background: linear-gradient(135deg, #2b2b2b, #0b0b0b); border-radius: 20px; list-style: none; cursor: pointer; isolation: isolate; }
+.musts-fold[open] > summary { border-radius: 20px 20px 0 0; }
+.musts-fold > summary::-webkit-details-marker { display: none; }
+.musts-bg { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; object-position: 50% 40%; transition: transform .5s; }
+.musts-fold > summary:hover .musts-bg { transform: scale(1.04); }
+.musts-fold > summary::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, rgba(0, 0, 0, .78) 0%, rgba(0, 0, 0, .45) 55%, rgba(0, 0, 0, .15) 100%); }
+.musts-eyebrow { display: inline-flex; align-items: center; gap: 6px; margin-bottom: 8px; padding: 4px 10px; background: rgba(255, 255, 255, .16); border: 1px solid rgba(255, 255, 255, .28); border-radius: 999px; font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+.musts-title { display: block; font-family: "Clash Display", "Geist", sans-serif; font-size: clamp(24px, 3.2vw, 34px); font-weight: 500; line-height: 1.1; }
+.musts-sub { display: block; margin-top: 6px; color: rgba(255, 255, 255, .82); font-size: 15px; }
+.musts-cta { display: inline-flex; align-items: center; gap: 8px; flex: none; padding: 11px 18px; color: #0b0b0b; background: #fff; border-radius: 999px; font-size: 15px; font-weight: 600; transition: transform .15s; }
+.musts-fold > summary:hover .musts-cta { transform: translateY(-1px); }
+.musts-cta svg { width: 16px; height: 16px; transition: transform .25s; }
+.musts-fold[open] .musts-cta svg { transform: rotate(180deg); }
+.musts-cta .when-open { display: none; }
+.musts-fold[open] .musts-cta .when-open { display: inline; }
+.musts-fold[open] .musts-cta .when-closed { display: none; }
+.musts-body { padding: 14px 16px 20px; border: 1px solid var(--g2); border-top: 0; border-radius: 0 0 20px 20px; }
+.musts-widget { height: 380px; }
+.musts-widget > div { height: 100%; }
+.musts-widget iframe { height: 100% !important; }
+.musts-links { display: flex; flex-wrap: wrap; gap: 10px; margin: 4px 4px 0; }
+.musts-all, .musts-alt { display: inline-flex; align-items: center; gap: 8px; padding: 11px 18px; border-radius: 999px; font-weight: 600; text-decoration: none; }
+.musts-all { color: #fff; background: var(--k); }
+.musts-alt { color: var(--k); background: var(--g1); }
+.musts-alt:hover { background: var(--g2); }
+@media (max-width: 640px) {
+  .musts-fold > summary { flex-direction: column; align-items: flex-start; min-height: 200px; padding: 18px; }
+  .musts-sub { font-size: 14px; }
+  .musts-widget { height: 500px; }
+  .musts-all, .musts-alt { width: 100%; justify-content: center; }
+}

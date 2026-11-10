@@ -911,5 +911,19 @@
   initCharts();
   initFlights();
   initDeals();
+  /* « Les incontournables » : le widget d'activités Klook n'est chargé qu'à la première ouverture */
+  document.addEventListener("toggle", function (event) {
+    var fold = event.target;
+    if (!fold.classList || !fold.classList.contains("musts-fold") || !fold.open) return;
+    var box = fold.querySelector(".musts-widget");
+    if (!box || box.dataset.loaded) return;
+    box.dataset.loaded = "1";
+    var script = el("script");
+    script.async = true;
+    script.charset = "utf-8";
+    script.src = box.dataset.src;
+    box.appendChild(script);
+  }, true);
+
   initCustom(); initWhiteLabel(); initHotels();
 })();

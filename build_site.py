@@ -869,6 +869,7 @@ def world_place_page(p, place):
   {cover}
   <p class="lead">{p.t('to_lead', **values)}</p>
   <p><a class="go" href="{e(place['routes'][0][1]['link'])}" rel="nofollow sponsored noopener" target="_blank">{p.t('check')}</a></p>
+  {musts_block(p, place['code'], city)}
   <h2>{p.t('to_list')}</h2>
   <ul class="rows">{rows}</ul>
   {facts}
@@ -1304,6 +1305,96 @@ def stay_links(p, name, code=""):
     )
 
 
+# « Les incontournables » : barre dépliable sur les pages destinations (activités Klook, chargées au clic),
+# avec une photo différente de celle du haut de la page (jamais deux fois la même photo sur une page).
+MUSTS_WORDS = {
+    "fr": ("À faire sur place", "Les incontournables à {city}", "Visites, musées, spectacles : les activités préférées des voyageurs",
+           "Découvrir", "Masquer", "Toutes les activités à {city}", "Billets musées et monuments"),
+    "en": ("Things to do", "Top things to do in {city}", "Tours, museums, shows: travellers' favourite activities",
+           "Discover", "Hide", "All activities in {city}", "Museum and landmark tickets"),
+    "es": ("Qué hacer", "Imprescindibles en {city}", "Visitas, museos, espectáculos: las actividades favoritas de los viajeros",
+           "Descubrir", "Ocultar", "Todas las actividades en {city}", "Entradas a museos y monumentos"),
+    "de": ("Vor Ort erleben", "Highlights in {city}", "Touren, Museen, Shows: die Lieblingsaktivitäten der Reisenden",
+           "Entdecken", "Ausblenden", "Alle Aktivitäten in {city}", "Tickets für Museen und Sehenswürdigkeiten"),
+    "it": ("Cosa fare", "Da non perdere a {city}", "Visite, musei, spettacoli: le attività preferite dai viaggiatori",
+           "Scopri", "Nascondi", "Tutte le attività a {city}", "Biglietti per musei e monumenti"),
+    "pt": ("O que fazer", "Imperdíveis em {city}", "Passeios, museus, shows: as atividades favoritas dos viajantes",
+           "Descobrir", "Ocultar", "Todas as atividades em {city}", "Ingressos para museus e monumentos"),
+    "nl": ("Te doen", "Must-sees in {city}", "Tours, musea, shows: de favoriete activiteiten van reizigers",
+           "Ontdekken", "Verbergen", "Alle activiteiten in {city}", "Tickets voor musea en monumenten"),
+    "tr": ("Yapılacaklar", "{city} şehrinde mutlaka yapılacaklar", "Turlar, müzeler, gösteriler: gezginlerin favori aktiviteleri",
+           "Keşfet", "Gizle", "{city} şehrindeki tüm aktiviteler", "Müze ve anıt biletleri"),
+    "ar": ("ماذا تفعل هناك", "أبرز ما في {city}", "جولات ومتاحف وعروض: الأنشطة المفضلة لدى المسافرين",
+           "اكتشف", "إخفاء", "كل الأنشطة في {city}", "تذاكر المتاحف والمعالم"),
+    "zh": ("当地玩乐", "{city}必玩", "游览、博物馆、演出：旅行者最爱的活动", "查看", "收起", "{city}全部活动", "博物馆和景点门票"),
+    "ko": ("현지 즐길 거리", "{city} 필수 코스", "투어, 박물관, 공연: 여행자들이 사랑하는 액티비티", "보기", "접기", "{city}의 모든 액티비티", "박물관·명소 입장권"),
+}
+# Photos choisies à la main quand celle d'Omio montre le même monument que la photo du haut
+MUSTS_PHOTOS = {"PAR": "assets/photos/extra/PAR-arc.jpg"}
+_MUSTS_OMIO = None
+
+
+def musts_omio_photos():
+    """Photos des destinations fournies par Omio (catalogue du jour), par nom de ville en minuscules."""
+    global _MUSTS_OMIO
+    if _MUSTS_OMIO is None:
+        _MUSTS_OMIO = {}
+        for lang in ("fr", "en"):
+            path = DOCS / "omio" / f"{lang}.json"
+            if not path.exists():
+                continue
+            try:
+                data = json.loads(path.read_text())
+            except ValueError:
+                continue
+            for city in data.get("cities", []):
+                if len(city) > 2 and city[2]:
+                    _MUSTS_OMIO.setdefault(city[1].lower(), data.get("images", "") + city[2])
+    return _MUSTS_OMIO
+
+
+def musts_photo(p, code, name):
+    if code in MUSTS_PHOTOS and (DOCS / MUSTS_PHOTOS[code]).exists():
+        return p.base + MUSTS_PHOTOS[code]
+    photos = musts_omio_photos()
+    for label in (name, FR_NAMES.get(code, "")):
+        if label and label.lower() in photos:
+            return photos[label.lower()]
+    return ""
+
+
+FR_NAMES = {}
+
+
+def musts_block(p, code, name):
+    """Barre « Les incontournables » (fermée par défaut) ; rien si Klook ne connaît pas la ville."""
+    klook = str(klook_cities().get(code, ""))
+    if not klook.isdigit():
+        return ""
+    w = MUSTS_WORDS.get(p.lang, MUSTS_WORDS["en"])
+    widget = (f"https://tpembd.com/content?currency=EUR&trs=597805&shmarker=800338&locale=en&city_id={klook}"
+              f"&category=1&amount=3&powered_by=false&campaign_id=137&promo_id=4497")
+    lang = KLOOK_LANG.get(p.lang, "en-US")
+    all_url = radar.partner_link(f"https://www.klook.com/{lang}/search/result/?query={urllib.parse.quote(name)}",
+                                 {**p.site, "program": p.site.get("hotels_program"), "campaign": p.site.get("hotels_campaign")}) \
+        if p.site.get("hotels_program") else f"https://www.klook.com/{lang}/search/result/?query={urllib.parse.quote(name)}"
+    tiqets_url = stay_items(p, name, code)[1][0]
+    photo = musts_photo(p, code, name)
+    image = f'<img class="musts-bg" src="{e(photo)}" alt="" loading="lazy">' if photo else ""
+    chev = ('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" '
+            'stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>')
+    return f"""<details class="musts-fold{'' if photo else ' no-photo'}">
+    <summary>{image}
+      <span><span class="musts-eyebrow">★ {e(w[0])}</span>
+        <span class="musts-title">{e(w[1].format(city=name))}</span>
+        <span class="musts-sub">{e(w[2])}</span></span>
+      <span class="musts-cta"><span class="when-closed">{e(w[3])}</span><span class="when-open">{e(w[4])}</span>{chev}</span></summary>
+    <div class="musts-body"><div class="musts-widget" data-src="{e(widget)}"></div>
+      <p class="musts-links"><a class="musts-all" href="{e(all_url)}" target="_blank" rel="nofollow sponsored noopener">{e(w[5].format(city=name))} ↗</a>
+      <a class="musts-alt" href="{e(tiqets_url)}" target="_blank" rel="nofollow sponsored noopener">{e(w[6])} ↗</a></p></div>
+  </details>"""
+
+
 def guide_block(p, city, months):
     """Repères calculés à partir des prix relevés, sans texte inventé."""
     if len(months) < 2:
@@ -1366,6 +1457,7 @@ def destination_page(p, city, cities):
   {cover}
   <p class="lead">{p.t('dest_lead', price=p.euro(best['price']), month=e(p.month(best['depart'][:7])))}</p>
   <aside class="notice"><strong>{p.t('dest_why')}</strong> {p.t('dest_why_b')}</aside>
+  {musts_block(p, city['code'], p.city(city['code'], city['city']))}
   <section class="panel"><h2>{p.t('best_month')}</h2>
     <div class="scroll"><table><thead><tr><th scope="col">{p.t('t_month')}</th><th scope="col">{p.t('t_dates')}</th><th scope="col">{p.t('t_stops')}</th><th scope="col" class="num">{p.t('t_price')}</th><th scope="col"><span class="sr">{p.t('t_link')}</span></th></tr></thead><tbody>{rows}</tbody></table></div>
   </section>
@@ -1836,6 +1928,8 @@ def build(data, site, catalog=None):
     geo = json.loads(geo_path.read_text()) if geo_path.exists() else {}
     countries_path = DOCS / "assets" / "countries.json"
     countries = json.loads(countries_path.read_text()) if countries_path.exists() else {}
+    FR_NAMES.update({c["code"]: c.get("city", "") for c in cities})
+    FR_NAMES.update(names.get("fr") or {})
     for lang in LANGS:
         page = Page(site, lang, names.get(lang))
         page.zones, page.countries, page.geo = zones, countries, geo
