@@ -6,28 +6,19 @@ on:
 jobs:
   probe:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     steps:
-      - name: Champs API d'un trajet connu (Madrid - Barcelona)
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Récupérer le catalogue Omio français
         env:
-          SID: ${{ secrets.IMPACT_ACCOUNT_SID }}
-          TOKEN: ${{ secrets.AUTH_TOKEN_IMPACT }}
-        run: |
-          python3 - <<'PY'
-          import base64, json, os, urllib.request
-          sid, token = os.environ["SID"].strip(), os.environ["TOKEN"].strip()
-          auth = "Basic " + base64.b64encode(f"{sid}:{token}".encode()).decode()
-          def get(path):
-              req = urllib.request.Request("https://api.impact.com" + path, headers={"Accept": "application/json", "Authorization": auth})
-              with urllib.request.urlopen(req, timeout=120) as r:
-                  return json.loads(r.read())
-          path = f"/Mediapartners/{sid}/Catalogs/12197/Items?PageSize=1000"
-          found = 0
-          while path and found < 2:
-              page = get(path)
-              for it in page.get("Items", []):
-                  if it.get("CatalogItemId") in ("378655_378468", "378468_378655"):
-                      print(json.dumps({k: v for k, v in it.items() if v not in ("", None, [], {}) and k not in ("Description", "Url", "Uri")}, ensure_ascii=False))
-                      found += 1
-              path = page.get("@nextpageuri") or ""
-          PY
+          IMPACT_ACCOUNT_SID: ${{ secrets.IMPACT_ACCOUNT_SID }}
+          AUTH_TOKEN_IMPACT: ${{ secrets.AUTH_TOKEN_IMPACT }}
+        run: python -c "import omio; omio.CATALOGS = {'fr': 12203}; import sys; sys.argv.append('--force'); omio.main()"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: omio
+          path: docs/omio
+          retention-days: 3

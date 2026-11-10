@@ -2,7 +2,7 @@
 
 Écrit docs/omio/<langue>.json, lu par l'onglet « Train & bus » de la page d'accueil :
   {"updated": ..., "currency": "EUR", "link": "<modèle de lien>", "site": "fr", "pad": true, "home": "https://omio.fr/",
-   "cities": [[id, nom, photo], ...], "routes": [[départ, arrivée, prix ou 0], ...], "links": {"o_d": url}}
+   "cities": [[id, nom, photo], ...], "routes": [[départ, arrivée, prix train, prix bus, minutes train, minutes bus, rang], ...] (0 si inconnu), "links": {"o_d": url}}
 Les liens de réservation passent par Impact avec le numéro de partenaire (commission Omio).
 """
 import base64
@@ -85,15 +85,25 @@ def rebuild(template, site, pad, origin, destination):
     return template.replace("{o}", origin).replace("{d}", destination).replace("{b64}", urllib.parse.quote(b64, safe=""))
 
 
-def price(item):
-    for key in ("CurrentPrice", "Price", "OriginalPrice"):
-        try:
-            value = float(item.get(key) or 0)
-        except ValueError:
-            continue
-        if value > 0:
-            return round(value, 2)
-    return 0
+def number(item, key):
+    """Valeur numérique d'un champ (0 si vide). Colonnes Omio dans l'API Impact (vérifié le 10/11/2026 sur
+    Madrid - Barcelona) : Money3 = prix train, Money2 = prix bus, CurrentPrice = prix avion,
+    Labels[0] = minutes en train, Pattern = minutes en bus, SubCategory = minutes en avion, Numeric1 = rang de popularité."""
+    value = item.get(key)
+    if isinstance(value, list):
+        value = value[0] if value else ""
+    try:
+        return round(float(value or 0), 2)
+    except (TypeError, ValueError):
+        return 0
+
+
+def ground(item):
+    """[prix train, prix bus, minutes train, minutes bus, rang] (les vols ne comptent pas dans l'onglet Train & bus)."""
+    price_train, price_bus = number(item, "Money3"), number(item, "Money2")
+    minutes_train = int(number(item, "Labels")) if price_train else 0
+    minutes_bus = int(number(item, "Pattern")) if price_bus else 0
+    return [price_train, price_bus, minutes_train, minutes_bus, int(number(item, "Numeric1"))]
 
 
 def build(raw):
@@ -130,7 +140,7 @@ def build(raw):
         image = str(item.get("ImageUrl") or "")
         if image.startswith(IMAGES) and not cities[index[destination]][2]:
             cities[index[destination]][2] = image[len(IMAGES):]  # photo de la destination
-        routes.append([index[origin], index[destination], price(item)])
+        routes.append([index[origin], index[destination], *ground(item)])
     return {"images": IMAGES, "currency": currency or "EUR", "link": template or "", "site": site or "", "pad": bool(pad), "home": home or "",
             "cities": cities, "routes": routes, "links": links}
 
@@ -164,8 +174,8 @@ def main():
             continue
         data["updated"] = now.isoformat(timespec="seconds")
         path.write_text(json.dumps(data, ensure_ascii=False, separators=(",", ":")))
-        priced = sum(1 for route in data["routes"] if route[2])
-        print(f"omio {lang} : {len(data['routes'])} trajets ({priced} avec prix), {len(data['cities'])} villes, "
+        priced = sum(1 for route in data["routes"] if route[2] or route[3])
+        print(f"omio {lang} : {len(data['routes'])} trajets ({priced} avec prix train ou bus), {len(data['cities'])} villes, "
               f"{len(data['links'])} liens à part, {path.stat().st_size // 1024} ko")
 
 
