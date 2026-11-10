@@ -8,56 +8,26 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - name: Colonnes du catalogue Omio au format annonceur
+      - name: Champs API d'un trajet connu (Madrid - Barcelona)
         env:
           SID: ${{ secrets.IMPACT_ACCOUNT_SID }}
           TOKEN: ${{ secrets.AUTH_TOKEN_IMPACT }}
         run: |
           python3 - <<'PY'
-          import base64, csv, gzip, io, json, os, urllib.request
+          import base64, json, os, urllib.request
           sid, token = os.environ["SID"].strip(), os.environ["TOKEN"].strip()
           auth = "Basic " + base64.b64encode(f"{sid}:{token}".encode()).decode()
-          def get(url, raw=False):
-              req = urllib.request.Request(url if url.startswith("http") else "https://api.impact.com" + url,
-                                           headers={"Accept": "application/json", "Authorization": auth})
+          def get(path):
+              req = urllib.request.Request("https://api.impact.com" + path, headers={"Accept": "application/json", "Authorization": auth})
               with urllib.request.urlopen(req, timeout=120) as r:
-                  body = r.read()
-                  return body if raw else json.loads(body)
-          cat = get(f"/Mediapartners/{sid}/Catalogs/12203")
-          print("Catalogue:", {k: v for k, v in cat.items() if k in ("Name", "FTPLocations", "Locations", "Uri")})
-          try:
-              files = get(f"/Mediapartners/{sid}/Catalogs/12203/Files")
-              print("Files clés:", list(files.keys()))
-              for f in (files.get("Files") or files.get("CatalogFiles") or [])[:5]:
-                  print("FILE", {k: (v if "Url" not in k and "Uri" not in k else str(v)[:90]) for k, v in f.items()})
-          except Exception as e:
-              print("Files erreur:", e)
-              files = {}
-          urls = []
-          for f in (files.get("Files") or files.get("CatalogFiles") or []):
-              for k, v in f.items():
-                  if isinstance(v, str) and v.startswith("http") and ("Download" in k or "Url" in k):
-                      urls.append(v)
-          for loc in (cat.get("Locations") or []):
-              if isinstance(loc, str) and loc.startswith("http"): urls.append(loc)
-          for u in urls[:2]:
-              try:
-                  req = urllib.request.Request(u, headers={"Authorization": auth})
-                  data = urllib.request.urlopen(req, timeout=180).read()
-                  if data[:2] == b"\x1f\x8b": data = gzip.decompress(data)
-                  text = data.decode("utf-8", "replace")
-                  first = text.splitlines()[:1]
-                  print("URL ok", u[:80], len(text), "octets")
-                  print("ENTETE:", first[0][:3000] if first else "")
-                  sep = "\t" if "\t" in first[0] else ("|" if "|" in first[0] else ",")
-                  rows = list(csv.reader(io.StringIO(text), delimiter=sep))
-                  head = rows[0]
-                  for row in rows[1:]:
-                      line = sep.join(row)
-                      if "Paris - Lyon" in line or ("Paris" in line and "Lyon" in line):
-                          print(json.dumps({h: v for h, v in zip(head, row) if v}, ensure_ascii=False)[:3000])
-                          break
-                  break
-              except Exception as e:
-                  print("URL erreur", u[:80], e)
+                  return json.loads(r.read())
+          path = f"/Mediapartners/{sid}/Catalogs/12197/Items?PageSize=1000"
+          found = 0
+          while path and found < 2:
+              page = get(path)
+              for it in page.get("Items", []):
+                  if it.get("CatalogItemId") in ("378655_378468", "378468_378655"):
+                      print(json.dumps({k: v for k, v in it.items() if v not in ("", None, [], {}) and k not in ("Description", "Url", "Uri")}, ensure_ascii=False))
+                      found += 1
+              path = page.get("@nextpageuri") or ""
           PY
