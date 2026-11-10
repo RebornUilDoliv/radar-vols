@@ -454,7 +454,7 @@ def hotel_search(p):
 
 
 # Omio (trains, bus, ferries) : programme d'affiliation direct sur Impact, accepté le 10/11/2026.
-OMIO_PARTNER_ID = "8164987"  # numéro de compte Impact (Account ID) ; l'onglet n'apparaît qu'une fois rempli
+OMIO_PARTNER_ID = ""  # 8164987 (compte Impact) : refusé par Omio le 10/11 « partner not found », en attente de leur activation
 OMIO_LOCALES = {"fr", "en", "es", "de", "it", "pt", "nl", "tr", "zh", "ko"}
 OMIO_DOMAINS = {"fr": "fr", "es": "es", "de": "de", "it": "it", "nl": "nl"}
 TRAIN_WORDS = {
