@@ -448,7 +448,7 @@ details p { margin-top: 6px; color: var(--g3); }
 .hotel-search .hotel-note { grid-column: 1 / -1; margin: 0; color: var(--g3); font-size: 13px; }
 .hotel-search[hidden], .search[hidden] { display: none; }
 .search-tabs { flex-wrap: wrap; }
-.train-search { grid-template-columns: 1fr 1fr auto; }
+.train-search { grid-template-columns: 1.3fr 1.3fr 1fr 1fr auto; }
 .train-search .hotel-note, .train-search .form-error, .train-results { grid-column: 1 / -1; }
 .train-search .hotel-note { margin: 0; color: var(--g3); font-size: 13px; }
 .train-results { display: grid; gap: 14px; }
@@ -469,8 +469,12 @@ details p { margin-top: 6px; color: var(--g3); }
 @media (hover: none) { .train-chip { opacity: 1; transform: none; } }
 .train-none { grid-column: 1 / -1; margin: 0; color: var(--g3); }
 .train-more { grid-column: 1 / -1; justify-self: start; color: inherit; font-weight: 600; }
+@media (max-width: 980px) {
+  .train-search { grid-template-columns: 1fr 1fr; }
+  .train-search .search-go { grid-column: 1 / -1; }
+}
 @media (max-width: 640px) {
-  .train-search { grid-template-columns: 1fr; }
+  .train-search > .field.grow { grid-column: 1 / -1; }
   .train-cards { grid-template-columns: 1fr 1fr; gap: 8px; }
   .train-card { min-height: 150px; }
   .train-card .card-label { left: 12px; right: 12px; bottom: 10px; }

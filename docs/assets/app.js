@@ -351,6 +351,12 @@
       }
       return "";
     };
+    var today = new Date().toISOString().slice(0, 10);
+    $("t-out").min = today; $("t-back").min = today;
+    $("t-out").addEventListener("change", function () {
+      $("t-back").min = $("t-out").value || today;
+      if ($("t-back").value && $("t-back").value < $("t-out").value) $("t-back").value = "";
+    });
     var exact = function (name) {
       /* accepte aussi une ville tapée sans passer par la liste, si elle existe telle quelle */
       var wanted = d.clean(name || "");
@@ -369,7 +375,29 @@
       return photo ? (d.raw.images || "") + photo : sitePhoto(d.names[route[1]]);
     };
     var priceText = function (route) { return route[2] ? words.price_from + " " + money(route[2]) : ""; };
-    var linkTo = function (item, route) { item.href = trainLink(d, route); item.target = "_blank"; item.rel = "sponsored noopener"; return item; };
+    /* ajoute les dates choisies à la page Omio (le trajet et les dates arrivent déjà remplis chez Omio) */
+    var withDates = function (url) {
+      var out = $("t-out").value, back = $("t-back").value;
+      if (!out) return url;
+      try {
+        var link = new URL(url), target = new URL(link.searchParams.get("u"));
+        target.searchParams.set("departure_date", out);
+        if (back && back >= out) target.searchParams.set("return_date", back);
+        link.searchParams.set("u", target.toString());
+        return link.toString();
+      } catch (e) { return url; }
+    };
+    var linkTo = function (item, route) {
+      item.dataset.base = trainLink(d, route);
+      item.href = withDates(item.dataset.base); item.target = "_blank"; item.rel = "sponsored noopener";
+      return item;
+    };
+    /* si les dates changent après la recherche, les liens affichés suivent */
+    ["t-out", "t-back"].forEach(function (id) {
+      $(id).addEventListener("change", function () {
+        results.querySelectorAll("a[data-base]").forEach(function (a) { a.href = withDates(a.dataset.base); });
+      });
+    });
     var row = function (route) {
       /* ligne compacte pour les destinations sans photo */
       var item = linkTo(el("a", "train-row"), route);

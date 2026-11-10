@@ -458,6 +458,9 @@ def hotel_search(p, cities=()):
 # et le bouton de réservation mène chez Omio avec le lien de suivi Impact.
 OMIO_FALLBACK = "en"
 TRAIN_KEYS = ("tab", "note", "from", "from_place", "to", "to_place", "go", "price_from", "book", "none", "pick", "more", "loading")
+TRAIN_DATES = {"fr": ("Aller", "Retour"), "en": ("Depart", "Return"), "es": ("Ida", "Vuelta"), "de": ("Hinfahrt", "Rückfahrt"),
+               "it": ("Andata", "Ritorno"), "pt": ("Ida", "Volta"), "nl": ("Heen", "Terug"), "tr": ("Gidiş", "Dönüş"),
+               "ar": ("الذهاب", "العودة"), "zh": ("去程", "返程"), "ko": ("가는 날", "오는 날")}
 TRAIN_WORDS = {
     "fr": ("Train & bus", "Prix « dès » relevés chaque jour par Omio. Tu réserves chez Omio, au prix affiché.",
            "Départ", "Paris, Lyon, Madrid…", "Arrivée", "Partout", "Rechercher", "dès", "Voir les horaires",
@@ -520,6 +523,7 @@ def train_search(p, cities=()):
     if not data:
         return ""
     w = dict(zip(TRAIN_KEYS, TRAIN_WORDS.get(p.lang, TRAIN_WORDS["en"])))
+    dates = TRAIN_DATES.get(p.lang, TRAIN_DATES["en"])
     texts = e(json.dumps({k: w[k] for k in ("price_from", "book", "none", "pick", "more", "loading")}, ensure_ascii=False))
     # photos du site pour les villes qu'Omio ne fournit pas (nom de la ville dans la langue -> code de la photo)
     photos = {}
@@ -535,6 +539,8 @@ def train_search(p, cities=()):
     <ul class="suggest" hidden></ul></div>
   <div class="field grow"><label for="t-to">{w['to']}</label><input id="t-to" placeholder="{e(w['to_place'])}">
     <ul class="suggest" hidden></ul></div>
+  <div class="field"><label for="t-out">{dates[0]}</label><input id="t-out" type="date"></div>
+  <div class="field"><label for="t-back">{dates[1]}</label><input id="t-back" type="date"></div>
   <button class="search-go" type="submit">{w['go']}</button>
   <p class="form-error" id="train-error" role="alert" hidden>{w['pick']}</p>
   <div class="train-results" id="train-results" aria-live="polite"></div>
