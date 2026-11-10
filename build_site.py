@@ -241,6 +241,10 @@ def page_langs(path):
     return FULL_LANGS if path.startswith("test-reservation") or re.fullmatch(r"depuis/[^/]+/[^/]+/", path) else LANGS
 
 
+# Vérification du site par Impact (programme d'affiliation Omio) : seulement sur la page d'accueil.
+IMPACT_SCRIPT = """<script type="text/javascript">(function(i,m,p,a,c,t){c.ire_o=p;c[p]=c[p]||function(){(c[p].a=c[p].a||[]).push(arguments)};t=a.createElement(m);var z=a.getElementsByTagName(m)[0];t.async=1;t.src=i;z.parentNode.insertBefore(t,z)})('https://utt.impactcdn.com/P-A8164987-c216-40f7-a20e-12ac200872c71.js','script','impactStat',document,window);impactStat('transformLinks');impactStat('trackImpression');</script>"""
+
+
 def layout(p, title, description, path, body, noindex=False, extra="", photo=None):
     site, base, root = p.site, p.base, p.root
     body = page_hero(p, path, body, photo)
@@ -295,6 +299,7 @@ def layout(p, title, description, path, body, noindex=False, extra="", photo=Non
 <script src="{base}assets/app.js?v={version}" defer></script>
 {extra}
 {analytics}
+{IMPACT_SCRIPT if p.lang == 'fr' and path == '' else ''}
 </head>
 <body>
 <header class="nav">
