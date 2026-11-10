@@ -99,7 +99,15 @@ jobs:
         with:
           path: docs
       - name: Mettre le site en ligne
+        id: deploy
         if: ${{ !inputs.test_email }}
+        continue-on-error: true
+        uses: actions/deploy-pages@v4
+        with:
+          timeout: 1800000
+      - name: Mettre le site en ligne (2e essai si GitHub Pages a bloqué)
+        id: deploy2
+        if: ${{ !inputs.test_email && steps.deploy.outcome == 'failure' }}
         uses: actions/deploy-pages@v4
         with:
           timeout: 1800000
