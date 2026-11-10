@@ -1376,6 +1376,7 @@ FR_NAMES = {}
 
 
 TIQETS_LANGS = {"fr", "en", "es", "de", "it", "pt", "nl"}
+KLOOK_ATTRACTIONS = {"SGN", "DEL", "BOM", "CNX", "DAD"}  # villes Klook dont la catégorie « attractions » est remplie
 _TIQETS = None
 
 
@@ -1402,8 +1403,10 @@ def musts_block(p, code, name):
                   f"&layout=horizontal&cards=4&powered_by=false&campaign_id=89&promo_id=3947")
         kind = "tiqets"
     else:
+        # Klook : catégorie 1 (attractions) vide pour la plupart des villes, catégorie 2 (visites) sinon (testé le 10/11/2026)
+        category = 1 if code in KLOOK_ATTRACTIONS else 2
         widget = (f"https://tpembd.com/content?currency=EUR&trs=597805&shmarker=800338&locale=en&city_id={klook}"
-                  f"&category=1&amount=3&powered_by=false&campaign_id=137&promo_id=4497")
+                  f"&category={category}&amount=3&powered_by=false&campaign_id=137&promo_id=4497")
         kind = "klook"
     lang = KLOOK_LANG.get(p.lang, "en-US")
     all_url = radar.partner_link(f"https://www.klook.com/{lang}/search/result/?query={urllib.parse.quote(name)}",
