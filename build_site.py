@@ -437,7 +437,9 @@ def hotel_search(p):
     data = e(json.dumps(rows, ensure_ascii=False, separators=(",", ":")))
     guests = "".join(f"<option{' selected' if n == 2 else ''}>{n}</option>" for n in range(1, 7))
     tabs = (f'<div class="search-tabs" role="tablist"><button type="button" class="on" data-show="search">{words["flights"]}</button>'
-            f'<button type="button" data-show="hotel-search">{words["hotels"]}</button></div>')
+            f'<button type="button" data-show="hotel-search">{words["hotels"]}</button>'
+            + (f'<button type="button" data-show="train-search">{TRAIN_WORDS.get(p.lang, TRAIN_WORDS["en"])[0]}</button>' if OMIO_PARTNER_ID else "")
+            + '</div>')
     form = f"""<form class="search hotel-search" id="hotel-search" data-cities="{data}" data-lang="{KLOOK_LANG.get(p.lang, "en-US")}" autocomplete="off" hidden>
   <div class="field grow"><label for="h-city">{words['city']}</label><input id="h-city" placeholder="{e(words['place'])}" required>
     <ul class="suggest" hidden></ul></div>
@@ -448,7 +450,40 @@ def hotel_search(p):
   <p class="form-error" id="hotel-error" role="alert" hidden>{words['pick']}</p>
   <p class="hotel-note">{words['note']}</p>
 </form>"""
-    return tabs, form
+    return tabs, form + train_search(p)
+
+
+# Omio (trains, bus, ferries) : programme d'affiliation direct sur Impact, accepté le 10/11/2026.
+OMIO_PARTNER_ID = "8164987"  # numéro de compte Impact (Account ID) ; l'onglet n'apparaît qu'une fois rempli
+OMIO_LOCALES = {"fr", "en", "es", "de", "it", "pt", "nl", "tr", "zh", "ko"}
+OMIO_DOMAINS = {"fr": "fr", "es": "es", "de": "de", "it": "it", "nl": "nl"}
+TRAIN_WORDS = {
+    "fr": ("Train & bus", "Tu réserves chez Omio, au prix affiché. Trains, bus et ferries dans toute l'Europe et au-delà."),
+    "en": ("Trains & buses", "You book with Omio at the price shown. Trains, buses and ferries across Europe and beyond."),
+    "es": ("Tren y bus", "Reservas en Omio al precio indicado. Trenes, buses y ferris en toda Europa y más allá."),
+    "de": ("Zug & Bus", "Du buchst bei Omio zum angezeigten Preis. Züge, Busse und Fähren in ganz Europa und darüber hinaus."),
+    "it": ("Treno e bus", "Prenoti su Omio al prezzo indicato. Treni, bus e traghetti in tutta Europa e oltre."),
+    "pt": ("Trem e ônibus", "Você reserva na Omio pelo preço exibido. Trens, ônibus e balsas na Europa e além."),
+    "nl": ("Trein & bus", "Je boekt bij Omio, tegen de getoonde prijs. Treinen, bussen en veerboten in heel Europa en daarbuiten."),
+    "tr": ("Tren ve otobüs", "Omio'da gösterilen fiyattan rezervasyon yaparsın. Avrupa ve ötesinde tren, otobüs ve feribot."),
+    "ar": ("قطار وحافلة", "تحجز على Omio بالسعر المعروض. قطارات وحافلات وعبّارات في أوروبا وخارجها."),
+    "zh": ("火车和巴士", "在 Omio 按显示价格预订。覆盖欧洲及更多地区的火车、巴士和渡轮。"),
+    "ko": ("기차·버스", "Omio에서 표시된 가격으로 예약합니다. 유럽 등지의 기차, 버스, 페리."),
+}
+
+
+def train_search(p):
+    """Recherche trains / bus Omio (widget officiel, chargé seulement au clic sur l'onglet)."""
+    if not OMIO_PARTNER_ID:
+        return ""
+    locale = p.lang if p.lang in OMIO_LOCALES else "en"
+    base = f"https://www.omio.com/gcs-proxy/b2b-nemo-prod/bundle/{locale}/bundle"
+    note = TRAIN_WORDS.get(p.lang, TRAIN_WORDS["en"])[1]
+    return f"""<div class="search train-search" id="train-search" data-js="{base}.js" data-css="{base}.css" hidden>
+  <div data-omio-widget="true" data-partner-id="{e(OMIO_PARTNER_ID)}" data-layout="fluid" data-theme="white" data-currency="EUR"
+       data-domain="{OMIO_DOMAINS.get(p.lang, 'com')}" data-default-travel-mode="train" data-new-tab="true"></div>
+  <p class="hotel-note">{note}</p>
+</div>"""
 
 
 def home(p, cities, offers, updated, origins=()):

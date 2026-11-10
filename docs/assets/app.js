@@ -212,12 +212,26 @@
   function initHotels() {
     var form = $("hotel-search");
     if (!form) return;
-    var flights = $("search");
+    var trains = $("train-search");
     document.querySelectorAll(".search-tabs button").forEach(function (button) {
       button.addEventListener("click", function () {
-        document.querySelectorAll(".search-tabs button").forEach(function (b) { b.classList.toggle("on", b === button); });
-        flights.hidden = button.dataset.show !== "search";
-        form.hidden = button.dataset.show !== "hotel-search";
+        document.querySelectorAll(".search-tabs button").forEach(function (b) {
+          b.classList.toggle("on", b === button);
+          var panel = $(b.dataset.show);
+          if (panel) panel.hidden = b !== button;
+        });
+        /* Widget Omio : chargé une seule fois, au premier clic sur l'onglet Train & bus */
+        if (button.dataset.show === "train-search" && trains && !trains.dataset.loaded) {
+          trains.dataset.loaded = "1";
+          var css = el("link");
+          css.rel = "stylesheet";
+          css.href = trains.dataset.css;
+          document.head.appendChild(css);
+          var js = el("script");
+          js.src = trains.dataset.js;
+          js.async = true;
+          document.body.appendChild(js);
+        }
       });
     });
     var cities = JSON.parse(form.dataset.cities || "[]");
