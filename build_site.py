@@ -523,7 +523,8 @@ def omio_data(lang):
 
 
 def train_search(p, cities=()):
-    """Recherche trains / bus sur le site : les trajets Omio sont chargés au clic sur l'onglet."""
+    """Recherche trains / bus de l'accueil : les trajets Omio sont chargés au clic sur l'onglet et les offres
+    s'affichent sous le formulaire après la recherche."""
     data = omio_data(p.lang)
     if not data:
         return ""
@@ -1353,9 +1354,17 @@ def musts_omio_photos():
     return _MUSTS_OMIO
 
 
+def musts_credits():
+    """Crédits des 2es photos (Wikimedia Commons), dans docs/assets/photos/extra/credits.json."""
+    path = DOCS / "assets" / "photos" / "extra" / "credits.json"
+    return json.loads(path.read_text()) if path.exists() else {}
+
+
 def musts_photo(p, code, name):
     if code in MUSTS_PHOTOS and (DOCS / MUSTS_PHOTOS[code]).exists():
         return p.base + MUSTS_PHOTOS[code]
+    if (DOCS / "assets" / "photos" / "extra" / f"{code}-must.jpg").exists():
+        return f"{p.base}assets/photos/extra/{code}-must.jpg"
     photos = musts_omio_photos()
     for label in (name, FR_NAMES.get(code, "")):
         if label and label.lower() in photos:
@@ -1766,6 +1775,11 @@ def credits_page(p):
     rows = "".join(
         f'<li><strong>{e(p.city(code, credit["city"]))}</strong><br>{photo_credit(p, credit)}</li>'
         for code, credit in sorted(credits.items(), key=lambda item: item[1]["city"]) if photo_exists(code)
+    )
+    rows += "".join(
+        f'<li><strong>{e(p.city(code, credit["city"]))} (2)</strong><br>{photo_credit(p, credit)}</li>'
+        for code, credit in sorted(musts_credits().items(), key=lambda item: item[1]["city"])
+        if (DOCS / "assets" / "photos" / "extra" / f"{code}-must.jpg").exists()
     )
     video_path = DOCS / "assets" / "video" / "credit.json"
     if video_path.exists():

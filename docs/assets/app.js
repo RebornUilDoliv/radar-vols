@@ -274,7 +274,7 @@
   function loadTrains(form) {
     if (trainState) return;
     var words = JSON.parse(form.dataset.words || "{}");
-    var results = $("train-results");
+    var results = $("train-results") || el("div");
     trainState = { form: form, words: words, data: null };
     results.textContent = words.loading;
     fetch(form.dataset.src).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }).then(function (data) {
@@ -335,7 +335,7 @@
   }
 
   function initTrainForm(form, words, d) {
-    var from = $("t-from"), to = $("t-to"), results = $("train-results"), error = $("train-error");
+    var from = $("t-from"), to = $("t-to"), results = $("train-results") || el("div"), error = $("train-error");
     var lang = form.dataset.lang === "zh" ? "zh-CN" : form.dataset.lang;
     var money = function (value) {
       try { return new Intl.NumberFormat(lang, { style: "currency", currency: d.raw.currency, maximumFractionDigits: value < 100 ? 2 : 0 }).format(value); }
