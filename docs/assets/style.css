@@ -266,7 +266,8 @@ details p { margin-top: 6px; color: var(--g3); }
 .foot-in { display: grid; grid-template-columns: 1fr 2fr 1fr; gap: 24px; }
 .foot p + p { margin-top: 8px; }
 .foot-brand { color: var(--w); font-size: 20px; font-weight: 600; }
-.foot-links { display: grid; gap: 6px; }
+.foot-links { display: grid; grid-template-columns: repeat(2, max-content); justify-content: start; gap: 8px 32px; }
+.foot-links a[href^="mailto"] { grid-column: 1 / -1; }
 .foot a { color: var(--w); }
 .foot-social { display: flex; gap: 10px; margin-top: 14px; }
 .foot-social a { display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid rgba(255, 255, 255, .25); border-radius: 50%; }
@@ -284,8 +285,6 @@ details p { margin-top: 6px; color: var(--g3); }
   .filters { grid-template-columns: repeat(3, 1fr); }
   .two { grid-template-columns: 1fr; }
   .foot-in { grid-template-columns: 1fr; }
-  .foot-links { grid-template-columns: repeat(3, auto); justify-content: start; gap: 4px 28px; }
-  .foot-links a[href^="mailto"] { grid-column: 1 / -1; }
 }
 @media (max-width: 640px) {
   .nav { inset: 6px 6px auto; padding: 14px 16px; }
