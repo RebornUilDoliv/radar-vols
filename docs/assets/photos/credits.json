@@ -6719,5 +6719,434 @@
    4000,
    3000
   ]
+ },
+ "BJM": {
+  "city": "Bujumbura-Mairie",
+  "artist": "Edouard mhg",
+  "license": "CC0",
+  "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+  "source": "https://commons.wikimedia.org/wiki/File%3ABUJUMBURA-BURUNDI_BINDOVILLE_02.jpg",
+  "size": [
+   4018,
+   3014
+  ]
+ },
+ "BJX": {
+  "city": "Leon",
+  "artist": "Juan Carlos Fonseca Mata",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ACasas_Cuatas_en_Le%C3%B3n%2C_Guanajuato%2C_M%C3%A9xico_37.jpg",
+  "size": [
+   3049,
+   2286
+  ]
+ },
+ "BNX": {
+  "city": "Banja Luka",
+  "artist": "David Bailey from Laktasi, Bosnia and Herzegovina",
+  "license": "CC BY-SA 2.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AOverlooking_Banja_Luka_%285660331289%29.jpg",
+  "size": [
+   2592,
+   1944
+  ]
+ },
+ "CGQ": {
+  "city": "Changchun",
+  "artist": "wanghongliu",
+  "license": "CC BY-SA 3.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AChangchun_skyline_with_Ji_Tower_-_panoramio.jpg",
+  "size": [
+   2200,
+   1238
+  ]
+ },
+ "CMH": {
+  "city": "Columbus",
+  "artist": "Carol M. Highsmith",
+  "license": "Public domain",
+  "license_url": "",
+  "source": "https://commons.wikimedia.org/wiki/File%3ARobert_N._Stewart_Bridge%2C_Columbus%2C_Indiana_LCCN2013650712.tif",
+  "size": [
+   6144,
+   4096
+  ]
+ },
+ "CNS": {
+  "city": "Cairns",
+  "artist": "Donaldytong",
+  "license": "Public domain",
+  "license_url": "",
+  "source": "https://commons.wikimedia.org/wiki/File%3ACairns_Esplanade_-_Pier_%28Shangrila_Hotel%29.jpg",
+  "size": [
+   2254,
+   1403
+  ]
+ },
+ "CSX": {
+  "city": "Changsha",
+  "artist": "w:zh:User:Jonasjiangming",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AChangsha_Yuelu_20230723.jpg",
+  "size": [
+   6122,
+   4083
+  ]
+ },
+ "CUC": {
+  "city": "Cúcuta",
+  "artist": "EEIM",
+  "license": "CC BY-SA 3.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AC%C3%BAcuta_desde_Torcoroma%2C_C%C3%BAcuta.jpeg",
+  "size": [
+   4608,
+   2330
+  ]
+ },
+ "EBL": {
+  "city": "Arbil",
+  "artist": "Levi Clancy",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AView_of_Erbil_skyline_from_the_Citadel_in_the_Kurdistan_Region_of_Iraq_01.jpg",
+  "size": [
+   6016,
+   4000
+  ]
+ },
+ "ELQ": {
+  "city": "Buraydah",
+  "artist": "Kskhh",
+  "license": "CC BY 4.0",
+  "license_url": "https://creativecommons.org/licenses/by/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AKing_Fahad_Road_in_Buraydah.jpg",
+  "size": [
+   4032,
+   1908
+  ]
+ },
+ "FOC": {
+  "city": "Fuzhou",
+  "artist": "Listwiseafford",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AFuzhou_skyline_2.jpg",
+  "size": [
+   1024,
+   641
+  ]
+ },
+ "GAN": {
+  "city": "Île Gan",
+  "artist": "Avi1111 dr. avishai teicher",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AThe_island_in_National_Park%2C_Ramat_Gan_%283%29.jpg",
+  "size": [
+   4608,
+   3456
+  ]
+ },
+ "GHV": {
+  "city": "Brașov",
+  "artist": "Cristi Mitan",
+  "license": "CC0",
+  "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+  "source": "https://commons.wikimedia.org/wiki/File%3ABrasov_Square_Romania_%28137177011%29.jpeg",
+  "size": [
+   2048,
+   1122
+  ]
+ },
+ "GZT": {
+  "city": "Gaziantep",
+  "artist": "Emz12",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AGaziantepskyline.jpg",
+  "size": [
+   1918,
+   831
+  ]
+ },
+ "IAO": {
+  "city": "Del Carmen",
+  "artist": "Frank Vincentz",
+  "license": "CC BY-SA 3.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ALa_Palma_-_Santa_Cruz_%2B_LP-1_%28Mirador_Barranco_del_Carmen%29_02_ies.jpg",
+  "size": [
+   5616,
+   3744
+  ]
+ },
+ "IXE": {
+  "city": "Mangalore",
+  "artist": "Nyk9z",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AKankanady_skylines_at_Mangalore_CBD_region%2C_Kankanady%2C_Mangalore.jpg",
+  "size": [
+   3992,
+   2552
+  ]
+ },
+ "JUB": {
+  "city": "Djouba",
+  "artist": "User DEMOSH on flickr.com",
+  "license": "CC BY 2.0",
+  "license_url": "https://creativecommons.org/licenses/by/2.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ASudan_Juba_bridge.jpg",
+  "size": [
+   1024,
+   768
+  ]
+ },
+ "LLA": {
+  "city": "Luleå",
+  "artist": "Kola Adebayo",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AChurch_in_Gammelstad_Old_Town%2C_Lulea.JPG",
+  "size": [
+   5472,
+   3648
+  ]
+ },
+ "MKC": {
+  "city": "Kansas City",
+  "artist": "User:Charvex",
+  "license": "Public domain",
+  "license_url": "",
+  "source": "https://commons.wikimedia.org/wiki/File%3AKansas_City_MO_Skyline_14July2008v.jpg",
+  "size": [
+   1636,
+   722
+  ]
+ },
+ "MPM": {
+  "city": "Maputo",
+  "artist": "Andrew Moir from Cape Town, South Africa",
+  "license": "CC BY 2.0",
+  "license_url": "https://creativecommons.org/licenses/by/2.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AMaputo_skyline_from_cruiseship_East_Africa_-_Flickr_-_moron_noodle.jpg",
+  "size": [
+   2048,
+   1536
+  ]
+ },
+ "NQT": {
+  "city": "Nottingham",
+  "artist": "Mr Thinktank",
+  "license": "CC BY 2.0",
+  "license_url": "https://creativecommons.org/licenses/by/2.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ANottingham_Skyline_with_Council_House.jpg",
+  "size": [
+   3072,
+   1728
+  ]
+ },
+ "OGG": {
+  "city": "Kahului",
+  "artist": "ideatrendz",
+  "license": "CC BY-SA 2.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AAirViewKahului.jpg",
+  "size": [
+   3072,
+   2304
+  ]
+ },
+ "OXB": {
+  "city": "Bissau",
+  "artist": "Joehawkins",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AAvenida_dos_Combatentes_da_Liberdade_da_P%C3%A1tria%2C_Bissau_%282%29.jpg",
+  "size": [
+   4608,
+   2592
+  ]
+ },
+ "PAT": {
+  "city": "Patna",
+  "artist": "WeeKeeEditor",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ARiver_Ganges_with_Gandhi_Bridge_and_parts_of_Patna_skyline.jpg",
+  "size": [
+   1198,
+   707
+  ]
+ },
+ "PEZ": {
+  "city": "Penza",
+  "artist": "Владимир Шеляпин",
+  "license": "CC BY-SA 3.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3APenza_from_Ferris_wheel.JPG",
+  "size": [
+   2592,
+   1944
+  ]
+ },
+ "PTP": {
+  "city": "Pointe-à-Pitre",
+  "artist": "Grook Da Oger",
+  "license": "CC BY-SA 3.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ACosta_-_Pointe_%C3%A0_Pitre_%28Guadeloupe%29.jpg",
+  "size": [
+   4000,
+   3000
+  ]
+ },
+ "PWQ": {
+  "city": "Pavlodar",
+  "artist": "Graphique38",
+  "license": "CC BY 4.0",
+  "license_url": "https://creativecommons.org/licenses/by/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AConcert_Hall_Shanyrak_in_Pavlodar.jpg",
+  "size": [
+   3720,
+   2788
+  ]
+ },
+ "RKT": {
+  "city": "Ras Al Khaimah",
+  "artist": "Lintophilip",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AView_of_Ras_Al_Khaimah_City_from_Julphar_Towers.jpg",
+  "size": [
+   5496,
+   2902
+  ]
+ },
+ "ROR": {
+  "city": "Koror",
+  "artist": "ito1117",
+  "license": "CC BY-SA 3.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AMain_St%2C_Koror%2C_Palau_-_panoramio_%281%29.jpg",
+  "size": [
+   4272,
+   2848
+  ]
+ },
+ "RZV": {
+  "city": "Rize",
+  "artist": "Phoenix2351",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ARize%2C_Ayder_Yaylas%C4%B1.jpg",
+  "size": [
+   4608,
+   3456
+  ]
+ },
+ "SAT": {
+  "city": "San Antonio",
+  "artist": "Corey Leopold",
+  "license": "CC BY 2.0",
+  "license_url": "https://creativecommons.org/licenses/by/2.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ASan_Antonio_Christmas.jpg",
+  "size": [
+   3872,
+   2592
+  ]
+ },
+ "SHE": {
+  "city": "Shenyang",
+  "artist": "E2568",
+  "license": "CC0",
+  "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+  "source": "https://commons.wikimedia.org/wiki/File%3ASkyline_of_Shenyang_3.jpg",
+  "size": [
+   4000,
+   3000
+  ]
+ },
+ "STL": {
+  "city": "St Louis",
+  "artist": "Daniel Schwen",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ASt_Louis_night_expblend.jpg",
+  "size": [
+   3000,
+   1929
+  ]
+ },
+ "SWF": {
+  "city": "Newburgh",
+  "artist": "Daniel Case",
+  "license": "CC BY-SA 3.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ADowntown_Newburgh_from_Beacon.jpg",
+  "size": [
+   3796,
+   2084
+  ]
+ },
+ "TBU": {
+  "city": "Nukuʻalofa",
+  "artist": "Uhooep",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ARoyal_Palace%2C_Nuku%27alofa%2C_Nov_18.jpg",
+  "size": [
+   5184,
+   3456
+  ]
+ },
+ "TDX": {
+  "city": "Trat",
+  "artist": "Anubissocial",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ATrat_Thailand_Sunset.jpg",
+  "size": [
+   4000,
+   3000
+  ]
+ },
+ "UME": {
+  "city": "Umeå",
+  "artist": "ArildV",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AUme%C3%A5_r%C3%A5dhus_July_2023_01.jpg",
+  "size": [
+   5151,
+   2897
+  ]
+ },
+ "VIL": {
+  "city": "Dakhla",
+  "artist": "Vyacheslav Argenberg",
+  "license": "CC BY 2.0",
+  "license_url": "https://creativecommons.org/licenses/by/2.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ADakhla_Oasis_view_%28May_2007%29.jpg",
+  "size": [
+   2048,
+   1365
+  ]
+ },
+ "YHZ": {
+  "city": "Halifax",
+  "artist": "A Disappearing Act",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AHalifax_City_Hall%2C_Duke_St.jpg",
+  "size": [
+   4080,
+   2916
+  ]
  }
 }

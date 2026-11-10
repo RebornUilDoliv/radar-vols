@@ -1377,6 +1377,21 @@ FR_NAMES = {}
 
 TIQETS_LANGS = {"fr", "en", "es", "de", "it", "pt", "nl"}
 KLOOK_ATTRACTIONS = {"SGN", "DEL", "BOM", "CNX", "DAD"}  # villes Klook dont la catégorie « attractions » est remplie
+KLOOK_SKIP = {"YQB"}  # Klook n'a que des activités de Montréal pour ce numéro de ville
+# Affiché derrière le widget : visible seulement si un bloqueur de pub l'empêche de s'afficher
+MUSTS_EMPTY = {
+    "fr": "Les activités ne s'affichent pas ? Ton bloqueur de pub les masque peut-être : utilise les boutons ci-dessous.",
+    "en": "Activities not showing? Your ad blocker may be hiding them: use the buttons below.",
+    "es": "¿No ves las actividades? Puede que tu bloqueador de anuncios las oculte: usa los botones de abajo.",
+    "de": "Keine Aktivitäten zu sehen? Vielleicht blendet dein Werbeblocker sie aus: nutze die Buttons unten.",
+    "it": "Non vedi le attività? Forse il tuo blocco pubblicità le nasconde: usa i pulsanti qui sotto.",
+    "pt": "Não vê as atividades? Talvez o seu bloqueador de anúncios as esconda: use os botões abaixo.",
+    "nl": "Zie je geen activiteiten? Misschien verbergt je adblocker ze: gebruik de knoppen hieronder.",
+    "tr": "Etkinlikler görünmüyor mu? Reklam engelleyicin gizliyor olabilir: aşağıdaki düğmeleri kullan.",
+    "ar": "لا تظهر الأنشطة؟ ربما يخفيها مانع الإعلانات: استخدم الأزرار أدناه.",
+    "zh": "看不到活动？可能被广告拦截器隐藏了：请使用下方按钮。",
+    "ko": "액티비티가 보이지 않나요? 광고 차단기가 숨겼을 수 있어요. 아래 버튼을 이용하세요.",
+}
 _TIQETS = None
 
 
@@ -1392,7 +1407,7 @@ def tiqets_cities():
 def musts_block(p, code, name):
     """Barre « Les incontournables » (fermée par défaut) : activités Tiqets dans la langue du site quand la ville
     est chez Tiqets, sinon activités Klook ; rien si aucun des deux ne connaît la ville."""
-    klook = str(klook_cities().get(code, ""))
+    klook = "" if code in KLOOK_SKIP else str(klook_cities().get(code, ""))
     tiqets = tiqets_cities().get(code)
     if not tiqets and not klook.isdigit():
         return ""
@@ -1423,7 +1438,7 @@ def musts_block(p, code, name):
         <span class="musts-title">{e(w[1].format(city=name))}</span>
         <span class="musts-sub">{e(w[2])}</span></span>
       <span class="musts-cta"><span class="when-closed">{e(w[3])}</span><span class="when-open">{e(w[4])}</span>{chev}</span></summary>
-    <div class="musts-body"><div class="musts-widget {kind}" data-src="{e(widget)}"></div>
+    <div class="musts-body"><div class="musts-widget {kind}" data-src="{e(widget)}" data-empty="{e(MUSTS_EMPTY.get(p.lang, MUSTS_EMPTY['en']))}"></div>
       <p class="musts-links"><a class="musts-all" href="{e(all_url)}" target="_blank" rel="nofollow sponsored noopener">{e(w[5].format(city=name))} ↗</a>
       <a class="musts-alt" href="{e(tiqets_url)}" target="_blank" rel="nofollow sponsored noopener">{e(w[6])} ↗</a></p></div>
   </details>"""

@@ -525,6 +525,10 @@ details p { margin-top: 6px; color: var(--g3); }
 .musts-fold[open] .musts-cta .when-open { display: inline; }
 .musts-fold[open] .musts-cta .when-closed { display: none; }
 .musts-body { padding: 14px 16px 20px; border: 1px solid var(--g2); border-top: 0; border-radius: 0 0 20px 20px; }
+.musts-widget { position: relative; }
+.musts-widget::before { content: attr(data-empty); position: absolute; inset: 0; z-index: 0; display: grid; place-items: center; padding: 24px; color: var(--g3); font-size: 15px; text-align: center; }
+.musts-widget > div, .musts-widget iframe { position: relative; z-index: 1; }
+.musts-widget iframe { background: #fff; }
 .musts-widget.klook { height: 380px; }
 .musts-widget.klook > div { height: 100%; }
 .musts-widget.klook iframe { height: 100% !important; }
