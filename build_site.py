@@ -152,6 +152,11 @@ PAGE_TOP = re.compile(
     r'(?P<cta><p><a class="go".*?</a></p>)?', re.S)
 
 
+WORLD_PHOTO = "WORLD"
+WORLD_CREDIT = {"city": "Terre vue de l'ISS", "artist": "NASA, équipage de l'Expedition 40", "license": "Domaine public",
+                "license_url": "", "source": "https://commons.wikimedia.org/wiki/File:ISS-40_Thunderheads_near_Borneo.jpg"}
+
+
 def page_hero(p, path, body, photo=None):
     """Donne aux pages intérieures un en-tête photo : celle de la ville, ou aucune si elle manque."""
     top = PAGE_TOP.search(body)
@@ -159,6 +164,8 @@ def page_hero(p, path, body, photo=None):
     if not top:
         return body
     own = re.search(r"assets/photos/([A-Z]{3})\.jpg", top["cover"] or "")
+    if photo is None and path == "destinations/" and photo_exists(WORLD_PHOTO):
+        photo = WORLD_PHOTO  # la Terre vue de l'espace : aucune ville de la liste n'est répétée en en-tête
     if photo is None:
         city_page = path.startswith(("vers/", "destinations/")) and path != "destinations/"
         photo = own[1] if own else "" if city_page else photos[sum(path.encode()) % len(photos)] if photos else ""
@@ -1799,6 +1806,8 @@ def credits_page(p):
         for code, credit in sorted(musts_credits().items(), key=lambda item: item[1]["city"])
         if (DOCS / "assets" / "photos" / "extra" / f"{code}-must.jpg").exists()
     )
+    if photo_exists(WORLD_PHOTO):
+        rows += f'<li><strong>{e(WORLD_CREDIT["city"])}</strong><br>{photo_credit(p, WORLD_CREDIT)}</li>'
     video_path = DOCS / "assets" / "video" / "credit.json"
     if video_path.exists():
         video = json.loads(video_path.read_text())
