@@ -6,45 +6,19 @@ on:
 jobs:
   probe:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 30
     steps:
-      - name: Lister les catalogues (sans afficher les secrets)
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Récupérer les catalogues Omio
         env:
-          SID: ${{ secrets.IMPACT_ACCOUNT_SID }}
-          TOKEN: ${{ secrets.AUTH_TOKEN_IMPACT }}
-        run: |
-          python3 - <<'PY'
-          import base64, json, os, urllib.request
-          import re
-          raw_sid, raw_tok = os.environ["SID"], os.environ["TOKEN"]
-          for name, v in (("SID", raw_sid), ("TOKEN", raw_tok)):
-              parts = v.split()
-              print(name, "longueur:", len(v), "| morceaux:", [len(x) for x in parts], "| alphanum:", [x.isalnum() for x in parts])
-          sid = max(raw_sid.split(), key=len) if raw_sid.split() else ""
-          token = max(raw_tok.split(), key=len) if raw_tok.split() else ""
-          print("SID retenu longueur", len(sid), "commence par IR:", sid.startswith("IR"))
-          def get(url):
-              req = urllib.request.Request(url, headers={"Accept": "application/json",
-                  "Authorization": "Basic " + base64.b64encode(f"{sid}:{token}".encode()).decode()})
-              try:
-                  with urllib.request.urlopen(req, timeout=60) as r:
-                      return r.status, json.loads(r.read())
-              except urllib.error.HTTPError as e:
-                  return e.code, e.read()[:300].decode("utf-8", "replace")
-          status, data = get(f"https://api.impact.com/Mediapartners/{sid}/Catalogs?PageSize=50")
-          print("Catalogs:", status)
-          if status != 200:
-              print(data); raise SystemExit(1)
-          cats = data.get("Catalogs", [])
-          print("clés:", sorted(k for k in data if not k.startswith("@")), "| nb:", len(cats))
-          if cats: print("champs catalogue:", sorted(cats[0].keys()))
-          for c in cats:
-              print(c.get("Id"), c.get("Name"), c.get("Language"), c.get("Currency"), c.get("NumberOfItems"), c.get("ItemsUri"))
-          if cats:
-              uri = cats[0]["ItemsUri"]
-              status, items = get("https://api.impact.com" + uri + ("&" if "?" in uri else "?") + "PageSize=3")
-              print("Items:", status, {k: v for k, v in items.items() if k.startswith("@")} if isinstance(items, dict) else items)
-              if isinstance(items, dict) and items.get("Items"):
-                  it = items["Items"][0]
-                  print(json.dumps({k: v for k, v in it.items() if v not in ("", None, [], {})}, ensure_ascii=False, indent=1)[:2500])
-          PY
+          IMPACT_ACCOUNT_SID: ${{ secrets.IMPACT_ACCOUNT_SID }}
+          AUTH_TOKEN_IMPACT: ${{ secrets.AUTH_TOKEN_IMPACT }}
+        run: python omio.py --force
+      - uses: actions/upload-artifact@v4
+        with:
+          name: omio
+          path: docs/omio
+          retention-days: 3
