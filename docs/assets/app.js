@@ -291,7 +291,7 @@
     data.routes.forEach(function (r) {
       var o = names[r[0]];
       (byOrigin[o] = byOrigin[o] || []).push(r);
-      if (r[2]) priced[o] = (priced[o] || 0) + 1;
+      if (r[2] || r[3]) priced[o] = (priced[o] || 0) + 1;
     });
     /* villes de départ triées par nombre de trajets avec prix (les plus utiles d'abord) */
     var origins = Object.keys(byOrigin).sort(function (a, b) { return (priced[b] || 0) - (priced[a] || 0) || byOrigin[b].length - byOrigin[a].length; });
@@ -374,7 +374,13 @@
       var photo = (d.raw.cities[route[1]] || [])[2];
       return photo ? (d.raw.images || "") + photo : sitePhoto(d.names[route[1]]);
     };
-    var priceText = function (route) { return route[2] ? words.price_from + " " + money(route[2]) : ""; };
+    /* trajets : [départ, arrivée, prix train, prix bus, minutes train, minutes bus, rang] */
+    var best = function (r) { return Math.min(r[2] || 1e9, r[3] || 1e9); };
+    var hours = function (m) { return m ? Math.floor(m / 60) + " h " + String(m % 60).padStart(2, "0") : ""; };
+    var modeText = function (icon, price, minutes) {
+      return price ? icon + " " + words.price_from + " " + money(price) + (minutes ? " · " + hours(minutes) : "") : "";
+    };
+    var priceText = function (route) { var b = best(route); return b < 1e9 ? words.price_from + " " + money(b) : ""; };
     /* ajoute les dates choisies à la page Omio (le trajet et les dates arrivent déjà remplis chez Omio) */
     var withDates = function (url) {
       var out = $("t-out").value, back = $("t-back").value;
@@ -420,6 +426,8 @@
       place.appendChild(el("span", null, d.names[route[0]]));
       item.appendChild(place);
       item.appendChild(el("span", "train-row-price", priceText(route)));
+      var modes = [modeText("🚆", route[2], route[4]), modeText("🚌", route[3], route[5])].filter(Boolean).join("   ");
+      if (modes) place.appendChild(el("span", "train-modes", modes));
       item.appendChild(el("span", "train-row-go", "↗"));
       return item;
     };
@@ -435,7 +443,10 @@
       item.appendChild(el("span", "train-chip", words.book + " ↗"));
       var label = el("span", "card-label");
       label.appendChild(el("strong", null, d.names[route[1]]));
-      label.appendChild(el("span", null, d.names[route[0]] + (route[2] ? " · " + words.price_from + " " + money(route[2]) : "")));
+      label.appendChild(el("span", null, d.names[route[0]]));
+      [modeText("🚆", route[2], route[4]), modeText("🚌", route[3], route[5])].forEach(function (text) {
+        if (text) label.appendChild(el("span", "train-mode", text));
+      });
       item.appendChild(label);
       return item;
     };
@@ -452,7 +463,11 @@
       if (o) d.origins.forEach(function (name) { if (name === o || name.indexOf(o + " ") === 0) all = all.concat(d.byOrigin[name]); });
       var routes = all.filter(function (r) { return !target || d.clean(d.names[r[1]]).indexOf(target) === 0; });
       /* trajets avec prix d'abord, du moins cher au plus cher, un seul par destination */
-      routes.sort(function (a, b) { return (a[2] || 1e9) - (b[2] || 1e9); });
+      /* seulement les trajets en train ou en bus ; destination choisie : du moins cher au plus cher,
+         sinon les plus populaires d'abord (rang Omio) */
+      routes = routes.filter(function (r) { return r[2] || r[3]; });
+      routes.sort(target ? function (a, b) { return best(a) - best(b); }
+                         : function (a, b) { return (a[6] || 1e9) - (b[6] || 1e9) || best(a) - best(b); });
       var shown = {};
       routes = routes.filter(function (r) { var key = d.names[r[1]]; if (shown[key]) return false; shown[key] = 1; return true; });
       results.textContent = "";

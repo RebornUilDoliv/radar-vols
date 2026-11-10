@@ -469,6 +469,8 @@ details p { margin-top: 6px; color: var(--g3); }
 .train-row-go { display: grid; place-items: center; width: 30px; height: 30px; flex: none; background: var(--g1); border-radius: 50%; transition: background .15s, color .15s; }
 .train-row:hover .train-row-go, .train-row:focus-visible .train-row-go { color: #fff; background: #0b0b0b; }
 .train-card .card-label strong { font-family: "Clash Display", "Geist", sans-serif; }
+.train-card .card-label .train-mode { display: block; margin-top: 2px; font-size: 13px; font-weight: 600; }
+.train-modes { display: block; margin-top: 3px; color: var(--k) !important; font-size: 13px !important; font-weight: 500; white-space: nowrap; }
 .train-chip { position: absolute; z-index: 1; top: 10px; right: 10px; padding: 4px 10px; color: #0b0b0b; background: rgba(255, 255, 255, .92); border-radius: 999px; font-size: 12px; font-weight: 600; opacity: 0; transform: translateY(-4px); transition: opacity .2s, transform .2s; }
 .train-card:hover .train-chip, .train-card:focus-visible .train-chip { opacity: 1; transform: none; }
 @media (hover: none) { .train-chip { opacity: 1; transform: none; } }

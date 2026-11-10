@@ -62,8 +62,8 @@ jobs:
         uses: actions/cache@v4
         with:
           path: docs/omio
-          key: omio-${{ steps.day.outputs.day }}
-          restore-keys: omio-
+          key: omio-v2-${{ steps.day.outputs.day }}
+          restore-keys: omio-v2-
       - name: Relever les trains et bus Omio
         if: ${{ !inputs.test_email }}
         continue-on-error: true
