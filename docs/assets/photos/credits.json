@@ -6004,5 +6004,731 @@
    11419,
    6417
   ]
+ },
+ "BHZ": {
+  "city": "Belo Horizonte",
+  "artist": "Just a Brazilian man from Brazil",
+  "license": "CC BY 2.0",
+  "license_url": "https://creativecommons.org/licenses/by/2.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ABelo_Horizonte_city_park._Brazil_%2850772886292%29.jpg",
+  "size": [
+   5664,
+   2752
+  ]
+ },
+ "BIA": {
+  "city": "Bastia",
+  "artist": "Gzen92",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3APanorama_-_Paysage_%28Bastia%29.jpg",
+  "size": [
+   2880,
+   1152
+  ]
+ },
+ "BYG": {
+  "city": "Buffalo",
+  "artist": "Andre Carrotflower",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ALehigh_Valley_IronPigs_at_Buffalo_Bisons_-_20220820_-_07_-_Upper_Deck_Right_Field_Panorama.jpg",
+  "size": [
+   7391,
+   2727
+  ]
+ },
+ "BZE": {
+  "city": "Belize Ville",
+  "artist": "Jasmine Halki",
+  "license": "CC BY 2.0",
+  "license_url": "https://creativecommons.org/licenses/by/2.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ABelize_City_harbour%2C_Belize.jpg",
+  "size": [
+   1712,
+   1155
+  ]
+ },
+ "CBB": {
+  "city": "Cochabamba",
+  "artist": "Favio Antezana",
+  "license": "CC BY-SA 2.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ACiudad_de_Cochabamba.jpg",
+  "size": [
+   1920,
+   1280
+  ]
+ },
+ "CCJ": {
+  "city": "Calicut",
+  "artist": "Bryce Edwards from Dunedin, New Zealand",
+  "license": "CC BY 2.0",
+  "license_url": "https://creativecommons.org/licenses/by/2.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AKozhikode_city.jpg",
+  "size": [
+   2592,
+   1944
+  ]
+ },
+ "CSX": {
+  "city": "Changsha",
+  "artist": "Gary Todd from Xinzheng, China",
+  "license": "CC0",
+  "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+  "source": "https://commons.wikimedia.org/wiki/File%3AChangsha_City_Museum_%2810114079594%29.jpg",
+  "size": [
+   4752,
+   3168
+  ]
+ },
+ "CZL": {
+  "city": "Constantine",
+  "artist": "Detroit Publishing Co.",
+  "license": "Public domain",
+  "license_url": "",
+  "source": "https://commons.wikimedia.org/wiki/File%3AConstantine%2C_Algeria%2C_ca._1899.jpg",
+  "size": [
+   3235,
+   2336
+  ]
+ },
+ "EAS": {
+  "city": "San Sebastián de los Reyes",
+  "artist": "PEPE GADEIRAS",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ACASTILLO_SAN_SEBASTI%C3%81N.jpg",
+  "size": [
+   5184,
+   3456
+  ]
+ },
+ "ESU": {
+  "city": "Essaouira",
+  "artist": "yeowatzup",
+  "license": "CC BY 2.0",
+  "license_url": "https://creativecommons.org/licenses/by/2.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AEssaouira%2C_Morocco_%288141943104%29.jpg",
+  "size": [
+   3888,
+   2592
+  ]
+ },
+ "FDF": {
+  "city": "Fort De France",
+  "artist": "JLXP",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AMartinique_-_Theatre_Fort-de-France.jpg",
+  "size": [
+   3750,
+   2500
+  ]
+ },
+ "FJR": {
+  "city": "Fujairah",
+  "artist": "Rizwan Ullah Wazir",
+  "license": "CC BY 3.0",
+  "license_url": "https://creativecommons.org/licenses/by/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AFujairah_City_United_Arab_Emirates_-_panoramio_%281%29.jpg",
+  "size": [
+   4608,
+   2592
+  ]
+ },
+ "FMY": {
+  "city": "Fort Myers",
+  "artist": "Ebyabe",
+  "license": "CC BY-SA 3.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AFort_Myers_FL_US_41_Edison_Bridge_pano01.jpg",
+  "size": [
+   6226,
+   1679
+  ]
+ },
+ "GDX": {
+  "city": "Magadan",
+  "artist": "Pinochet68",
+  "license": "CC BY 3.0",
+  "license_url": "https://creativecommons.org/licenses/by/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AG._Magadan%2C_Magadanskaya_oblast%27_Russia_-_panoramio.jpg",
+  "size": [
+   3264,
+   2448
+  ]
+ },
+ "GOA": {
+  "city": "Gênes",
+  "artist": "Quintin Soloviev",
+  "license": "CC BY 4.0",
+  "license_url": "https://creativecommons.org/licenses/by/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AGenoa%2C_Italy_skyline.jpg",
+  "size": [
+   8176,
+   5451
+  ]
+ },
+ "GUM": {
+  "city": "Tamuning",
+  "artist": "Abasaa",
+  "license": "Public domain",
+  "license_url": "",
+  "source": "https://commons.wikimedia.org/wiki/File%3AHagatna_from_Fort_Santa_Agueda.JPG",
+  "size": [
+   1920,
+   1080
+  ]
+ },
+ "GYN": {
+  "city": "Goiânia",
+  "artist": "Stoffels at English Wikipedia",
+  "license": "Public domain",
+  "license_url": "",
+  "source": "https://commons.wikimedia.org/wiki/File%3AGoiania_%28Panorama%29.jpg",
+  "size": [
+   3864,
+   1302
+  ]
+ },
+ "HFE": {
+  "city": "Hefei",
+  "artist": "Zhou Guanhuai",
+  "license": "CC0",
+  "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+  "source": "https://commons.wikimedia.org/wiki/File%3ACity_Construction_Museum_%28Hefei%29.jpg",
+  "size": [
+   2272,
+   1704
+  ]
+ },
+ "IND": {
+  "city": "Indianapolis",
+  "artist": "Momoneymoproblemz",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3APanorama_of_downtown_Indianapolis_skyline%2C_July_2016.jpg",
+  "size": [
+   5488,
+   1280
+  ]
+ },
+ "JPA": {
+  "city": "João Pessoa",
+  "artist": "Just a Brazilian man from Brazil",
+  "license": "CC BY 2.0",
+  "license_url": "https://creativecommons.org/licenses/by/2.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AJoao_Pessoa%2C_Brazil_%2847087888692%29.jpg",
+  "size": [
+   1600,
+   1200
+  ]
+ },
+ "KOA": {
+  "city": "Kona",
+  "artist": "Ken Lund from Reno, Nevada, USA",
+  "license": "CC BY-SA 2.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AAli%27i_Drive%2C_Kailua-Kona%2C_Hawaii_%287%29_%284548901585%29.jpg",
+  "size": [
+   2816,
+   2112
+  ]
+ },
+ "KOW": {
+  "city": "Ganzhou",
+  "artist": "中國之新民（THE NEW CITIZEN OF CHINA）",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ACountryside_in_Xincheng_town%2CDayu_county%2C_Ganzhou_city%2CJiangxi_province%2CChina.JPG",
+  "size": [
+   4320,
+   3240
+  ]
+ },
+ "KSQ": {
+  "city": "Karchi",
+  "artist": "Akhemen",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AAncient_bridge_in_Qarshi_%28Uzbekistan%29.jpg",
+  "size": [
+   3881,
+   2669
+  ]
+ },
+ "LBV": {
+  "city": "Libreville",
+  "artist": "Delrick Trevor",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ABoulevard_de_l%27ind%C3%A9pendance_Libreville_.jpg",
+  "size": [
+   1920,
+   1080
+  ]
+ },
+ "LXA": {
+  "city": "Lhassa",
+  "artist": "Hiroki Ogawa",
+  "license": "CC BY 3.0",
+  "license_url": "https://creativecommons.org/licenses/by/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AAni_Sangkoung_Nun_Monastery_Lhasa_Tibet_China_%E8%A5%BF%E8%97%8F_%E6%8B%89%E8%90%A8_%E4%BB%93%E5%A7%91%E5%AF%BA_-_panoramio.jpg",
+  "size": [
+   2400,
+   1800
+  ]
+ },
+ "LYP": {
+  "city": "Faisalabad",
+  "artist": "Usman Nadeem",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AClock_Tower_Faisalabad_by_Usman_Nadeem.jpg",
+  "size": [
+   4920,
+   3456
+  ]
+ },
+ "MAH": {
+  "city": "Mahon",
+  "artist": "Jorge Franganillo",
+  "license": "CC BY 2.0",
+  "license_url": "https://creativecommons.org/licenses/by/2.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AAyuntamiento_de_Mah%C3%B3n%2C_en_Menorca_%28Baleares%2C_Espa%C3%B1a%29.jpg",
+  "size": [
+   4937,
+   2777
+  ]
+ },
+ "MDC": {
+  "city": "Manado",
+  "artist": "Iripseudocorus",
+  "license": "CC BY 4.0",
+  "license_url": "https://creativecommons.org/licenses/by/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3APanorama_alam_Taman_Berkat_Manado.jpg",
+  "size": [
+   4160,
+   3120
+  ]
+ },
+ "MEM": {
+  "city": "Memphis",
+  "artist": "Warren LeMay from Chicago, IL, United States",
+  "license": "CC BY-SA 2.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AOld_United_States_Custom_House%2C_Court_House%2C_and_Post_Office%2C_Front_Street_and_Madison_Avenue%2C_Memphis%2C_TN_%2853699221644%29.jpg",
+  "size": [
+   4032,
+   3024
+  ]
+ },
+ "MLX": {
+  "city": "Malatya",
+  "artist": "Burhanerşahin",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ABay%C4%B1rk%C3%B6y%2CP%C3%BCt%C3%BCrge%2CMalatya%2CTurkey_.jpg",
+  "size": [
+   2048,
+   1536
+  ]
+ },
+ "MMA": {
+  "city": "Malmö",
+  "artist": "Paul N. Richter",
+  "license": "CC BY-SA 3.0",
+  "license_url": "http://creativecommons.org/licenses/by-sa/3.0/",
+  "source": "https://commons.wikimedia.org/wiki/File%3AMalmo-city_hall.jpg",
+  "size": [
+   1280,
+   960
+  ]
+ },
+ "NAV": {
+  "city": "Nevşehir",
+  "artist": "ModriDirkac",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ANevsehir_2020_stitch3.jpg",
+  "size": [
+   4776,
+   1733
+  ]
+ },
+ "NDJ": {
+  "city": "N'Djaména",
+  "artist": "Korom10",
+  "license": "CC BY 4.0",
+  "license_url": "https://creativecommons.org/licenses/by/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AMarch%C3%A9_central_de_N%27djamena.jpg",
+  "size": [
+   4032,
+   1960
+  ]
+ },
+ "NIM": {
+  "city": "Niamey",
+  "artist": "Vincent van Zeijst",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ANiger%2C_Niamey%2C_Dunes_%281%29%2C_landscape.jpg",
+  "size": [
+   4288,
+   2848
+  ]
+ },
+ "NMA": {
+  "city": "Namangan",
+  "artist": "Muhayyo Shoyunusova",
+  "license": "CC BY 4.0",
+  "license_url": "https://creativecommons.org/licenses/by/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ANamangan_63-Xalqaro_Gullar_Festivali.jpg",
+  "size": [
+   1280,
+   960
+  ]
+ },
+ "NNG": {
+  "city": "Nanning",
+  "artist": "MspreilsCN",
+  "license": "CC BY 4.0",
+  "license_url": "https://creativecommons.org/licenses/by/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ANanning_skyline.png",
+  "size": [
+   13303,
+   3400
+  ]
+ },
+ "NVT": {
+  "city": "Navegantes",
+  "artist": "Rainer Strehl",
+  "license": "CC BY-SA 3.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ACentro%2C_Navegantes_-_SC%2C_Brazil_-_panoramio.jpg",
+  "size": [
+   3490,
+   2325
+  ]
+ },
+ "OAX": {
+  "city": "Oaxaca de Juárez",
+  "artist": "Adam Jones from Kelowna, BC, Canada",
+  "license": "CC BY-SA 2.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AStreet_Scene_-_Oaxaca_City_-_Oaxaca_-_Mexico_-_02_%286492455063%29.jpg",
+  "size": [
+   3648,
+   2736
+  ]
+ },
+ "OMA": {
+  "city": "Omaha",
+  "artist": "Hurstbergn",
+  "license": "CC BY 4.0",
+  "license_url": "https://creativecommons.org/licenses/by/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3APanorama_of_Omaha%2C_Nebraska_and_Eppley_Airfield_from_Lewis_and_Clark_Monument_Park.jpg",
+  "size": [
+   16350,
+   3850
+  ]
+ },
+ "OUL": {
+  "city": "Oulu",
+  "artist": "Estormiz",
+  "license": "CC0",
+  "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+  "source": "https://commons.wikimedia.org/wiki/File%3AOulu_City_Hall_20250501.jpg",
+  "size": [
+   4000,
+   3001
+  ]
+ },
+ "PEW": {
+  "city": "Peshawar",
+  "artist": "franek2",
+  "license": "CC BY-SA 3.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AAndar_Shehr%2C_Peshawar%2C_Pakistan_-_panoramio.jpg",
+  "size": [
+   2816,
+   2120
+  ]
+ },
+ "PNQ": {
+  "city": "Pune",
+  "artist": "Randy Breese",
+  "license": "CC BY 2.0",
+  "license_url": "https://creativecommons.org/licenses/by/2.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ASkyline_of_Pune_city_as_seen_from_The_Westin_Koregaon_Park.jpg",
+  "size": [
+   3264,
+   2448
+  ]
+ },
+ "PUQ": {
+  "city": "Punta Arenas",
+  "artist": "W. Bulach",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3A00_2521_Punta_Arenas_-_Chile.jpg",
+  "size": [
+   2500,
+   1660
+  ]
+ },
+ "PXM": {
+  "city": "Puerto Escondido",
+  "artist": "Sasha India",
+  "license": "CC BY-SA 2.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3APuerto_Escondido_%28Oaxaca%2C_Mexico%29_%2827002979597%29.jpg",
+  "size": [
+   2592,
+   1944
+  ]
+ },
+ "PZU": {
+  "city": "Port-Soudan",
+  "artist": "Bertramz",
+  "license": "CC BY 3.0",
+  "license_url": "https://creativecommons.org/licenses/by/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3APortSudan_center_harbour.jpg",
+  "size": [
+   1920,
+   1285
+  ]
+ },
+ "RDU": {
+  "city": "Raleigh",
+  "artist": "Ben Brooksbank",
+  "license": "CC BY-SA 2.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3APanorama_SW_from_Raleigh_Court%2C_Norwood_to_Gipsy_Hill%2C_1984_-_geograph.org.uk_-_4625891.jpg",
+  "size": [
+   2385,
+   1446
+  ]
+ },
+ "REN": {
+  "city": "Orenbourg",
+  "artist": "Ramil",
+  "license": "CC0",
+  "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+  "source": "https://commons.wikimedia.org/wiki/File%3AOrenburg_city_aerial_from_500px.jpg",
+  "size": [
+   2048,
+   1365
+  ]
+ },
+ "RRG": {
+  "city": "Rodrigues Is",
+  "artist": "fred_pnd",
+  "license": "CC BY 2.0",
+  "license_url": "https://creativecommons.org/licenses/by/2.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ARodrigues_Island%2C_Mauritius-17May2004_%285%29.jpg",
+  "size": [
+   2272,
+   1704
+  ]
+ },
+ "RTB": {
+  "city": "Roatan",
+  "artist": "Larry D. Moore",
+  "license": "CC BY 4.0",
+  "license_url": "https://creativecommons.org/licenses/by/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ACoxen_Hole2_Roatan_Honduras_2025.jpg",
+  "size": [
+   3556,
+   2000
+  ]
+ },
+ "SCY": {
+  "city": "San Cristóbal",
+  "artist": "3BRBS",
+  "license": "CC BY-SA 3.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ASkyline_of_Santiago_with_San_Crist%C3%B3bal_hill_at_the_back_%28Northeast_view_Panorama_02_-_Sphere_projection%29.jpg",
+  "size": [
+   7088,
+   3134
+  ]
+ },
+ "SDR": {
+  "city": "Santander",
+  "artist": "Emilio Gómez Fernández",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AMonumento_a_los_Ca%C3%ADdos_en_la_Guerra_Civil_Espa%C3%B1ola%2C_Santander%2C_Cantabria_1.jpg",
+  "size": [
+   4000,
+   3000
+  ]
+ },
+ "SLU": {
+  "city": "Castries",
+  "artist": "giggel",
+  "license": "CC BY 3.0",
+  "license_url": "https://creativecommons.org/licenses/by/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ASt._Lucia%2C_Karibik_-_Panoramic_Harbor_of_Castries_-_panoramio.jpg",
+  "size": [
+   10455,
+   2578
+  ]
+ },
+ "SUV": {
+  "city": "Suva",
+  "artist": "Maksym Kozlenko",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ASuva%2C_Fiji_52.jpg",
+  "size": [
+   5184,
+   3456
+  ]
+ },
+ "TAE": {
+  "city": "Daegu",
+  "artist": "Thorfinn Stainforth",
+  "license": "CC BY-SA 3.0",
+  "license_url": "http://creativecommons.org/licenses/by-sa/3.0/",
+  "source": "https://commons.wikimedia.org/wiki/File%3ACountryandcitydaegu.jpg",
+  "size": [
+   12085,
+   1535
+  ]
+ },
+ "TIJ": {
+  "city": "Tijuana",
+  "artist": "Yoshio Kohara",
+  "license": "CC BY 3.0",
+  "license_url": "https://creativecommons.org/licenses/by/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AMexico_Tijuana_City_%E3%83%86%E3%82%A3%E3%83%95%E3%82%A1%E3%83%8A%E5%B8%82_-_panoramio.jpg",
+  "size": [
+   1564,
+   907
+  ]
+ },
+ "TIV": {
+  "city": "Tivat",
+  "artist": "Корнет Кларнет",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ATivat%2C_Montenegro%2C_Boko_Kotor_Bay_and_Porto_Montenegro_at_sunset.jpg",
+  "size": [
+   5600,
+   4200
+  ]
+ },
+ "TNA": {
+  "city": "Jinan",
+  "artist": "ermell",
+  "license": "CC BY-SA 3.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AChina_Jinan_5196864.jpg",
+  "size": [
+   4390,
+   3293
+  ]
+ },
+ "TWU": {
+  "city": "Tawau",
+  "artist": "Adznee Abas from Shah Alam, Malaysia",
+  "license": "CC BY 2.0",
+  "license_url": "https://creativecommons.org/licenses/by/2.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ATawau_-_The_City_%2848869140708%29.jpg",
+  "size": [
+   6000,
+   2198
+  ]
+ },
+ "TZL": {
+  "city": "Tuzla",
+  "artist": "clickme",
+  "license": "CC BY-SA 3.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3APannonian_Lakes%2C_Tuzla_-_panoramio.jpg",
+  "size": [
+   6862,
+   1593
+  ]
+ },
+ "UUS": {
+  "city": "Ioujno-Sakhalinsk",
+  "artist": "Vihljun",
+  "license": "Public domain",
+  "license_url": "",
+  "source": "https://commons.wikimedia.org/wiki/File%3AVerhnee_Lake_in_city_park_Yuzhno-Sakhalinsk_1.JPG",
+  "size": [
+   3648,
+   2736
+  ]
+ },
+ "XPL": {
+  "city": "Comayagua",
+  "artist": "Luis Alfredo Romero",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AComayagua_19th_century_Palace.jpg",
+  "size": [
+   4160,
+   3120
+  ]
+ },
+ "XRY": {
+  "city": "Xérès",
+  "artist": "El Pantera",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ALa_Barca_Campi%C3%B1a_de_Jerez-P1000616.jpg",
+  "size": [
+   2560,
+   1920
+  ]
+ },
+ "YAO": {
+  "city": "Yaoundé",
+  "artist": "Ambo64",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ARue_De_Narvik%2C_Yaounde%2C_Cameroon.jpg",
+  "size": [
+   3840,
+   2160
+  ]
+ },
+ "YIW": {
+  "city": "Yiwu",
+  "artist": "罗布泊",
+  "license": "CC BY 3.0",
+  "license_url": "https://creativecommons.org/licenses/by/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3A%E4%B8%AD%E5%9B%BD%E6%B5%99%E6%B1%9F%E7%9C%81%E4%B9%89%E4%B9%8C%E5%B8%82_China_Zhejiang_Province%2C_Yiwu_City%2C_China_Xinji_-_panoramio_%284%29.jpg",
+  "size": [
+   4288,
+   2848
+  ]
+ },
+ "YOW": {
+  "city": "Ottawa",
+  "artist": "G. Baranski - http://photomulti.com",
+  "license": "CC BY-SA 3.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ACanada_Ottawa_Panorama.jpg",
+  "size": [
+   10000,
+   1700
+  ]
+ },
+ "ZQN": {
+  "city": "Queenstown",
+  "artist": "Summ23",
+  "license": "CC BY 4.0",
+  "license_url": "https://creativecommons.org/licenses/by/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ALake_Wakatipu%2C_Queenstown.jpg",
+  "size": [
+   4000,
+   3000
+  ]
  }
 }
