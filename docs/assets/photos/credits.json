@@ -5146,5 +5146,863 @@
    7541,
    5091
   ]
+ },
+ "ACA": {
+  "city": "Acapulco",
+  "artist": "Carlos Valenzuela",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AZipLine_Acapulco_XtaSeap0.jpg",
+  "size": [
+   5863,
+   3176
+  ]
+ },
+ "AJA": {
+  "city": "Ajaccio",
+  "artist": "Myrabella",
+  "license": "CC BY-SA 3.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AAjaccio_phare_citadelle.jpg",
+  "size": [
+   4288,
+   2052
+  ]
+ },
+ "ANC": {
+  "city": "Anchorage",
+  "artist": "Diego Delso",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AParque_Eagle_River%2C_Anchorage%2C_Alaska%2C_Estados_Unidos%2C_2017-09-01%2C_DD_02.jpg",
+  "size": [
+   8688,
+   5792
+  ]
+ },
+ "AOI": {
+  "city": "Ancône",
+  "artist": "Terragio67",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AAncona_-_Monumento_ai_caduti_di_Ancona%2C_dettagli_-_GT_ver2_-_2025-09-11_21-09-15_001.jpg",
+  "size": [
+   10069,
+   6943
+  ]
+ },
+ "ASF": {
+  "city": "Astrakhan",
+  "artist": "Alexxx1979",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AAstrakhan_P5091018_2200.jpg",
+  "size": [
+   3712,
+   2200
+  ]
+ },
+ "BBI": {
+  "city": "Bhubaneswar",
+  "artist": "Bernard Gagnon",
+  "license": "CC BY-SA 3.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AMukteshvara_Temple%2C_Bhubaneswar.jpg",
+  "size": [
+   4751,
+   3261
+  ]
+ },
+ "BEY": {
+  "city": "Beyrouth",
+  "artist": "Vyacheslav Argenberg",
+  "license": "CC BY 4.0",
+  "license_url": "https://creativecommons.org/licenses/by/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ABeirut_Corniche%2C_Beirut%2C_Lebanon.jpg",
+  "size": [
+   4000,
+   3000
+  ]
+ },
+ "BFS": {
+  "city": "Belfast",
+  "artist": "Dmitry A. Mottl",
+  "license": "CC BY-SA 3.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AHMS_Belfast_with_rainbow.jpg",
+  "size": [
+   3000,
+   2000
+  ]
+ },
+ "BGO": {
+  "city": "Bergen",
+  "artist": "Diego Delso",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AVista_de_Bergen_desde_la_monta%C3%B1a_Fl%C3%B8yen%2C_Noruega%2C_2019-09-08%2C_DD_27-31_PAN.jpg",
+  "size": [
+   18370,
+   4251
+  ]
+ },
+ "BVB": {
+  "city": "Boa Vista",
+  "artist": "Ximonic, Simo Räsänen",
+  "license": "CC BY-SA 3.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ACoast_at_northwestern_Boa_Vista%2C_2010_12.jpg",
+  "size": [
+   6460,
+   1490
+  ]
+ },
+ "CBR": {
+  "city": "Canberra",
+  "artist": "Thennicke",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AOld_and_new_Parliament_Houses%3B_Canberra_Australia.jpg",
+  "size": [
+   5494,
+   3090
+  ]
+ },
+ "CEI": {
+  "city": "Chiang Rai",
+  "artist": "Chainwit.",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AChiang_Rai_Wat_Chet_Yot_%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B9%80%E0%B8%88%E0%B9%87%E0%B8%94%E0%B8%A2%E0%B8%AD%E0%B8%94_%E0%B9%80%E0%B8%8A%E0%B8%B5%E0%B8%A2%E0%B8%87%E0%B8%A3%E0%B8%B2%E0%B8%A2_%28October_2021%29_-_Ubosot_%E0%B8%AD%E0%B8%B8%E0%B9%82%E0%B8%9A%E0%B8%AA%E0%B8%96.jpg",
+  "size": [
+   4032,
+   3024
+  ]
+ },
+ "CEK": {
+  "city": "Tcheliabinsk",
+  "artist": "Sharapov Andrey",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ATaganai%2C_Chelyabinsk_Oblast%2C_Russia_2017.jpg",
+  "size": [
+   6000,
+   4000
+  ]
+ },
+ "CGP": {
+  "city": "Chittagong",
+  "artist": "Md. T Mahtab",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AChittagong_War_Cemetery%2C_Chattogram%2C_Bangladesh_%282%29.jpg",
+  "size": [
+   5914,
+   3402
+  ]
+ },
+ "CHS": {
+  "city": "Charleston",
+  "artist": "DXR",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3A9_and_15_East_Battery%2C_Charleston_SC_20160704_1.jpg",
+  "size": [
+   6127,
+   4595
+  ]
+ },
+ "CLE": {
+  "city": "Cleveland",
+  "artist": "EDrost88",
+  "license": "CC BY 2.0",
+  "license_url": "https://creativecommons.org/licenses/by/2.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3A2024_Solar_Eclipse_over_Cleveland_Terminal_Tower_-_53650722351.jpg",
+  "size": [
+   8256,
+   5504
+  ]
+ },
+ "CVG": {
+  "city": "Cincinnati",
+  "artist": "King of Hearts",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AJohn_A_Roebling_Suspension_Bridge_Cincinnati_September_2026.jpg",
+  "size": [
+   4960,
+   2790
+  ]
+ },
+ "CWB": {
+  "city": "Curitiba",
+  "artist": "Rodrigo.Argenton",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AEstufa_principal_do_Jardim_Bot%C3%A2nico_de_Curitiba_02.jpg",
+  "size": [
+   5039,
+   3456
+  ]
+ },
+ "DBV": {
+  "city": "Dubrovnik",
+  "artist": "Diego Delso",
+  "license": "CC BY-SA 3.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ACasco_viejo_de_Dubrovnik%2C_Croacia%2C_2014-04-14%2C_DD_04.JPG",
+  "size": [
+   5218,
+   2840
+  ]
+ },
+ "DEB": {
+  "city": "Debrecen",
+  "artist": "Pudelek (Marcin Szala)",
+  "license": "CC BY-SA 3.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ADebrecen_-_Protestant_Great_Church.JPG",
+  "size": [
+   2535,
+   1944
+  ]
+ },
+ "DLC": {
+  "city": "Dalian",
+  "artist": "CEphoto, Uwe Aranas",
+  "license": "CC BY-SA 3.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ADalian_China_Lighthouse-in-Dalian-Bay-01.jpg",
+  "size": [
+   4272,
+   2848
+  ]
+ },
+ "HDY": {
+  "city": "Hat Yai",
+  "artist": "Dominic Nelson",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AHat_Yai_-_Wat_Thawararam_-_Sep_2024.jpg",
+  "size": [
+   5685,
+   3790
+  ]
+ },
+ "HIJ": {
+  "city": "Hiroshima",
+  "artist": "Jakub Hałun",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3A20100722_Hiroshima_Shukkeien_4387.jpg",
+  "size": [
+   4288,
+   2848
+  ]
+ },
+ "HLZ": {
+  "city": "Hamilton",
+  "artist": "King of Hearts",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AHamilton_Park_Jersey_City_November_2021_007.jpg",
+  "size": [
+   5100,
+   3400
+  ]
+ },
+ "HSA": {
+  "city": "Turkestan",
+  "artist": "Petar Milošević",
+  "license": "CC BY-SA 3.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ATurkistan.jpg",
+  "size": [
+   4448,
+   3056
+  ]
+ },
+ "HUI": {
+  "city": "Hué",
+  "artist": "CEphoto, Uwe Aranas",
+  "license": "CC BY-SA 3.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AHue_Vietnam_Tomb-of-Emperor-Minh-Mang-03.jpg",
+  "size": [
+   4272,
+   2848
+  ]
+ },
+ "INI": {
+  "city": "Niš",
+  "artist": "MrPanyGoff",
+  "license": "CC BY-SA 3.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ABali_Bey_Mosque_-_Nish_Fortress_-_2.jpg",
+  "size": [
+   2870,
+   1900
+  ]
+ },
+ "JAI": {
+  "city": "Jaipur",
+  "artist": "Jakub Hałun",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3A20191218_Mubarak_Mahal%2C_City_Palace%2C_Jaipur_0936_9032.jpg",
+  "size": [
+   4947,
+   3289
+  ]
+ },
+ "JOG": {
+  "city": "Yogyakarta",
+  "artist": "CEphoto, Uwe Aranas",
+  "license": "CC BY-SA 3.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AYogyakarta_Indonesia_Prambanan-temple-complex-02.jpg",
+  "size": [
+   5703,
+   2658
+  ]
+ },
+ "KGS": {
+  "city": "Kos",
+  "artist": "Ввласенко",
+  "license": "CC BY-SA 3.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ACastri_island_and_chapel_of_St._Nicholas._Kos%2C_Greece.jpg",
+  "size": [
+   5705,
+   2694
+  ]
+ },
+ "KSC": {
+  "city": "Košice",
+  "artist": "Lynx1211",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AStatne_divadlo_Kosice_%281899%29.jpg",
+  "size": [
+   7768,
+   5179
+  ]
+ },
+ "KWL": {
+  "city": "Guilin",
+  "artist": "chensiyuan",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3A1_li_jiang_guilin_yangshuo_2011.jpg",
+  "size": [
+   3983,
+   2640
+  ]
+ },
+ "KYA": {
+  "city": "Konya",
+  "artist": "Bernard Gagnon",
+  "license": "CC BY-SA 3.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AAl%C3%A2eddin_Mosque%2C_Konya_01.jpg",
+  "size": [
+   4711,
+   3284
+  ]
+ },
+ "LCG": {
+  "city": "La Corogne",
+  "artist": "Diego Delso",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AAyuntamiento%2C_La_Coru%C3%B1a%2C_Espa%C3%B1a%2C_2015-09-25%2C_DD_44.jpg",
+  "size": [
+   7227,
+   4895
+  ]
+ },
+ "LEI": {
+  "city": "Almería",
+  "artist": "Jebulon",
+  "license": "CC0",
+  "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+  "source": "https://commons.wikimedia.org/wiki/File%3AAlcazaba_1%2C_Almeria%2C_Spain.jpg",
+  "size": [
+   4559,
+   2374
+  ]
+ },
+ "LIL": {
+  "city": "Lille",
+  "artist": "Velvet",
+  "license": "CC BY-SA 3.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ALille_vue_gd_place.JPG",
+  "size": [
+   2639,
+   1799
+  ]
+ },
+ "LJG": {
+  "city": "Lijiang City",
+  "artist": "CEphoto, Uwe Aranas",
+  "license": "CC BY-SA 3.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ALijiang_Yunnan_China-Naxi-people-carrying-baskets-01.jpg",
+  "size": [
+   3597,
+   2698
+  ]
+ },
+ "LPQ": {
+  "city": "Luang Prabang",
+  "artist": "Basile Morin",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AView_of_Mount_Phou_Si_and_Mekong_bank_at_sunset_seen_from_Wat_Chomphet_in_Luang_Prabang_Laos.jpg",
+  "size": [
+   6720,
+   4200
+  ]
+ },
+ "LWN": {
+  "city": "Gyumri",
+  "artist": "Petar Milošević",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AHoly_Saviour%27s_Church%2C_Gyumri%2C_Armenia_%282026%29.jpg",
+  "size": [
+   7294,
+   5496
+  ]
+ },
+ "MES": {
+  "city": "Medan",
+  "artist": "CEphoto, Uwe Aranas",
+  "license": "CC BY-SA 3.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ASandakan-Sabah_Medan-Selera-Tun-Razak-01.jpg",
+  "size": [
+   5760,
+   3840
+  ]
+ },
+ "MPL": {
+  "city": "Montpellier",
+  "artist": "Christian Ferrer",
+  "license": "CC BY 4.0",
+  "license_url": "https://creativecommons.org/licenses/by/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3APasserelle_du_Moulin_de_l%27Ev%C3%AAque%2C_Montpellier_cf01.jpg",
+  "size": [
+   7286,
+   2915
+  ]
+ },
+ "MQM": {
+  "city": "Mardin",
+  "artist": "Nevit Dilmen",
+  "license": "CC BY-SA 3.0",
+  "license_url": "http://creativecommons.org/licenses/by-sa/3.0/",
+  "source": "https://commons.wikimedia.org/wiki/File%3AMardin_P1030274_20080423101837.JPG",
+  "size": [
+   3054,
+   2278
+  ]
+ },
+ "NAT": {
+  "city": "Natal",
+  "artist": "Matti Blume",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3APonta_Negra%2C_Natal_%2820150814-DSC05647%29.jpg",
+  "size": [
+   3842,
+   2572
+  ]
+ },
+ "NCU": {
+  "city": "Noukous",
+  "artist": "Petar Milošević",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AAmudarya_by_Nukus%2C_Uzbekistan_%28%D0%90%D0%BC%D1%83%D0%B4%D0%B0%D1%80%D1%8C%D1%8F_%D1%80%D1%8F%D0%B4%D0%BE%D0%BC_%D0%B3%D0%BE%D1%80%D0%BE%D0%B4%D0%B0_%D0%9D%D1%83%D0%BA%D1%83%D1%81%29.jpg",
+  "size": [
+   4591,
+   2597
+  ]
+ },
+ "NGB": {
+  "city": "Ningbo",
+  "artist": "DXR",
+  "license": "CC BY-SA 3.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AView_on_Ningbo_from_Howard_Johnson_Hotel%2C_Ningbo%2C_Zhejiang_120530.jpg",
+  "size": [
+   2747,
+   1819
+  ]
+ },
+ "OAJ": {
+  "city": "Jacksonville",
+  "artist": "“Jon Zander (Digon3)”",
+  "license": "CC BY-SA 3.0",
+  "license_url": "http://creativecommons.org/licenses/by-sa/3.0/",
+  "source": "https://commons.wikimedia.org/wiki/File%3AJacksonville_Skyline_Panorama_2.jpg",
+  "size": [
+   4437,
+   1500
+  ]
+ },
+ "ORK": {
+  "city": "Cork",
+  "artist": "This Photo was taken by Timothy A. Gonsalves.  Feel free to use my photos, but p",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AEngine_House_Allihies_Copper_Mine_County_Cork_Jun08_DSC00429.jpg",
+  "size": [
+   1992,
+   1494
+  ]
+ },
+ "ORN": {
+  "city": "Oran",
+  "artist": "Terki Hassaine Samir",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ASebkha_D%27Oran.jpg",
+  "size": [
+   5608,
+   3619
+  ]
+ },
+ "PBH": {
+  "city": "Paro",
+  "artist": "Original:  Nina R from Africa\n\nDerivative work:  UnpetitproleX",
+  "license": "CC BY 2.0",
+  "license_url": "https://creativecommons.org/licenses/by/2.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AParo_Taktsang%2C_Bhutan_%28edited%29.jpg",
+  "size": [
+   3819,
+   2501
+  ]
+ },
+ "PEE": {
+  "city": "Perm",
+  "artist": "Hamerani",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AKhokhlovka_is_an_architectural_and_ethnographic_open-air_museum_in_Perm_Krai%2C_Russia.jpg",
+  "size": [
+   6016,
+   4016
+  ]
+ },
+ "PEG": {
+  "city": "Pérouse",
+  "artist": "Timothy A. Gonsalves",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AAssisi_Plains_South_Perugia_Italy_Sep19_D72_12040.jpg",
+  "size": [
+   5255,
+   3503
+  ]
+ },
+ "PIT": {
+  "city": "Pittsburgh",
+  "artist": "Dllu",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ADowntown_Pittsburgh_from_Duquesne_Incline_in_the_morning.jpg",
+  "size": [
+   6741,
+   4501
+  ]
+ },
+ "PKR": {
+  "city": "Pokhara",
+  "artist": "Nabin845",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AWater_fall_Pokhara.jpg",
+  "size": [
+   5184,
+   3456
+  ]
+ },
+ "POA": {
+  "city": "Porto Alegre",
+  "artist": "Cristine Denardi Huff",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3APorto_Alegre_por_Cristine_Huff_24.jpg",
+  "size": [
+   4706,
+   3137
+  ]
+ },
+ "PRI": {
+  "city": "Île Praslin",
+  "artist": "Tobi 87",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3APraslin_vom_Nid_d%27Aigle.jpg",
+  "size": [
+   5000,
+   1692
+  ]
+ },
+ "QSR": {
+  "city": "Salerne",
+  "artist": "Bernard Gagnon",
+  "license": "CC BY 4.0",
+  "license_url": "https://creativecommons.org/licenses/by/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AArechi_Castle_%28Salerno%29.jpg",
+  "size": [
+   3316,
+   2211
+  ]
+ },
+ "RMQ": {
+  "city": "Taichung",
+  "artist": "Tiouraren (Y.-C. Tsai)",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ATaichung_Mosque_November_2023.jpg",
+  "size": [
+   5257,
+   3724
+  ]
+ },
+ "RUN": {
+  "city": "Saint Denis",
+  "artist": "B.navez",
+  "license": "CC BY-SA 3.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AR%C3%A9union_PitonFournaise_Crat%C3%A8reRivals_surroundings2.JPG",
+  "size": [
+   3861,
+   1911
+  ]
+ },
+ "RVN": {
+  "city": "Rovaniemi",
+  "artist": "kallerna",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AKemijoki_Rovaniemi.jpg",
+  "size": [
+   8000,
+   2470
+  ]
+ },
+ "SAC": {
+  "city": "Sacramento",
+  "artist": "Frank Schulenburg",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ASacramento_Engine_Company_No._3%2C_Old_Sacramento-4042.jpg",
+  "size": [
+   5607,
+   3154
+  ]
+ },
+ "SNN": {
+  "city": "Shannon",
+  "artist": "DXR",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AView_of_northern_N11_bridge_and_Shannon_Quay%2C_Enniscorthy_20150806_1.jpg",
+  "size": [
+   6549,
+   4678
+  ]
+ },
+ "SUI": {
+  "city": "Soukhoumi",
+  "artist": "Alexxx1979",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AAbkhazia._Sukhumi_P9130524_2600.jpg",
+  "size": [
+   3900,
+   2600
+  ]
+ },
+ "SVG": {
+  "city": "Stavanger",
+  "artist": "kallerna",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AStavanger_aerial_3.jpg",
+  "size": [
+   4200,
+   2800
+  ]
+ },
+ "SZG": {
+  "city": "Salzbourg",
+  "artist": "Uoaei1",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ASalzburg_Altstadt_Panorama_20170409_02.jpg",
+  "size": [
+   12131,
+   5580
+  ]
+ },
+ "TLV": {
+  "city": "Tel Aviv",
+  "artist": "אילן ארד",
+  "license": "CC BY-SA 3.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ATel_Aviv_Port_Lowshot.jpg",
+  "size": [
+   3532,
+   2312
+  ]
+ },
+ "TMP": {
+  "city": "Tampere",
+  "artist": "kallerna",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ATampere_Theatre_1.jpg",
+  "size": [
+   5420,
+   3565
+  ]
+ },
+ "TOS": {
+  "city": "Tromsø",
+  "artist": "Virtual-Pano",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3A0511_Nordlys_approaching_Tromso_Bridge_-_Tromso%2C_Norway_-_V-P.jpg",
+  "size": [
+   6831,
+   4557
+  ]
+ },
+ "TSN": {
+  "city": "Tianjin",
+  "artist": "ermell",
+  "license": "CC BY-SA 3.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AChina_Tianjin_5227506_7_8N.jpg",
+  "size": [
+   4276,
+   3210
+  ]
+ },
+ "TSR": {
+  "city": "Timişoara",
+  "artist": "Tournasol7",
+  "license": "CC BY 4.0",
+  "license_url": "https://creativecommons.org/licenses/by/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AStrada_Eugeniu_de_Savoya_1_in_Timisoara_%281%29.jpg",
+  "size": [
+   5431,
+   3667
+  ]
+ },
+ "ULH": {
+  "city": "Al-'Ula",
+  "artist": "Ahmad AlHasanat",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AMada%27in_Saleh_2017.jpg",
+  "size": [
+   7360,
+   4912
+  ]
+ },
+ "UTH": {
+  "city": "Udon Thani",
+  "artist": "Stefan Fussan",
+  "license": "CC BY-SA 3.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AUdon_Thani_-_The_City_Pillar_Shrine_-_0002.jpg",
+  "size": [
+   4762,
+   3183
+  ]
+ },
+ "VCS": {
+  "city": "Côn Đảo",
+  "artist": "[Tycho]  talk , http://shansov.net",
+  "license": "CC BY-SA 3.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AConDao_park_dam.jpg",
+  "size": [
+   6223,
+   2529
+  ]
+ },
+ "VIX": {
+  "city": "Vitória",
+  "artist": "Vitor Jubini/MTur",
+  "license": "Public domain",
+  "license_url": "",
+  "source": "https://commons.wikimedia.org/wiki/File%3AVitorJubini_TerceiraPonte_Vitoria_ES_%2827121005458%29.jpg",
+  "size": [
+   4960,
+   3307
+  ]
+ },
+ "VNS": {
+  "city": "Vârânasî",
+  "artist": "Marcin Białek",
+  "license": "CC BY-SA 3.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AVaranasi_Munshi_Ghat3.jpg",
+  "size": [
+   2629,
+   1833
+  ]
+ },
+ "YGK": {
+  "city": "Kingston",
+  "artist": "DXR",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ACity_Hall%2C_Kingston%2C_East_view_20170416_1.jpg",
+  "size": [
+   5663,
+   3765
+  ]
+ },
+ "ZAD": {
+  "city": "Zadar",
+  "artist": "Berthold Werner",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AZadar_BW_2024-09-29_10-52-43.jpg",
+  "size": [
+   6016,
+   4000
+  ]
+ },
+ "ZTH": {
+  "city": "Zakinthos",
+  "artist": "Bouke ten Cate",
+  "license": "CC BY 4.0",
+  "license_url": "https://creativecommons.org/licenses/by/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3ABlue_Caves_Zakynthos.jpg",
+  "size": [
+   5613,
+   3742
+  ]
+ },
+ "ZUH": {
+  "city": "Zhuhai",
+  "artist": "Dllu",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File%3AZhuhai_Fisher_Girl_statue_dllu.jpg",
+  "size": [
+   11419,
+   6417
+  ]
  }
 }
