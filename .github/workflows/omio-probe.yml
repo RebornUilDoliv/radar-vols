@@ -16,7 +16,13 @@ jobs:
         env:
           IMPACT_ACCOUNT_SID: ${{ secrets.IMPACT_ACCOUNT_SID }}
           AUTH_TOKEN_IMPACT: ${{ secrets.AUTH_TOKEN_IMPACT }}
-        run: python -c "import omio; omio.CATALOGS = {'fr': 12203}; import sys; sys.argv.append('--force'); omio.main()"
+        run: |
+          python - <<'PY'
+          import sys, omio
+          omio.CATALOGS = {"fr": 12203}
+          sys.argv.append("--force")
+          omio.main()
+          PY
       - uses: actions/upload-artifact@v4
         with:
           name: omio
