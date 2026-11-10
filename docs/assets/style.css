@@ -284,6 +284,8 @@ details p { margin-top: 6px; color: var(--g3); }
   .filters { grid-template-columns: repeat(3, 1fr); }
   .two { grid-template-columns: 1fr; }
   .foot-in { grid-template-columns: 1fr; }
+  .foot-links { grid-template-columns: repeat(3, auto); justify-content: start; gap: 4px 28px; }
+  .foot-links a[href^="mailto"] { grid-column: 1 / -1; }
 }
 @media (max-width: 640px) {
   .nav { inset: 6px 6px auto; padding: 14px 16px; }
@@ -345,6 +347,7 @@ details p { margin-top: 6px; color: var(--g3); }
   .row h3 a::after { content: ""; position: absolute; inset: 0; }
   .row .go { display: none; }
   .row .go.buy { position: relative; z-index: 1; display: flex; grid-column: 1 / -1; min-height: 44px; }
+  .foot-links { grid-template-columns: 1fr 1fr; gap: 0 20px; }
   .foot-links a { display: flex; align-items: center; min-height: 44px; }
   .news-consent input { width: 24px; height: 24px; flex: none; }
   .news-consent { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; }
