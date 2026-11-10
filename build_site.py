@@ -1366,14 +1366,36 @@ def musts_photo(p, code, name):
 FR_NAMES = {}
 
 
+TIQETS_LANGS = {"fr", "en", "es", "de", "it", "pt", "nl"}
+_TIQETS = None
+
+
+def tiqets_cities():
+    """Numéros de ville Tiqets (fichier officiel relié aux codes du site), voir tiqets_cities.json."""
+    global _TIQETS
+    if _TIQETS is None:
+        path = ROOT / "tiqets_cities.json"
+        _TIQETS = {c: v for c, v in json.loads(path.read_text()).items() if not c.startswith("_")} if path.exists() else {}
+    return _TIQETS
+
+
 def musts_block(p, code, name):
-    """Barre « Les incontournables » (fermée par défaut) ; rien si Klook ne connaît pas la ville."""
+    """Barre « Les incontournables » (fermée par défaut) : activités Tiqets dans la langue du site quand la ville
+    est chez Tiqets, sinon activités Klook ; rien si aucun des deux ne connaît la ville."""
     klook = str(klook_cities().get(code, ""))
-    if not klook.isdigit():
+    tiqets = tiqets_cities().get(code)
+    if not tiqets and not klook.isdigit():
         return ""
     w = MUSTS_WORDS.get(p.lang, MUSTS_WORDS["en"])
-    widget = (f"https://tpembd.com/content?currency=EUR&trs=597805&shmarker=800338&locale=en&city_id={klook}"
-              f"&category=1&amount=3&powered_by=false&campaign_id=137&promo_id=4497")
+    if tiqets:
+        language = p.lang if p.lang in TIQETS_LANGS else "en"
+        widget = (f"https://tpembd.com/content?currency=EUR&trs=597805&shmarker=800338&language={language}&locale={tiqets}"
+                  f"&layout=horizontal&cards=4&powered_by=false&campaign_id=89&promo_id=3947")
+        kind = "tiqets"
+    else:
+        widget = (f"https://tpembd.com/content?currency=EUR&trs=597805&shmarker=800338&locale=en&city_id={klook}"
+                  f"&category=1&amount=3&powered_by=false&campaign_id=137&promo_id=4497")
+        kind = "klook"
     lang = KLOOK_LANG.get(p.lang, "en-US")
     all_url = radar.partner_link(f"https://www.klook.com/{lang}/search/result/?query={urllib.parse.quote(name)}",
                                  {**p.site, "program": p.site.get("hotels_program"), "campaign": p.site.get("hotels_campaign")}) \
@@ -1389,7 +1411,7 @@ def musts_block(p, code, name):
         <span class="musts-title">{e(w[1].format(city=name))}</span>
         <span class="musts-sub">{e(w[2])}</span></span>
       <span class="musts-cta"><span class="when-closed">{e(w[3])}</span><span class="when-open">{e(w[4])}</span>{chev}</span></summary>
-    <div class="musts-body"><div class="musts-widget" data-src="{e(widget)}"></div>
+    <div class="musts-body"><div class="musts-widget {kind}" data-src="{e(widget)}"></div>
       <p class="musts-links"><a class="musts-all" href="{e(all_url)}" target="_blank" rel="nofollow sponsored noopener">{e(w[5].format(city=name))} ↗</a>
       <a class="musts-alt" href="{e(tiqets_url)}" target="_blank" rel="nofollow sponsored noopener">{e(w[6])} ↗</a></p></div>
   </details>"""
