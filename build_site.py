@@ -429,7 +429,7 @@ def klook_cities():
     return {code: value for code, value in json.loads(path.read_text()).items() if not code.startswith("_")}
 
 
-def hotel_search(p):
+def hotel_search(p, cities=()):
     """Onglets Vols / Hôtels et recherche d'hôtels Klook (villes relevées dans klook_cities.json)."""
     fr = p.lang == "fr"
     words = dict(zip(HOTEL_KEYS, HOTEL_WORDS.get(p.lang, HOTEL_WORDS["en"])))
@@ -438,7 +438,7 @@ def hotel_search(p):
     guests = "".join(f"<option{' selected' if n == 2 else ''}>{n}</option>" for n in range(1, 7))
     tabs = (f'<div class="search-tabs" role="tablist"><button type="button" class="on" data-show="search">{words["flights"]}</button>'
             f'<button type="button" data-show="hotel-search">{words["hotels"]}</button>'
-            + (f'<button type="button" data-show="train-search">{TRAIN_WORDS.get(p.lang, TRAIN_WORDS["en"])[0]}</button>' if OMIO_PARTNER_ID else "")
+            + (f'<button type="button" data-show="train-search">{TRAIN_WORDS.get(p.lang, TRAIN_WORDS["en"])[0]}</button>' if omio_data(p.lang) else "")
             + '</div>')
     form = f"""<form class="search hotel-search" id="hotel-search" data-cities="{data}" data-lang="{KLOOK_LANG.get(p.lang, "en-US")}" autocomplete="off" hidden>
   <div class="field grow"><label for="h-city">{words['city']}</label><input id="h-city" placeholder="{e(words['place'])}" required>
@@ -450,40 +450,96 @@ def hotel_search(p):
   <p class="form-error" id="hotel-error" role="alert" hidden>{words['pick']}</p>
   <p class="hotel-note">{words['note']}</p>
 </form>"""
-    return tabs, form + train_search(p)
+    return tabs, form + train_search(p, cities)
 
 
-# Omio (trains, bus, ferries) : programme d'affiliation direct sur Impact, accepté le 10/11/2026.
-OMIO_PARTNER_ID = ""  # 8164987 (compte Impact) : refusé par Omio le 10/11 « partner not found », en attente de leur activation
-OMIO_LOCALES = {"fr", "en", "es", "de", "it", "pt", "nl", "tr", "zh", "ko"}
-OMIO_DOMAINS = {"fr": "fr", "es": "es", "de": "de", "it": "it", "nl": "nl"}
+# Omio (trains, bus, ferries) : programme d'affiliation direct sur Impact (compte 8164987), accepté le 10/11/2026.
+# omio.py récupère chaque jour les catalogues Omio dans docs/omio/<langue>.json ; la recherche se fait sur le site
+# et le bouton de réservation mène chez Omio avec le lien de suivi Impact.
+OMIO_FALLBACK = "en"
+TRAIN_KEYS = ("tab", "note", "from", "from_place", "to", "to_place", "go", "price_from", "book", "none", "pick", "more", "loading")
 TRAIN_WORDS = {
-    "fr": ("Train & bus", "Tu réserves chez Omio, au prix affiché. Trains, bus et ferries dans toute l'Europe et au-delà."),
-    "en": ("Trains & buses", "You book with Omio at the price shown. Trains, buses and ferries across Europe and beyond."),
-    "es": ("Tren y bus", "Reservas en Omio al precio indicado. Trenes, buses y ferris en toda Europa y más allá."),
-    "de": ("Zug & Bus", "Du buchst bei Omio zum angezeigten Preis. Züge, Busse und Fähren in ganz Europa und darüber hinaus."),
-    "it": ("Treno e bus", "Prenoti su Omio al prezzo indicato. Treni, bus e traghetti in tutta Europa e oltre."),
-    "pt": ("Trem e ônibus", "Você reserva na Omio pelo preço exibido. Trens, ônibus e balsas na Europa e além."),
-    "nl": ("Trein & bus", "Je boekt bij Omio, tegen de getoonde prijs. Treinen, bussen en veerboten in heel Europa en daarbuiten."),
-    "tr": ("Tren ve otobüs", "Omio'da gösterilen fiyattan rezervasyon yaparsın. Avrupa ve ötesinde tren, otobüs ve feribot."),
-    "ar": ("قطار وحافلة", "تحجز على Omio بالسعر المعروض. قطارات وحافلات وعبّارات في أوروبا وخارجها."),
-    "zh": ("火车和巴士", "在 Omio 按显示价格预订。覆盖欧洲及更多地区的火车、巴士和渡轮。"),
-    "ko": ("기차·버스", "Omio에서 표시된 가격으로 예약합니다. 유럽 등지의 기차, 버스, 페리."),
+    "fr": ("Train & bus", "Prix « dès » relevés chaque jour par Omio. Tu réserves chez Omio, au prix affiché.",
+           "Départ", "Paris, Lyon, Madrid…", "Arrivée", "Partout", "Rechercher", "dès", "Voir les horaires",
+           "Pas encore de prix pour ce trajet ici : vois directement les horaires chez Omio.", "Choisis une ville de départ dans la liste.",
+           "Chercher sur Omio", "Chargement des trajets…"),
+    "en": ("Trains & buses", "“From” prices updated daily by Omio. You book with Omio at the price shown.",
+           "From", "London, Paris, Madrid…", "To", "Anywhere", "Search", "from", "See times",
+           "No price for this route here yet: check times directly on Omio.", "Pick a departure city from the list.",
+           "Search on Omio", "Loading routes…"),
+    "es": ("Tren y bus", "Precios «desde» actualizados cada día por Omio. Reservas en Omio al precio indicado.",
+           "Salida", "Madrid, Barcelona, París…", "Llegada", "Cualquier destino", "Buscar", "desde", "Ver horarios",
+           "Aún no hay precio para este trayecto aquí: consulta los horarios en Omio.", "Elige una ciudad de salida de la lista.",
+           "Buscar en Omio", "Cargando trayectos…"),
+    "de": ("Zug & Bus", "„Ab“-Preise, täglich von Omio aktualisiert. Du buchst bei Omio zum angezeigten Preis.",
+           "Abfahrt", "Berlin, München, Paris…", "Ziel", "Überallhin", "Suchen", "ab", "Verbindungen ansehen",
+           "Für diese Strecke gibt es hier noch keinen Preis: sieh dir die Verbindungen direkt bei Omio an.", "Wähle eine Abfahrtsstadt aus der Liste.",
+           "Bei Omio suchen", "Strecken werden geladen…"),
+    "it": ("Treno e bus", "Prezzi «da» aggiornati ogni giorno da Omio. Prenoti su Omio al prezzo indicato.",
+           "Partenza", "Roma, Milano, Parigi…", "Arrivo", "Ovunque", "Cerca", "da", "Vedi gli orari",
+           "Nessun prezzo per questa tratta qui: guarda gli orari direttamente su Omio.", "Scegli una città di partenza dall'elenco.",
+           "Cerca su Omio", "Caricamento tratte…"),
+    "pt": ("Trem e ônibus", "Preços «a partir de» atualizados todos os dias pela Omio. Você reserva na Omio pelo preço exibido.",
+           "Partida", "Lisboa, Porto, Madri…", "Chegada", "Qualquer lugar", "Buscar", "a partir de", "Ver horários",
+           "Ainda não há preço para este trajeto aqui: veja os horários diretamente na Omio.", "Escolha uma cidade de partida na lista.",
+           "Buscar na Omio", "Carregando trajetos…"),
+    "nl": ("Trein & bus", "Vanafprijzen, dagelijks bijgewerkt door Omio. Je boekt bij Omio, tegen de getoonde prijs.",
+           "Vertrek", "Amsterdam, Brussel, Parijs…", "Bestemming", "Overal", "Zoeken", "vanaf", "Bekijk tijden",
+           "Nog geen prijs voor deze route hier: bekijk de tijden direct bij Omio.", "Kies een vertrekstad uit de lijst.",
+           "Zoeken bij Omio", "Routes laden…"),
+    "tr": ("Tren ve otobüs", "Omio'nun her gün güncellediği başlangıç fiyatları. Omio'da gösterilen fiyattan rezervasyon yaparsın.",
+           "Kalkış", "Londra, Paris, Roma…", "Varış", "Her yer", "Ara", "başlangıç", "Saatleri gör",
+           "Bu güzergah için burada henüz fiyat yok: saatlere doğrudan Omio'dan bak.", "Listeden bir kalkış şehri seç.",
+           "Omio'da ara", "Güzergahlar yükleniyor…"),
+    "ar": ("قطار وحافلة", "أسعار تبدأ من، تحدّثها Omio يوميًا. تحجز على Omio بالسعر المعروض.",
+           "المغادرة", "لندن، باريس، روما…", "الوصول", "أي مكان", "بحث", "ابتداءً من", "عرض المواعيد",
+           "لا يوجد سعر لهذا المسار هنا بعد: اطّلع على المواعيد مباشرة في Omio.", "اختر مدينة المغادرة من القائمة.",
+           "البحث في Omio", "جارٍ تحميل المسارات…"),
+    "zh": ("火车和巴士", "Omio 每日更新的起价。在 Omio 按显示价格预订。",
+           "出发", "巴黎、伦敦、罗马…", "到达", "任意目的地", "搜索", "起", "查看时刻",
+           "这里暂时没有该线路的价格：请直接在 Omio 查看时刻。", "请从列表中选择出发城市。",
+           "在 Omio 搜索", "正在加载线路…"),
+    "ko": ("기차·버스", "Omio가 매일 업데이트하는 최저가입니다. Omio에서 표시된 가격으로 예약합니다.",
+           "출발", "런던, 파리, 로마…", "도착", "어디든", "검색", "부터", "시간표 보기",
+           "이 노선의 가격은 아직 없습니다. Omio에서 시간표를 확인하세요.", "목록에서 출발 도시를 선택하세요.",
+           "Omio에서 검색", "노선 불러오는 중…"),
 }
 
 
-def train_search(p):
-    """Recherche trains / bus Omio (widget officiel, chargé seulement au clic sur l'onglet)."""
-    if not OMIO_PARTNER_ID:
+def omio_data(lang):
+    """Fichier de trajets Omio utilisé pour cette langue (ou None s'il n'a pas encore été récupéré)."""
+    for code in (lang, OMIO_FALLBACK):
+        if (DOCS / "omio" / f"{code}.json").exists():
+            return code
+    return None
+
+
+def train_search(p, cities=()):
+    """Recherche trains / bus sur le site : les trajets Omio sont chargés au clic sur l'onglet."""
+    data = omio_data(p.lang)
+    if not data:
         return ""
-    locale = p.lang if p.lang in OMIO_LOCALES else "en"
-    base = f"https://www.omio.com/gcs-proxy/b2b-nemo-prod/bundle/{locale}/bundle"
-    note = TRAIN_WORDS.get(p.lang, TRAIN_WORDS["en"])[1]
-    return f"""<div class="search train-search" id="train-search" data-js="{base}.js" data-css="{base}.css" hidden>
-  <div data-omio-widget="true" data-partner-id="{e(OMIO_PARTNER_ID)}" data-layout="fluid" data-theme="white" data-currency="EUR"
-       data-domain="{OMIO_DOMAINS.get(p.lang, 'com')}" data-default-travel-mode="train" data-new-tab="true"></div>
-  <p class="hotel-note">{note}</p>
-</div>"""
+    w = dict(zip(TRAIN_KEYS, TRAIN_WORDS.get(p.lang, TRAIN_WORDS["en"])))
+    texts = e(json.dumps({k: w[k] for k in ("price_from", "book", "none", "pick", "more", "loading")}, ensure_ascii=False))
+    # photos du site pour les villes qu'Omio ne fournit pas (nom de la ville dans la langue -> code de la photo)
+    photos = {}
+    known = {c["code"]: c.get("city", c["code"]) for c in cities}
+    known.update({code: name for code, name in p.names.items() if isinstance(name, str)})
+    for code in sorted(known):
+        if photo_exists(code):
+            photos.setdefault(p.city(code, known[code]).lower(), code)
+    photos = e(json.dumps(photos, ensure_ascii=False, separators=(",", ":")))
+    return f"""<form class="search train-search" id="train-search" data-src="/omio/{data}.json" data-lang="{p.lang}" data-words="{texts}"
+  data-photos="{photos}" data-photo-root="{p.base}assets/photos/" autocomplete="off" hidden>
+  <div class="field grow"><label for="t-from">{w['from']}</label><input id="t-from" placeholder="{e(w['from_place'])}" required>
+    <ul class="suggest" hidden></ul></div>
+  <div class="field grow"><label for="t-to">{w['to']}</label><input id="t-to" placeholder="{e(w['to_place'])}">
+    <ul class="suggest" hidden></ul></div>
+  <button class="search-go" type="submit">{w['go']}</button>
+  <p class="form-error" id="train-error" role="alert" hidden>{w['pick']}</p>
+  <div class="train-results" id="train-results" aria-live="polite"></div>
+  <p class="hotel-note">{w['note']}</p>
+</form>"""
 
 
 def home(p, cities, offers, updated, origins=()):
@@ -1677,7 +1733,7 @@ def build_language(p, data, cities, updated_at, groups, origins=()):
     if lang != "fr":
         write(folder / "prices.json", json.dumps({**data, "offers": translated}, ensure_ascii=False, separators=(",", ":")) + "\n")
     home_html = home(p, cities, offers, updated, origins)
-    tabs, hotels = hotel_search(p)  # onglets Vols / Hôtels au-dessus de la recherche
+    tabs, hotels = hotel_search(p, cities)  # onglets Vols / Hôtels au-dessus de la recherche
     flights = search_form(p)
     home_html = home_html.replace(flights, tabs + flights + hotels, 1)
     write(folder / "index.html", home_html)

@@ -448,9 +448,36 @@ details p { margin-top: 6px; color: var(--g3); }
 .hotel-search .hotel-note { grid-column: 1 / -1; margin: 0; color: var(--g3); font-size: 13px; }
 .hotel-search[hidden], .search[hidden] { display: none; }
 .search-tabs { flex-wrap: wrap; }
-.train-search { display: block; }
-.train-search [data-omio-widget] { min-height: 64px; }
-.train-search .hotel-note { margin: 10px 0 0; color: var(--g3); font-size: 13px; }
+.train-search { grid-template-columns: 1fr 1fr auto; }
+.train-search .hotel-note, .train-search .form-error, .train-results { grid-column: 1 / -1; }
+.train-search .hotel-note { margin: 0; color: var(--g3); font-size: 13px; }
+.train-results { display: grid; gap: 14px; }
+.train-results:empty { display: none; }
+.train-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+.train-card { min-height: 180px; }
+.train-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 0 24px; }
+.train-row { display: flex; align-items: center; gap: 12px; padding: 12px 4px; color: inherit; text-decoration: none; border-bottom: 1px solid var(--g2); }
+.train-row-place { flex: 1; min-width: 0; }
+.train-row-place strong { display: block; overflow: hidden; font-weight: 600; white-space: nowrap; text-overflow: ellipsis; }
+.train-row-place span { color: var(--g3); font-size: 13px; }
+.train-row-price { font-family: "Clash Display", "Geist", sans-serif; font-size: 17px; font-weight: 500; white-space: nowrap; }
+.train-row-go { display: grid; place-items: center; width: 30px; height: 30px; flex: none; background: var(--g1); border-radius: 50%; transition: background .15s, color .15s; }
+.train-row:hover .train-row-go, .train-row:focus-visible .train-row-go { color: #fff; background: #0b0b0b; }
+.train-card .card-label strong { font-family: "Clash Display", "Geist", sans-serif; }
+.train-chip { position: absolute; z-index: 1; top: 10px; right: 10px; padding: 4px 10px; color: #0b0b0b; background: rgba(255, 255, 255, .92); border-radius: 999px; font-size: 12px; font-weight: 600; opacity: 0; transform: translateY(-4px); transition: opacity .2s, transform .2s; }
+.train-card:hover .train-chip, .train-card:focus-visible .train-chip { opacity: 1; transform: none; }
+@media (hover: none) { .train-chip { opacity: 1; transform: none; } }
+.train-none { grid-column: 1 / -1; margin: 0; color: var(--g3); }
+.train-more { grid-column: 1 / -1; justify-self: start; color: inherit; font-weight: 600; }
+@media (max-width: 640px) {
+  .train-search { grid-template-columns: 1fr; }
+  .train-cards { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .train-card { min-height: 150px; }
+  .train-card .card-label { left: 12px; right: 12px; bottom: 10px; }
+  .train-card .card-label strong { font-size: 17px; line-height: 1.2; }
+  .train-card .card-label span { font-size: 12px; }
+  .train-chip { display: none; }
+}
 @media (max-width: 760px) {
   .hotel-search { grid-template-columns: 1fr 1fr; }
   .hotel-search > .field:first-child, .hotel-search .search-go { grid-column: 1 / -1; }

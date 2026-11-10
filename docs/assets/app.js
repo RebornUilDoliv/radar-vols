@@ -220,18 +220,7 @@
           var panel = $(b.dataset.show);
           if (panel) panel.hidden = b !== button;
         });
-        /* Widget Omio : chargé une seule fois, au premier clic sur l'onglet Train & bus */
-        if (button.dataset.show === "train-search" && trains && !trains.dataset.loaded) {
-          trains.dataset.loaded = "1";
-          var css = el("link");
-          css.rel = "stylesheet";
-          css.href = trains.dataset.css;
-          document.head.appendChild(css);
-          var js = el("script");
-          js.src = trains.dataset.js;
-          js.async = true;
-          document.body.appendChild(js);
-        }
+        if (button.dataset.show === "train-search" && trains) loadTrains(trains);
       });
     });
     var cities = JSON.parse(form.dataset.cities || "[]");
@@ -276,6 +265,179 @@
       var url = "https://www.klook.com/" + form.dataset.lang + "/hotels/searchresult/?" + new URLSearchParams(params).toString();
       var link = "https://tp.media/r?" + new URLSearchParams({ marker: "800338", trs: "597805", p: "4110", campaign_id: "137", u: url }).toString();
       window.open(link, "_blank", "noopener");
+    });
+  }
+
+  /* Trains et bus Omio : trajets récupérés chaque jour (docs/omio/<langue>.json), recherche sur le site,
+     réservation chez Omio via le lien de suivi Impact. Les données ne sont chargées qu'au premier clic sur l'onglet. */
+  var trainState = null;
+  function loadTrains(form) {
+    if (trainState) return;
+    var words = JSON.parse(form.dataset.words || "{}");
+    var results = $("train-results");
+    trainState = { form: form, words: words, data: null };
+    results.textContent = words.loading;
+    fetch(form.dataset.src).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }).then(function (data) {
+      results.textContent = "";
+      trainState.data = prepareTrains(data);
+      initTrainForm(form, words, trainState.data);
+    }).catch(function () { results.textContent = ""; trainState = null; });
+  }
+
+  function prepareTrains(data) {
+    var clean = function (text) { return text.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim(); };
+    var names = data.cities.map(function (c) { return c[1]; });
+    var byOrigin = {}, priced = {};
+    data.routes.forEach(function (r) {
+      var o = names[r[0]];
+      (byOrigin[o] = byOrigin[o] || []).push(r);
+      if (r[2]) priced[o] = (priced[o] || 0) + 1;
+    });
+    /* villes de départ triées par nombre de trajets avec prix (les plus utiles d'abord) */
+    var origins = Object.keys(byOrigin).sort(function (a, b) { return (priced[b] || 0) - (priced[a] || 0) || byOrigin[b].length - byOrigin[a].length; });
+    return { raw: data, names: names, byOrigin: byOrigin, origins: origins, clean: clean };
+  }
+
+  function trainLink(d, route) {
+    var o = d.raw.cities[route[0]][0], t = d.raw.cities[route[1]][0], key = o + "_" + t;
+    if (d.raw.links[key]) return d.raw.links[key];
+    var b64 = btoa("connection_page_nt." + d.raw.site + "." + o + "." + t);
+    if (!d.raw.pad) b64 = b64.replace(/=+$/, "");
+    return d.raw.link.replace("{o}", o).replace("{d}", t).replace("{b64}", encodeURIComponent(b64));
+  }
+
+  function omioHome(d) {
+    /* lien de suivi Impact vers l'accueil Omio (quand le trajet n'est pas dans le catalogue) */
+    return d.raw.link.split("?")[0] + "?u=" + encodeURIComponent(d.raw.home || "https://www.omio.com/");
+  }
+
+  function suggestBox(input, source, onPick) {
+    var list = input.parentNode.querySelector(".suggest");
+    var close = function () { list.hidden = true; list.textContent = ""; };
+    var show = function () {
+      var clean = trainState.data.clean, wanted = clean(input.value), pool = source();
+      var found = wanted ? pool.filter(function (n) { return clean(n).indexOf(wanted) === 0; })
+        .concat(pool.filter(function (n) { return clean(n).indexOf(wanted) > 0; })).slice(0, 8) : pool.slice(0, 8);
+      list.textContent = "";
+      list.hidden = !found.length;
+      found.forEach(function (name) {
+        var option = el("button", null, name);
+        option.type = "button";
+        var choose = function () { input.value = name; input.dataset.picked = name; close(); onPick(name); };
+        option.addEventListener("mousedown", function (event) { event.preventDefault(); choose(); });
+        option.addEventListener("click", choose);
+        list.appendChild(option);
+      });
+    };
+    input.addEventListener("focus", show);
+    input.addEventListener("input", function () { delete input.dataset.picked; show(); });
+    input.addEventListener("blur", function () { setTimeout(close, 120); });
+  }
+
+  function initTrainForm(form, words, d) {
+    var from = $("t-from"), to = $("t-to"), results = $("train-results"), error = $("train-error");
+    var lang = form.dataset.lang === "zh" ? "zh-CN" : form.dataset.lang;
+    var money = function (value) {
+      try { return new Intl.NumberFormat(lang, { style: "currency", currency: d.raw.currency, maximumFractionDigits: value < 100 ? 2 : 0 }).format(value); }
+      catch (e) { return value + " " + d.raw.currency; }
+    };
+    /* photo du site pour la ville (« Lyon Part Dieu » -> photo de Lyon) quand Omio n'en fournit pas */
+    var photos = JSON.parse(form.dataset.photos || "{}");
+    var sitePhoto = function (name) {
+      var words2 = name.toLowerCase().replace(/\(.*?\)/g, "").trim().split(/[\s-]+/);
+      for (var n = words2.length; n > 0; n--) {
+        var code = photos[words2.slice(0, n).join(" ")] || photos[words2.slice(0, n).join("-")];
+        if (code) return form.dataset.photoRoot + code + "-m.jpg";
+      }
+      return "";
+    };
+    var exact = function (name) {
+      /* accepte aussi une ville tapée sans passer par la liste, si elle existe telle quelle */
+      var wanted = d.clean(name || "");
+      return d.origins.filter(function (n) { return d.clean(n) === wanted; })[0];
+    };
+    suggestBox(from, function () { return d.origins; }, function () { error.hidden = true; });
+    suggestBox(to, function () {
+      var o = from.dataset.picked || exact(from.value);
+      var routes = o ? d.byOrigin[o] || [] : [];
+      var seen = {}, out = [];
+      routes.forEach(function (r) { var n = d.names[r[1]]; if (!seen[n]) { seen[n] = 1; out.push(n); } });
+      return out.sort(function (a, b) { return a.localeCompare(b); });
+    }, function () {});
+    var photoOf = function (route) {
+      var photo = (d.raw.cities[route[1]] || [])[2];
+      return photo ? (d.raw.images || "") + photo : sitePhoto(d.names[route[1]]);
+    };
+    var priceText = function (route) { return route[2] ? words.price_from + " " + money(route[2]) : ""; };
+    var linkTo = function (item, route) { item.href = trainLink(d, route); item.target = "_blank"; item.rel = "sponsored noopener"; return item; };
+    var row = function (route) {
+      /* ligne compacte pour les destinations sans photo */
+      var item = linkTo(el("a", "train-row"), route);
+      var place = el("span", "train-row-place");
+      place.appendChild(el("strong", null, d.names[route[1]]));
+      place.appendChild(el("span", null, d.names[route[0]]));
+      item.appendChild(place);
+      item.appendChild(el("span", "train-row-price", priceText(route)));
+      item.appendChild(el("span", "train-row-go", "↗"));
+      return item;
+    };
+    var card = function (route) {
+      /* carte photo comme les destinations du site : photo, destination en grand, départ et prix dessous */
+      var item = linkTo(el("a", "card train-card"), route);
+      var img = el("img");
+      img.src = photoOf(route);
+      img.alt = "";
+      img.loading = "lazy";
+      img.onerror = function () { img.remove(); };
+      item.appendChild(img);
+      item.appendChild(el("span", "train-chip", words.book + " ↗"));
+      var label = el("span", "card-label");
+      label.appendChild(el("strong", null, d.names[route[1]]));
+      label.appendChild(el("span", null, d.names[route[0]] + (route[2] ? " · " + words.price_from + " " + money(route[2]) : "")));
+      item.appendChild(label);
+      return item;
+    };
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+      var o = from.dataset.picked || exact(from.value);
+      if (!o) { error.hidden = false; return; }
+      error.hidden = true;
+      var target = d.clean(to.value || "");
+      /* « Paris » regroupe aussi les gares de la ville (Paris Gare de Lyon, Paris Gare du Nord…) */
+      var all = [];
+      d.origins.forEach(function (name) { if (name === o || name.indexOf(o + " ") === 0) all = all.concat(d.byOrigin[name]); });
+      var routes = all.filter(function (r) { return !target || d.clean(d.names[r[1]]).indexOf(target) === 0; });
+      /* trajets avec prix d'abord, du moins cher au plus cher, un seul par destination */
+      routes.sort(function (a, b) { return (a[2] || 1e9) - (b[2] || 1e9); });
+      var shown = {};
+      routes = routes.filter(function (r) { var key = d.names[r[1]]; if (shown[key]) return false; shown[key] = 1; return true; });
+      results.textContent = "";
+      routes = routes.slice(0, target ? 12 : 30);
+      /* jusqu'à 8 grandes cartes photo, puis le reste en liste */
+      var usedPhotos = {};
+      var withPhoto = routes.filter(function (r) {
+        var src = photoOf(r);
+        if (!src || usedPhotos[src]) return false;
+        usedPhotos[src] = 1;
+        return true;
+      }).slice(0, 8);
+      var others = routes.filter(function (r) { return withPhoto.indexOf(r) < 0; });
+      if (withPhoto.length) {
+        var grid = el("div", "train-cards");
+        withPhoto.forEach(function (r) { grid.appendChild(card(r)); });
+        results.appendChild(grid);
+      }
+      if (others.length) {
+        var list = el("div", "train-list");
+        others.forEach(function (r) { list.appendChild(row(r)); });
+        results.appendChild(list);
+      }
+      if (!routes.length) {
+        results.appendChild(el("p", "train-none", words.none));
+        var more = el("a", "train-more", words.more + " ↗");
+        more.href = omioHome(d); more.target = "_blank"; more.rel = "sponsored noopener";
+        results.appendChild(more);
+      }
     });
   }
 

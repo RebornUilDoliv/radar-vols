@@ -98,8 +98,16 @@ def price(item):
 
 def build(raw):
     """Transforme les articles du catalogue en données compactes pour le site."""
+    raw = list(raw)
     cities, index, routes, links = [], {}, [], {}
-    template = site = pad = home = currency = None
+    currency = None
+    # le format de lien le plus fréquent sert de modèle ; les autres liens sont gardés tels quels
+    counts = {}
+    for item in raw:
+        parts = link_parts(str(item.get("Url") or ""))
+        if parts:
+            counts[parts] = counts.get(parts, 0) + 1
+    template, site, pad, home = max(counts, key=counts.get) if counts else (None, None, None, None)
     seen = set()
     for item in raw:
         sku = str(item.get("CatalogItemId") or "")
@@ -113,10 +121,6 @@ def build(raw):
         origin_name = (item.get("ShippingLabel") or name.split(" - ", 1)[0]).strip()
         destination_name = (item.get("Text3") or name.split(" - ", 1)[1]).strip()
         currency = currency or item.get("Currency")
-        if template is None:
-            parts = link_parts(item["Url"])
-            if parts:
-                template, site, pad, home = parts
         if not template or rebuild(template, site, pad, origin, destination) != item["Url"]:
             links[sku] = item["Url"]
         for city_id, city_name in ((origin, origin_name), (destination, destination_name)):
