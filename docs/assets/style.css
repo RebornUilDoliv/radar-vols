@@ -545,3 +545,10 @@ details p { margin-top: 6px; color: var(--g3); }
   .musts-widget.klook { height: 500px; }
   .musts-all, .musts-alt { width: 100%; justify-content: center; }
 }
+
+/* Hindi : police devanagari du système, sans espacement de lettres (il casse les ligatures) et avec plus d'interligne pour les signes au-dessus et au-dessous des lettres */
+html[lang="hi"] body, html[lang="hi"] h1, html[lang="hi"] h2, html[lang="hi"] h3, html[lang="hi"] .logo, html[lang="hi"] .row-price, html[lang="hi"] .perks strong {
+  font-family: "Clash Display", "Geist", "Kohinoor Devanagari", "Nirmala UI", "Noto Sans Devanagari", "Mangal", system-ui, sans-serif;
+}
+html[lang="hi"] * { letter-spacing: normal !important; }
+html[lang="hi"] h1, html[lang="hi"] h2, html[lang="hi"] h3, html[lang="hi"] .lead, html[lang="hi"] .musts-fold summary { line-height: 1.4; }

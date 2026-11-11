@@ -31,8 +31,8 @@ POPULAR_ORIGINS = 10             # une destination doit être desservie depuis a
 ALWAYS_LISTED = {"YQB"}          # destinations affichées même desservies depuis moins de villes
 MAX_ROUTE_PRICE = 3000           # écarte les prix aberrants
 HUB_ROWS = 60
-DEFAULT_ORIGIN = {"fr": "PAR", "en": "LON", "es": "MAD", "de": "BER", "it": "ROM", "pt": "LIS", "nl": "AMS", "tr": "IST", "ar": "RUH", "zh": "HKG", "ko": "SEL"}
-BACKUP_ORIGIN = {"ar": "DXB"}
+DEFAULT_ORIGIN = {"fr": "PAR", "en": "LON", "es": "MAD", "de": "BER", "it": "ROM", "pt": "LIS", "nl": "AMS", "tr": "IST", "ar": "RUH", "zh": "HKG", "ko": "SEL", "hi": "DEL"}
+BACKUP_ORIGIN = {"ar": "DXB", "hi": "BOM"}
 PARTNER_LANGS = ("fr", "en", "es", "de", "it", "pt")
 SOUTH_AMERICA = {"AR", "BO", "BR", "CL", "CO", "EC", "GF", "GY", "PE", "PY", "SR", "UY", "VE"}
 LOGO = (
@@ -425,6 +425,8 @@ HOTEL_WORDS = {
            "请从列表中选择城市。", "在 Klook 按显示价格预订。更多城市即将上线。"),
     "ko": ("항공권", "호텔", "도시", "리스본, 도쿄, 마라케시…", "체크인", "체크아웃", "인원", "검색",
            "목록에서 도시를 선택하세요.", "Klook에서 표시된 가격으로 예약합니다. 곧 더 많은 도시가 추가됩니다."),
+    "hi": ("उड़ानें", "होटल", "शहर", "लिस्बन, टोक्यो, माराकेश…", "चेक-इन", "चेक-आउट", "मेहमान", "खोजें",
+           "सूची से कोई शहर चुनें।", "आप Klook पर दिखाई गई कीमत पर बुक करते हैं। जल्द और शहर जुड़ेंगे।"),
 }
 KLOOK_LANG = {"fr": "fr", "en": "en-US", "es": "es", "de": "de", "it": "it", "pt": "pt-BR", "nl": "nl", "ko": "ko", "zh": "zh-CN"}
 
@@ -472,7 +474,8 @@ OMIO_LOCALE = {"fr": "fr", "en": "en", "es": "es", "de": "de", "it": "it", "pt":
 TRAIN_KEYS = ("tab", "note", "from", "from_place", "to", "to_place", "go", "price_from", "book", "none", "pick", "more", "loading")
 TRAIN_DATES = {"fr": ("Aller", "Retour"), "en": ("Depart", "Return"), "es": ("Ida", "Vuelta"), "de": ("Hinfahrt", "Rückfahrt"),
                "it": ("Andata", "Ritorno"), "pt": ("Ida", "Volta"), "nl": ("Heen", "Terug"), "tr": ("Gidiş", "Dönüş"),
-               "ar": ("الذهاب", "العودة"), "zh": ("去程", "返程"), "ko": ("가는 날", "오는 날")}
+               "ar": ("الذهاب", "العودة"), "zh": ("去程", "返程"), "ko": ("가는 날", "오는 날"),
+               "hi": ("जाने की तारीख़", "वापसी")}
 TRAIN_WORDS = {
     "fr": ("Train & bus", "Prix « dès » relevés chaque jour par Omio. Tu réserves chez Omio, au prix affiché.",
            "Départ", "Paris, Lyon, Madrid…", "Arrivée", "Partout", "Rechercher", "dès", "Voir les horaires",
@@ -518,6 +521,10 @@ TRAIN_WORDS = {
            "출발", "런던, 파리, 로마…", "도착", "어디든", "검색", "부터", "시간표 보기",
            "이 노선의 가격은 아직 없습니다. Omio에서 시간표를 확인하세요.", "목록에서 출발 도시를 선택하세요.",
            "Omio에서 검색", "노선 불러오는 중…"),
+    "hi": ("ट्रेन और बस", "“से” कीमतें Omio हर दिन अपडेट करता है। आप Omio पर दिखाई गई कीमत पर बुक करते हैं।",
+           "कहाँ से", "लंदन, पेरिस, मैड्रिड…", "कहाँ तक", "कहीं भी", "खोजें", "से", "समय देखें",
+           "इस रूट की कीमत अभी यहाँ नहीं है: सीधे Omio पर समय देखें।", "सूची से प्रस्थान का शहर चुनें।",
+           "Omio पर खोजें", "रूट लोड हो रहे हैं…"),
 }
 
 
@@ -1064,7 +1071,9 @@ def clean_names(names):
         }
         if "BUD" in cleaned[lang]:
             cleaned[lang]["BUD"] = "Budapest"
-        fixes = {**(SHARED_NAME_FIXES if lang in LATIN_LANGS else {}), **NAME_FIXES.get(lang, {})}
+        # le hindi reprend les noms anglais (la source n'a pas de noms en hindi) : mêmes corrections que l'anglais
+        source = "en" if lang == "hi" else lang
+        fixes = {**(SHARED_NAME_FIXES if source in LATIN_LANGS else {}), **NAME_FIXES.get(source, {})}
         cleaned[lang].update({code: name for code, name in fixes.items() if code in cleaned[lang]})
     return cleaned
 
@@ -1336,6 +1345,8 @@ MUSTS_WORDS = {
            "اكتشف", "إخفاء", "كل الأنشطة في {city}", "تذاكر المتاحف والمعالم"),
     "zh": ("当地玩乐", "{city}必玩", "游览、博物馆、演出：旅行者最爱的活动", "查看", "收起", "{city}全部活动", "博物馆和景点门票"),
     "ko": ("현지 즐길 거리", "{city} 필수 코스", "투어, 박물관, 공연: 여행자들이 사랑하는 액티비티", "보기", "접기", "{city}의 모든 액티비티", "박물관·명소 입장권"),
+    "hi": ("घूमने-फिरने की चीज़ें", "{city} में ज़रूर करने लायक़", "टूर, संग्रहालय, शो: यात्रियों की पसंदीदा गतिविधियाँ",
+           "देखें", "छिपाएँ", "{city} की सभी गतिविधियाँ", "संग्रहालय और स्मारकों के टिकट"),
 }
 # Photos choisies à la main quand celle d'Omio montre le même monument que la photo du haut
 MUSTS_PHOTOS = {"PAR": "assets/photos/extra/PAR-arc.jpg"}
@@ -1398,6 +1409,7 @@ MUSTS_EMPTY = {
     "ar": "لا تظهر الأنشطة؟ ربما يخفيها مانع الإعلانات: استخدم الأزرار أدناه.",
     "zh": "看不到活动？可能被广告拦截器隐藏了：请使用下方按钮。",
     "ko": "액티비티가 보이지 않나요? 광고 차단기가 숨겼을 수 있어요. 아래 버튼을 이용하세요.",
+    "hi": "गतिविधियाँ नहीं दिख रहीं? हो सकता है आपका ऐड ब्लॉकर उन्हें छिपा रहा हो: नीचे दिए बटन इस्तेमाल करें।",
 }
 _TIQETS = None
 
@@ -1757,6 +1769,19 @@ WHO.update({
            ],
            "contact": "궁금한 점이나 여행 계획이 있으신가요? {mail}로 메일을 보내시거나 Instagram과 TikTok {handle}에서 만나보세요.",
            "go": "José Luis와 여행 계획하기"},
+    "hi": {"nav": "मेरे बारे में", "title": "मेरे बारे में",
+           "lead": "नमस्ते, मैं José Luis Cardozo Pintos हूँ, पेरिस से, और Eunodia का संस्थापक।",
+           "meta": "José Luis Cardozo Pintos, पेरिस से, पर्यटन और होटल प्रबंधन में स्नातक, Eunodia के संस्थापक: मैंने यह साइट क्यों बनाई।",
+           "alt": "José Luis Cardozo Pintos, Eunodia के संस्थापक", "job": "Eunodia के संस्थापक",
+           "paras": [
+               "यात्रा मेरा जुनून है। मैंने पर्यटन की पढ़ाई की, IREST, सोरबोन पेरिस 1 से पर्यटन और होटल प्रबंधन में मास्टर डिग्री तक। मैं फ़्रेंच, अंग्रेज़ी और स्पेनिश बोलता हूँ, और थोड़ी इतालवी भी।",
+               "पढ़ाई के साथ काम करते हुए मैंने यात्रा की दुनिया को पर्दे के पीछे से देखा: बड़े अंतरराष्ट्रीय आयोजनों के लिए ठहरने की बुकिंग, ग्रुप यात्राओं का आयोजन, आख़िरी समय पर यात्रियों के लिए नई जगह ढूँढना, और दुनिया भर के होटलों और ऑनलाइन ट्रैवल एजेंसियों के साथ रोज़ काम करना। वहीं मैंने सीखा कि कीमतें कैसे बनती हैं… और असली ऑफ़र कहाँ छिपे होते हैं।",
+               "**Eunodia क्यों?** शुरुआत में मैं बस उड़ानों की सबसे अच्छी कीमतें दिखाने वाला एक छोटा-सा टूल बनाना चाहता था। फिर मुझे लगा कि एक असली वेबसाइट बनाकर सबके साथ इस समय के सबसे अच्छे ऑफ़र बाँटना कमाल होगा: उड़ानें, होटल, गतिविधियाँ। ऐसे Eunodia का जन्म हुआ।",
+               "मुझे सबसे ज़्यादा पसंद है **आपकी पसंद के मुताबिक़ यात्राएँ तैयार करना**: यात्रा का कार्यक्रम बनाना, सही कीमत पर सही उड़ान और होटल ढूँढना… और किसी को ख़ुशी-ख़ुशी रवाना होते देखना। एक अच्छी यात्रा ख़ुशी देती है, और इसीलिए मैं यह करता हूँ।",
+               "Eunodia एक स्वतंत्र प्रोजेक्ट है: **मैं स्व-रोज़गार हूँ** और साइट ख़ुद चलाता हूँ। यह आपके लिए मुफ़्त है: जब आप बुक करते हैं, तो इसे हमारे साझेदारों से छोटा कमीशन मिलता है, आपको कोई अतिरिक्त ख़र्च नहीं।",
+           ],
+           "contact": "कोई सवाल, कोई यात्रा का इरादा? मुझे {mail} पर लिखें या Instagram और TikTok पर {handle} पर मिलें।",
+           "go": "José Luis के साथ अपनी यात्रा की योजना बनाएँ"},
 })
 
 
@@ -1835,7 +1860,7 @@ def missing_page(p):
 
 RESULTS_PATH = "recherche/"
 WHITE_LABEL_ID = "24366"
-WHITE_LABEL_CURRENCY = {"en": "usd", "ar": "usd", "ko": "usd", "zh": "usd"}
+WHITE_LABEL_CURRENCY = {"en": "usd", "ar": "usd", "ko": "usd", "zh": "usd", "hi": "inr"}
 
 
 def results_page(p):
@@ -1994,7 +2019,7 @@ def build(data, site, catalog=None):
     FR_NAMES.update({c["code"]: c.get("city", "") for c in cities})
     FR_NAMES.update(names.get("fr") or {})
     for lang in LANGS:
-        page = Page(site, lang, names.get(lang))
+        page = Page(site, lang, names.get(lang) or names.get("en"))  # hindi : noms anglais tant que la liste n'est pas récupérée
         page.zones, page.countries, page.geo = zones, countries, geo
         build_language(page, data, cities, updated_at, groups, origins)
     write(DOCS / "404.html", missing_page(Page(site, "fr", names.get("fr"))))
