@@ -887,7 +887,7 @@
         "Prénom": data.get("prenom"), "E-mail": data.get("email"), "Destination": data.get("destination"),
         "Départ": data.get("depart") || "-", "Quand": data.get("dates"), "Voyageurs": data.get("voyageurs"),
         "Budget": data.get("budget"), "Envies": tastes, "Message": data.get("message") || "-",
-        _subject: subject, _replyto: data.get("email"), _template: "table", _captcha: "false"
+        _subject: subject, _replyto: data.get("email"), _template: "box", _captcha: "false"
       };
       var mailto = "mailto:" + form.getAttribute("data-to") + "?subject=" + encodeURIComponent(subject) + "&body=" +
         encodeURIComponent(Object.keys(payload).filter(function (k) { return k.charAt(0) !== "_"; }).map(function (k) { return k + " : " + payload[k]; }).join("\n"));
