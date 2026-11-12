@@ -2041,13 +2041,20 @@ def build(data, site, catalog=None):
         offer["slug"] = slugs[offer["code"]]
     updated_at = datetime.fromisoformat(data["updated"])
     write(DOCS / "prices.json", json.dumps(data, ensure_ascii=False, separators=(",", ":")) + "\n")
+    groups = collections(offers)
+    origins = load_world(names.get("fr", {}), site.get("project"))
+    # suggestions de la recherche : les villes les plus desservies d'abord (« tok » propose Tokyo avant Tokat)
+    busy = {}
+    for origin in origins:
+        busy[origin["code"]] = busy.get(origin["code"], 0) + len(origin["routes"])
+        for route in origin["routes"]:
+            busy[route["to"]] = busy.get(route["to"], 0) + 1
     for lang, (places, countries) in (catalog or {}).items():
         rows = [[code, names[lang].get(code, name), *rest] for code, name, *rest in city_index(places, countries)]
+        rows.sort(key=lambda row: -busy.get(row[0], 0))
         write(DOCS / "assets" / f"cities-{lang}.json", json.dumps(rows, ensure_ascii=False, separators=(",", ":")))
     if catalog:
         write(names_path, json.dumps(names, ensure_ascii=False, separators=(",", ":")))
-    groups = collections(offers)
-    origins = load_world(names.get("fr", {}), site.get("project"))
     zones_path = DOCS / "assets" / "zones.json"
     zones = json.loads(zones_path.read_text()) if zones_path.exists() else {}
     geo_path = DOCS / "assets" / "geo.json"
