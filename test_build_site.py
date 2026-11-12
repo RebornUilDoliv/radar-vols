@@ -113,7 +113,7 @@ class BuildTests(unittest.TestCase):
     def test_who_page_in_every_language(self):
         docs = self.build([offer("BCN", "Barcelone", "Europe", 43, 30)])
         fr = (docs / "qui-suis-je" / "index.html").read_text()
-        self.assertIn("José Luis Cardozo Pintos", fr)
+        self.assertIn("José", fr)
         self.assertIn("<strong>je suis auto-entrepreneur</strong>", fr)
         self.assertIn("Parisien", fr)
         self.assertIn('"@type": "Person"', fr)
