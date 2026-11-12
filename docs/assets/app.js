@@ -522,7 +522,7 @@
     var last = points.length - 1;
     var plot = svg("svg", {
       viewBox: "0 0 " + W + " " + H, role: "img",
-      "aria-label": "Prix de " + euro(prices[0]) + " le " + label(0) + " à " + euro(prices[last]) + " le " + label(last)
+      "aria-label": label(0) + " : " + euro(prices[0]) + " → " + label(last) + " : " + euro(prices[last])
     });
     [max, min].forEach(function (value) {
       plot.appendChild(svg("line", { class: "grid-line", x1: left, x2: W - right, y1: y(value), y2: y(value) }));
@@ -596,6 +596,7 @@
       if (RF.lang === "fr" && o[0] === "PAR" && area === "Europe") byArea = byArea || o;
       if (o[2] && o[2].split("/")[0] === area) byArea = byArea || o;
     });
+    if (fallback && fallback[2] === zone) return; /* la ville par défaut est déjà dans le bon fuseau */
     var picked = byZone || (fallback && fallback[2] && fallback[2].split("/")[0] === area ? fallback : byArea) || fallback;
     if (!picked || picked[0] === data.default) return;
     fetch(BASE + "assets/routes/" + RF.lang + "/" + picked[0] + ".json")

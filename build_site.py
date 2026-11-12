@@ -43,9 +43,33 @@ LOGO = (
 e = html.escape
 
 
-def slug(text):
+# lettres sans décomposition Unicode : sans cette table elles disparaissaient (« Łódź » donnait « odz », « Đà Nẵng » « a-nang »)
+PLAIN_LETTERS = str.maketrans({"Đ": "D", "đ": "d", "Ł": "L", "ł": "l", "Ø": "O", "ø": "o", "Ð": "D", "ð": "d", "Þ": "Th", "þ": "th",
+                               "ß": "ss", "Æ": "Ae", "æ": "ae", "Œ": "Oe", "œ": "oe", "ı": "i", "Ə": "E", "ə": "e"})
+WORLD_RENAMES = {}  # ancienne adresse de ville -> nouvelle (pages /depuis/ et /vers/), pour rediriger les anciennes pages
+DEST_RENAMES = {}   # idem pour les pages /destinations/
+SLUG_MEMORY = None  # fichier qui garde l'adresse de chaque ville d'un passage à l'autre (défini par main)
+
+
+def slug(text, legacy=False):
+    """legacy=True : l'ancien calcul, gardé seulement pour retrouver les anciennes adresses et les rediriger."""
+    if not legacy:
+        text = text.translate(PLAIN_LETTERS)
     plain = unicodedata.normalize("NFKD", text).encode("ascii", "ignore").decode()
     return re.sub(r"[^a-z0-9]+", "-", plain.lower()).strip("-")
+
+
+def unique_slugs(pairs, legacy=False, kept=None):
+    """Une adresse unique par code, dans l'ordre donné : le premier servi garde le nom simple.
+    kept : adresses déjà attribuées, reprises telles quelles tant qu'elles correspondent encore au nom."""
+    bases = {code: slug(name, legacy) or code.lower() for code, name in pairs}
+    slugs = {code: value for code, value in (kept or {}).items() if code in bases and value in (bases[code], f"{bases[code]}-{code.lower()}")}
+    used = set(slugs.values())
+    for code, _ in pairs:
+        if code not in slugs:
+            slugs[code] = bases[code] if bases[code] not in used else f"{bases[code]}-{code.lower()}"
+            used.add(slugs[code])
+    return slugs
 
 
 class Page:
@@ -130,16 +154,19 @@ def load_credits():
     return json.loads(path.read_text()) if path.exists() else {}
 
 
-def destinations(offers):
-    """Regroupe les vols par ville, chaque ville avec une adresse unique."""
-    cities, used = {}, set()
+def destinations(offers, names=None):
+    """Regroupe les vols par ville, chaque ville avec une adresse unique.
+    names : noms corrigés des villes ; l'adresse suit le nom affiché (« budapest », plus « buda »)."""
+    cities = {}
     for offer in offers:
         cities.setdefault(offer["code"], {"city": offer["city"], "code": offer["code"], "offers": []})
         cities[offer["code"]]["offers"].append(offer)
+    old = unique_slugs([(code, city["city"]) for code, city in cities.items()], legacy=True)
+    new = unique_slugs([(code, (names or {}).get(code) or city["city"]) for code, city in cities.items()])
+    DEST_RENAMES.clear()
+    DEST_RENAMES.update({old[code]: new[code] for code in cities if old[code] != new[code]})
     for city in cities.values():
-        name = slug(city["city"]) or city["code"].lower()
-        city["slug"] = name if name not in used else f"{name}-{city['code'].lower()}"
-        used.add(city["slug"])
+        city["slug"] = new[city["code"]]
         city["offers"].sort(key=lambda o: o["price"])
         city["best"] = city["offers"][0]
         city["region"] = city["best"]["region"]
@@ -628,7 +655,9 @@ def home(p, cities, offers, updated, origins=()):
         soon = "".join(world_row(p, local, r) for r in pick(lambda gap: gap <= SOON_DAYS))
         ahead = "".join(world_row(p, local, r) for r in pick(lambda gap: gap >= AHEAD_DAYS))
         near_data = {"soon": SOON_DAYS, "ahead": AHEAD_DAYS, "default": local["code"], "titles": near_titles,
-                     "origins": [[o["code"], p.city(o["code"], o["code"]), (p.geo.get(o["code"]) or [0, 0, ""])[2]] for o in origins]}
+                     "origins": [[o["code"], p.city(o["code"], o["code"]), (p.geo.get(o["code"]) or [0, 0, ""])[2]]
+                                 # les villes les plus desservies d'abord : c'est elle que le script retient pour un fuseau horaire
+                                 for o in sorted(origins, key=lambda o: -len(o["routes"]))]}
         near_script = f'<script>window.RFNEAR={json.dumps(near_data, ensure_ascii=False).replace("</", "<\\/")}</script>'
     world = ""
     start = p.city("PAR", "Paris")
@@ -1100,11 +1129,20 @@ def load_world(names, project=None):
     served = {}
     for route in routes:
         served.setdefault(route["to"], set()).add(route["from"])
-    slugs, used = {}, set()
-    for code in sorted({r["from"] for r in routes} | {r["to"] for r in routes}):
-        name = slug(names[code]) or code.lower()
-        slugs[code] = name if name not in used else f"{name}-{code.lower()}"
-        used.add(slugs[code])
+    busy = {}
+    for route in routes:
+        busy[route["from"]] = busy.get(route["from"], 0) + 1
+        busy[route["to"]] = busy.get(route["to"], 0) + 1
+    codes = sorted(busy)
+    kept = json.loads(SLUG_MEMORY.read_text()) if SLUG_MEMORY and SLUG_MEMORY.exists() else {}
+    # entre deux villes du même nom, la plus desservie garde le nom simple (« rome », plus « rome-rom ») ;
+    # une adresse attribuée ne change plus ensuite
+    slugs = unique_slugs([(code, names[code]) for code in sorted(codes, key=lambda c: (-busy[c], c))], kept=kept)
+    old = unique_slugs([(code, names[code]) for code in codes], legacy=True)
+    WORLD_RENAMES.clear()
+    WORLD_RENAMES.update({old[code]: slugs[code] for code in codes if old[code] != slugs[code]})
+    if SLUG_MEMORY:
+        write(SLUG_MEMORY, json.dumps({**kept, **slugs}, ensure_ascii=False, sort_keys=True, separators=(",", ":")) + "\n")
     origins = {}
     for route in sorted(routes, key=lambda r: r["price"]):
         origin = origins.setdefault(route["from"], {"code": route["from"], "slug": slugs[route["from"]], "routes": [], "pages": []})
@@ -1992,17 +2030,17 @@ def build(data, site, catalog=None):
     site["version"] = asset_version()
     data = retrack(data, site.get("project"))
     offers = data["offers"]
-    cities = destinations(offers)
-    slugs = {c["code"]: c["slug"] for c in cities}
-    for offer in offers:
-        offer["slug"] = slugs[offer["code"]]
-    updated_at = datetime.fromisoformat(data["updated"])
-    write(DOCS / "prices.json", json.dumps(data, ensure_ascii=False, separators=(",", ":")) + "\n")
     names_path = DOCS / "assets" / "names.json"
     names = json.loads(names_path.read_text()) if names_path.exists() else {}
     for lang, (places, countries) in (catalog or {}).items():
         names[lang] = {code: place["name"] for code, place in places.items() if place["airports"]}
     names = clean_names(names)
+    cities = destinations(offers, names.get("fr"))
+    slugs = {c["code"]: c["slug"] for c in cities}
+    for offer in offers:
+        offer["slug"] = slugs[offer["code"]]
+    updated_at = datetime.fromisoformat(data["updated"])
+    write(DOCS / "prices.json", json.dumps(data, ensure_ascii=False, separators=(",", ":")) + "\n")
     for lang, (places, countries) in (catalog or {}).items():
         rows = [[code, names[lang].get(code, name), *rest] for code, name, *rest in city_index(places, countries)]
         write(DOCS / "assets" / f"cities-{lang}.json", json.dumps(rows, ensure_ascii=False, separators=(",", ":")))
@@ -2108,6 +2146,16 @@ def moved_target(page, pages):
     return ""
 
 
+def renamed_page(page):
+    """Nouvelle adresse d'une page dont la ville a changé d'adresse (« vers/odz/ » -> « vers/lodz/ »)."""
+    parts = page.strip("/").split("/")
+    start = 1 if parts[0] in LANGS and parts[0] != "fr" else 0
+    table = {"depuis": WORLD_RENAMES, "vers": WORLD_RENAMES, "destinations": DEST_RENAMES}.get(parts[start] if len(parts) > start else "")
+    if not table:
+        return page
+    return "/".join(parts[:start + 1] + [table.get(part, part) for part in parts[start + 1:]]) + "/"
+
+
 def keep_moved_pages(state, url="/"):
     """Une page qui disparaît (trajet sans prix, ville renommée…) redirige vers la page la plus proche au lieu d'une erreur 404."""
     pages = built_pages()
@@ -2115,7 +2163,8 @@ def keep_moved_pages(state, url="/"):
     known |= set(GONE_PAGES) | pages
     moved = sorted(known - pages)
     for page in moved:
-        target = e(url + moved_target(page, pages))
+        new = renamed_page(page)
+        target = e(url + (new if new in pages else moved_target(new, pages)))
         write(DOCS / page / "index.html", f'<!doctype html>{MOVED_MARK}<html><head><meta charset="utf-8"><title>Eunodia</title>'
               f'<link rel="canonical" href="{target}"><meta name="robots" content="noindex">'
               f'<meta http-equiv="refresh" content="0; url={target}"></head>'
@@ -2136,6 +2185,8 @@ def main():
     except RuntimeError as error:
         print(f"Listes des villes non mises à jour : {error}", file=sys.stderr)
         catalog = None
+    global SLUG_MEMORY
+    SLUG_MEMORY = ROOT / "data" / "adresses.json"
     count = build(data, config["site"], catalog)
     print(f"{count} destinations générées en {len(LANGS)} langues.")
     moved = keep_moved_pages(ROOT / "data" / "pages_connues.json", config["site"]["url"])

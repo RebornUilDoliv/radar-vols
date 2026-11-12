@@ -185,7 +185,7 @@ img { max-width: 100%; }
 .facts div { padding: 18px 20px; border-radius: 16px; background: var(--g1); }
 .facts dt { font-size: 14px; color: var(--g3); }
 .facts dd { margin: 6px 0 0; font-weight: 600; line-height: 1.35; }
-.scroll { overflow-x: auto; }
+.scroll { overflow-x: auto; position: relative; }
 table { width: 100%; border-collapse: collapse; }
 th, td { padding: 11px 14px 11px 0; text-align: left; border-bottom: 1px solid var(--g2); white-space: nowrap; font-weight: 400; }
 thead th { color: var(--g3); font-size: 14px; }

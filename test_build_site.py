@@ -346,6 +346,39 @@ class BuildTests(unittest.TestCase):
     def test_slug_removes_accents(self):
         self.assertEqual(build_site.slug("Montréal – Dorval"), "montreal-dorval")
 
+    def test_slug_keeps_letters_without_accent_form(self):
+        self.assertEqual(build_site.slug("Łódź"), "lodz")
+        self.assertEqual(build_site.slug("Đà Nẵng"), "da-nang")
+        self.assertEqual(build_site.slug("Tromsø"), "tromso")
+        self.assertEqual(build_site.slug("Łódź", legacy=True), "odz")
+
+    def test_busiest_city_keeps_plain_slug_and_slug_is_remembered(self):
+        pairs = [("ROM", "Rome"), ("RMA", "Rome")]
+        self.assertEqual(build_site.unique_slugs(pairs), {"ROM": "rome", "RMA": "rome-rma"})
+        self.assertEqual(build_site.unique_slugs(pairs, kept={"RMA": "rome"}), {"RMA": "rome", "ROM": "rome-rom"})
+        self.assertEqual(build_site.unique_slugs(pairs, kept={"ROM": "roma"}), {"ROM": "rome", "RMA": "rome-rma"})
+
+    def test_destination_slug_follows_displayed_name(self):
+        cities = build_site.destinations([offer("BUD", "Buda", "Europe", 60, 30), offer("ACE", "ACE", "Europe", 70, 30)],
+                                         {"BUD": "Budapest", "ACE": "Lanzarote"})
+        self.assertEqual({c["code"]: c["slug"] for c in cities}, {"BUD": "budapest", "ACE": "lanzarote"})
+        self.assertEqual(build_site.DEST_RENAMES, {"buda": "budapest", "ace": "lanzarote"})
+
+    def test_renamed_city_redirects_to_its_new_page(self):
+        with tempfile.TemporaryDirectory() as folder:
+            docs, state = Path(folder) / "docs", Path(folder) / "pages.json"
+            for page in ("", "vers/lodz/", "de/depuis/rome/naples/", "de/depuis/rome/", "destinations/budapest/"):
+                build_site.write(docs / page / "index.html", "<html>page</html>")
+            state.write_text(json.dumps(["vers/odz/", "de/depuis/rome-rom/naples-nap/", "de/depuis/rome-rom/oslo/", "destinations/buda/"]))
+            with mock.patch.object(build_site, "DOCS", docs), mock.patch.object(build_site, "GONE_PAGES", []), \
+                    mock.patch.dict(build_site.WORLD_RENAMES, {"odz": "lodz", "rome-rom": "rome", "naples-nap": "naples"}, clear=True), \
+                    mock.patch.dict(build_site.DEST_RENAMES, {"buda": "budapest"}, clear=True):
+                build_site.keep_moved_pages(state, "https://eunodia.com/")
+            self.assertIn('url=https://eunodia.com/vers/lodz/"', (docs / "vers/odz/index.html").read_text())
+            self.assertIn('url=https://eunodia.com/de/depuis/rome/naples/"', (docs / "de/depuis/rome-rom/naples-nap/index.html").read_text())
+            self.assertIn('url=https://eunodia.com/de/depuis/rome/"', (docs / "de/depuis/rome-rom/oslo/index.html").read_text())
+            self.assertIn('url=https://eunodia.com/destinations/budapest/"', (docs / "destinations/buda/index.html").read_text())
+
 
     def test_vanished_pages_redirect_to_closest_page(self):
         with tempfile.TemporaryDirectory() as folder:
