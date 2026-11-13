@@ -1959,7 +1959,7 @@ def legal_text(lang):
 def legal_page(p):
     t = legal_text(p.lang)
     blocks = "".join(f"<h2>{e(title)}</h2>" + "".join(f"<p>{para.replace('{root}', p.root)}</p>" for para in paras) for title, paras in t["sections"])
-    body = f'<section class="page wrap narrow legal"><h1>{e(t["title"])}</h1><p class="lead">{e(t["lead"])}</p>{blocks}<p class="legal-date">{e(t["updated"])}</p></section>'
+    body = f'<section class="page wrap narrow"><h1>{e(t["title"])}</h1><p class="lead">{e(t["lead"])}</p><div class="legal">{blocks}<p class="legal-date">{e(t["updated"])}</p></div></section>'
     return layout(p, f"{t['title']} | {p.site['name']}", t["lead"], LEGAL_PATH, body)
 
 

@@ -137,6 +137,7 @@ class BuildTests(unittest.TestCase):
             for forbidden in ("Cardozo", "Pintos", "132 546", "132546", "MESSAGERIES"):
                 self.assertNotIn(forbidden, text)
         self.assertIn("mentions-legales/", (docs / "index.html").read_text())
+        self.assertIn('class="page-hero"', (docs / "mentions-legales/index.html").read_text())
 
     def test_sections_split_soon_and_ahead(self):
         home = (self.build([offer("BCN", "Barcelone", "Europe", 43, 30), offer("LON", "Londres", "Europe", 59, 200)]) / "index.html").read_text()
