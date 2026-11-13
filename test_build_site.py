@@ -128,6 +128,16 @@ class BuildTests(unittest.TestCase):
             self.assertTrue((docs / page).exists(), page)
         self.assertFalse((docs / "destinations" / "ancienne-ville").exists())
 
+    def test_legal_page_exists_without_identity(self):
+        docs = self.build([offer("BCN", "Barcelone", "Europe", 43, 30)])
+        for page in ("mentions-legales/index.html", "en/mentions-legales/index.html", "es/mentions-legales/index.html"):
+            text = (docs / page).read_text()
+            self.assertIn("contact@eunodia.com", text)
+            self.assertIn("GitHub", text)
+            for forbidden in ("Cardozo", "Pintos", "132 546", "132546", "MESSAGERIES"):
+                self.assertNotIn(forbidden, text)
+        self.assertIn("mentions-legales/", (docs / "index.html").read_text())
+
     def test_sections_split_soon_and_ahead(self):
         home = (self.build([offer("BCN", "Barcelone", "Europe", 43, 30), offer("LON", "Londres", "Europe", 59, 200)]) / "index.html").read_text()
         self.assertLess(home.index("Partir bientôt"), home.index("Réserver à l"))

@@ -552,3 +552,9 @@ html[lang="hi"] body, html[lang="hi"] h1, html[lang="hi"] h2, html[lang="hi"] h3
 }
 html[lang="hi"] * { letter-spacing: normal !important; }
 html[lang="hi"] h1, html[lang="hi"] h2, html[lang="hi"] h3, html[lang="hi"] .lead, html[lang="hi"] .musts-fold summary { line-height: 1.4; }
+
+/* Mentions légales et confidentialité */
+.legal h2 { margin: 2rem 0 .5rem; font-size: 1.25rem; }
+.legal p { margin: 0 0 .75rem; line-height: 1.6; }
+.legal a { text-decoration: underline; }
+.legal .legal-date { margin-top: 2rem; color: #6a6a6a; font-size: .9rem; }

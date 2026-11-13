@@ -358,7 +358,7 @@ def layout(p, title, description, path, body, noindex=False, extra="", photo=Non
       <p>{p.t('foot_1')}</p>
       <p>{p.t('foot_2', name=name)}</p>
     </div>
-    <p class="foot-links"><a href="{root}depuis/">{p.t('nav_world')}</a><a href="{root}vols/">{p.t('nav_flights')}</a><a href="{root}vols-pas-chers/">{p.t('nav_deals')}</a><a href="{root}barometre/">{e(BAROMETER[p.lang][0])}</a><a href="{root}destinations/">{p.t('nav_places')}</a><a href="{root}{WHO_PATH}">{e(WHO.get(p.lang, WHO["en"])["nav"])}</a><a href="{root}a-propos/">{p.t('nav_info')}</a><a href="{root}credits/">{p.t('credits')}</a><a href="mailto:contact@eunodia.com">contact@eunodia.com</a></p>
+    <p class="foot-links"><a href="{root}depuis/">{p.t('nav_world')}</a><a href="{root}vols/">{p.t('nav_flights')}</a><a href="{root}vols-pas-chers/">{p.t('nav_deals')}</a><a href="{root}barometre/">{e(BAROMETER[p.lang][0])}</a><a href="{root}destinations/">{p.t('nav_places')}</a><a href="{root}{WHO_PATH}">{e(WHO.get(p.lang, WHO["en"])["nav"])}</a><a href="{root}a-propos/">{p.t('nav_info')}</a><a href="{root}credits/">{p.t('credits')}</a><a href="{root}{LEGAL_PATH}">{e(legal_text(p.lang)["nav"])}</a><a href="mailto:contact@eunodia.com">contact@eunodia.com</a></p>
   </div>
 </footer>
 </body>
@@ -1883,6 +1883,86 @@ def credits_page(p):
     return layout(p, f"{p.t('credits')} | {p.site['name']}", p.t("credits_lead"), "credits/", body)
 
 
+LEGAL_PATH = "mentions-legales/"
+MAIL = '<a href="mailto:contact@eunodia.com">contact@eunodia.com</a>'
+LEGAL = {
+    "fr": {
+        "nav": "Mentions légales et confidentialité", "title": "Mentions légales et confidentialité",
+        "lead": "Qui édite Eunodia, où le site est hébergé et comment tes données sont traitées.",
+        "updated": "Dernière mise à jour : 13 novembre 2026.",
+        "sections": [
+            ("Éditeur du site", [f"Eunodia est un site édité à titre professionnel par un entrepreneur individuel immatriculé en France. Contact : {MAIL}.",
+                                 "Le directeur de la publication est l'éditeur du site."]),
+            ("Hébergement", ["Le site est hébergé par GitHub, Inc. (GitHub Pages), 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, États-Unis."]),
+            ("Ce que fait Eunodia", ["Eunodia compare des prix de vols et d'autres services de voyage trouvés chez des partenaires. Eunodia ne vend pas de billets : tu réserves chez la compagnie ou l'agence, au prix qu'elle affiche.",
+                                     "Certains liens sont des liens d'affiliation : si tu réserves après avoir cliqué, Eunodia peut toucher une commission, sans frais supplémentaires pour toi.",
+                                     "Les prix sont indicatifs et peuvent changer vite. Vérifie toujours le prix final, les bagages et les conditions avant de payer."]),
+            ("Propriété intellectuelle", ["Les textes et la mise en page d'Eunodia sont protégés. Les photos viennent de Wikimedia Commons, sous licences libres : leurs auteurs et leurs licences sont listés sur la page <a href=\"{root}credits/\">Crédits photos</a>. Les marques citées appartiennent à leurs propriétaires."]),
+            ("Données personnelles", [f"Le responsable du traitement est l'éditeur du site, joignable à {MAIL}. Eunodia ne vend pas tes données.",
+                                      "<strong>Newsletter.</strong> Ton adresse e-mail sert seulement à t'envoyer la newsletter. Elle est gérée par Brevo, qui l'héberge pour Eunodia. Tu peux te désinscrire à tout moment avec le lien en bas de chaque e-mail, et elle est gardée tant que tu restes inscrit.",
+                                      "<strong>Voyage sur mesure.</strong> Ton prénom, ton e-mail, ta destination, tes dates, ton budget et ton message servent seulement à te répondre et à préparer ton voyage. Le formulaire est transmis par le service FormSubmit. Ces informations sont gardées le temps de traiter ta demande, puis le temps imposé par la loi.",
+                                      "<strong>Mesure d'audience.</strong> Eunodia utilise Cloudflare Web Analytics pour compter les visites. D'après Cloudflare, cet outil ne dépose pas de cookie et ne suit pas les visiteurs d'un site à l'autre."]),
+            ("Cookies et partenaires", ["Le site garde ton choix de langue le temps de ta visite et dépose quelques cookies techniques nécessaires au moteur de recherche de vols (fourni par Travelpayouts).",
+                                        "Quand tu cliques sur un lien partenaire (par exemple Aviasales, Klook ou Omio), le site du partenaire peut déposer ses propres cookies, soumis à sa propre politique de confidentialité."]),
+            ("Tes droits", [f"Tu peux demander l'accès à tes données, leur correction ou leur suppression, ou t'opposer à leur utilisation, en écrivant à {MAIL}. Tu peux aussi saisir la CNIL (cnil.fr)."]),
+        ],
+    },
+    "en": {
+        "nav": "Legal notice & privacy", "title": "Legal notice & privacy",
+        "lead": "Who publishes Eunodia, where the site is hosted and how your data is handled.",
+        "updated": "Last updated: 13 November 2026.",
+        "sections": [
+            ("Publisher", [f"Eunodia is published on a professional basis by a sole trader registered in France. Contact: {MAIL}.",
+                           "The publication director is the publisher of the site."]),
+            ("Hosting", ["The site is hosted by GitHub, Inc. (GitHub Pages), 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, United States."]),
+            ("What Eunodia does", ["Eunodia compares flight prices and other travel services found at partners. Eunodia does not sell tickets: you book with the airline or agency, at the price it shows.",
+                                   "Some links are affiliate links: if you book after clicking, Eunodia may earn a commission, at no extra cost to you.",
+                                   "Prices are indicative and can change fast. Always check the final price, baggage and conditions before you pay."]),
+            ("Intellectual property", ["Eunodia's texts and layout are protected. Photos come from Wikimedia Commons under free licences: authors and licences are listed on the <a href=\"{root}credits/\">Photo credits</a> page. Brands mentioned belong to their owners."]),
+            ("Personal data", [f"The data controller is the site's publisher, reachable at {MAIL}. Eunodia does not sell your data.",
+                               "<strong>Newsletter.</strong> Your email address is only used to send you the newsletter. It is handled by Brevo, which stores it for Eunodia. You can unsubscribe at any time with the link at the bottom of each email, and it is kept while you stay subscribed.",
+                               "<strong>Tailor-made trips.</strong> Your first name, email, destination, dates, budget and message are only used to reply and plan your trip. The form is sent through the FormSubmit service. This information is kept while your request is handled, then for as long as the law requires.",
+                               "<strong>Audience measurement.</strong> Eunodia uses Cloudflare Web Analytics to count visits. According to Cloudflare, this tool sets no cookie and does not track visitors across sites."]),
+            ("Cookies and partners", ["The site remembers your language choice during your visit and sets a few technical cookies needed by the flight search engine (provided by Travelpayouts).",
+                                      "When you click a partner link (for example Aviasales, Klook or Omio), the partner's site may set its own cookies, covered by its own privacy policy."]),
+            ("Your rights", [f"You can ask to access, correct or delete your data, or object to its use, by writing to {MAIL}. You can also complain to your data protection authority (in France, the CNIL: cnil.fr)."]),
+        ],
+    },
+    "es": {
+        "nav": "Aviso legal y privacidad", "title": "Aviso legal y privacidad",
+        "lead": "Quién edita Eunodia, dónde está alojado el sitio y cómo se tratan tus datos.",
+        "updated": "Última actualización: 13 de noviembre de 2026.",
+        "sections": [
+            ("Editor del sitio", [f"Eunodia es un sitio editado con carácter profesional por un empresario individual registrado en Francia. Contacto: {MAIL}.",
+                                  "El director de la publicación es el editor del sitio."]),
+            ("Alojamiento", ["El sitio está alojado por GitHub, Inc. (GitHub Pages), 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, Estados Unidos."]),
+            ("Qué hace Eunodia", ["Eunodia compara precios de vuelos y de otros servicios de viaje encontrados en sus socios. Eunodia no vende billetes: reservas en la aerolínea o la agencia, al precio que muestra.",
+                                  "Algunos enlaces son de afiliación: si reservas después de hacer clic, Eunodia puede recibir una comisión, sin coste adicional para ti.",
+                                  "Los precios son orientativos y pueden cambiar rápido. Comprueba siempre el precio final, el equipaje y las condiciones antes de pagar."]),
+            ("Propiedad intelectual", ["Los textos y el diseño de Eunodia están protegidos. Las fotos proceden de Wikimedia Commons con licencias libres: sus autores y licencias figuran en la página de <a href=\"{root}credits/\">Créditos de fotos</a>. Las marcas citadas pertenecen a sus propietarios."]),
+            ("Datos personales", [f"El responsable del tratamiento es el editor del sitio, localizable en {MAIL}. Eunodia no vende tus datos.",
+                                  "<strong>Boletín.</strong> Tu correo solo sirve para enviarte el boletín. Lo gestiona Brevo, que lo aloja para Eunodia. Puedes darte de baja cuando quieras con el enlace al final de cada correo, y se conserva mientras sigas suscrito.",
+                                  "<strong>Viaje a medida.</strong> Tu nombre, correo, destino, fechas, presupuesto y mensaje solo sirven para responderte y preparar tu viaje. El formulario se envía a través del servicio FormSubmit. Esta información se conserva mientras se atiende tu solicitud y después el tiempo que exija la ley.",
+                                  "<strong>Medición de audiencia.</strong> Eunodia usa Cloudflare Web Analytics para contar las visitas. Según Cloudflare, esta herramienta no instala cookies ni sigue a los visitantes entre sitios."]),
+            ("Cookies y socios", ["El sitio recuerda tu idioma durante la visita e instala unas pocas cookies técnicas necesarias para el buscador de vuelos (proporcionado por Travelpayouts).",
+                                  "Al hacer clic en un enlace de un socio (por ejemplo Aviasales, Klook u Omio), el sitio del socio puede instalar sus propias cookies, sujetas a su política de privacidad."]),
+            ("Tus derechos", [f"Puedes pedir el acceso a tus datos, su corrección o su supresión, u oponerte a su uso, escribiendo a {MAIL}. También puedes reclamar ante tu autoridad de protección de datos (en Francia, la CNIL: cnil.fr)."]),
+        ],
+    },
+}
+
+
+def legal_text(lang):
+    return LEGAL.get(lang, LEGAL["en"])
+
+
+def legal_page(p):
+    t = legal_text(p.lang)
+    blocks = "".join(f"<h2>{e(title)}</h2>" + "".join(f"<p>{para.replace('{root}', p.root)}</p>" for para in paras) for title, paras in t["sections"])
+    body = f'<section class="page wrap narrow legal"><h1>{e(t["title"])}</h1><p class="lead">{e(t["lead"])}</p>{blocks}<p class="legal-date">{e(t["updated"])}</p></section>'
+    return layout(p, f"{t['title']} | {p.site['name']}", t["lead"], LEGAL_PATH, body)
+
+
 def news_done_page(p):
     title, lead, first, second = NEWS_DONE[p.lang]
     body = (f'<section class="page wrap"><h1>{e(title)}</h1><p class="lead">{e(lead)}</p></section>'
@@ -2004,6 +2084,7 @@ def build_language(p, data, cities, updated_at, groups, origins=()):
         write(folder / "test-reservation" / "index.html", test_booking_page(p))
     write(folder / RESULTS_PATH / "index.html", results_page(p))
     write(folder / "credits" / "index.html", credits_page(p))
+    write(folder / LEGAL_PATH / "index.html", legal_page(p))
     keep = {c["slug"] for c in cities}
     for child in (folder / "destinations").iterdir():
         if child.is_dir() and child.name not in keep:
@@ -2069,7 +2150,7 @@ def build(data, site, catalog=None):
         build_language(page, data, cities, updated_at, groups, origins)
     write(DOCS / "404.html", missing_page(Page(site, "fr", names.get("fr"))))
     route_pages = [route_path(origin, route) for origin in origins for route in origin["pages"]]
-    pages = ["", "vols/", "vols-pas-chers/", "destinations/", "a-propos/", WHO_PATH] + [f"destinations/{c['slug']}/" for c in cities]
+    pages = ["", "vols/", "vols-pas-chers/", "destinations/", "a-propos/", WHO_PATH, LEGAL_PATH] + [f"destinations/{c['slug']}/" for c in cities]
     pages += [f"vols-pas-chers/{g['slug']}/" for g in groups]
     if origins:
         pages += ["depuis/", "barometre/"]
