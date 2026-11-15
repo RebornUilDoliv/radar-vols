@@ -791,7 +791,7 @@
     });
     menu.querySelectorAll(".langs-list a").forEach(function (link) {
       link.addEventListener("click", function () {
-        try { sessionStorage.setItem("eunodia-language", link.lang); } catch (error) {}
+        try { sessionStorage.setItem("eunodia-language", link.lang); localStorage.setItem("eunodia-lang", link.lang); } catch (error) {}
       });
     });
   }
