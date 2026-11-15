@@ -33,6 +33,7 @@ MAX_ROUTE_PRICE = 3000           # écarte les prix aberrants
 HUB_ROWS = 60
 DEFAULT_ORIGIN = {"fr": "PAR", "en": "LON", "es": "MAD", "de": "BER", "it": "ROM", "pt": "LIS", "nl": "AMS", "tr": "IST", "ar": "RUH", "zh": "HKG", "ko": "SEL", "hi": "DEL"}
 BACKUP_ORIGIN = {"ar": "DXB", "hi": "BOM"}
+ROOT_LANG = "fr"  # langue servie à la racine du site ; les autres vivent sous /<langue>/
 PARTNER_LANGS = ("fr", "en", "es", "de", "it", "pt")
 SOUTH_AMERICA = {"AR", "BO", "BR", "CL", "CO", "EC", "GF", "GY", "PE", "PY", "SR", "UY", "VE"}
 LOGO = (
@@ -78,9 +79,9 @@ class Page:
     def __init__(self, site, lang, names=None):
         self.site, self.lang, self.names = site, lang, names or {}
         self.base = site["root"]
-        self.root = self.base if lang == "fr" else f"{self.base}{lang}/"
-        self.folder = DOCS if lang == "fr" else DOCS / lang
-        self.prefix = "" if lang == "fr" else f"{lang}/"
+        self.root = self.base if lang == ROOT_LANG else f"{self.base}{lang}/"
+        self.folder = DOCS if lang == ROOT_LANG else DOCS / lang
+        self.prefix = "" if lang == ROOT_LANG else f"{lang}/"
         self.zones = {}
         self.countries = {}
         self.geo = {}
@@ -284,15 +285,15 @@ def layout(p, title, description, path, body, noindex=False, extra="", photo=Non
     body = page_hero(p, path, body, photo)
     name = e(site["name"])
     links = "".join(
-        f'<link rel="alternate" hreflang="{lang}" href="{e(site["url"] + ("" if lang == "fr" else lang + "/") + path)}">'
+        f'<link rel="alternate" hreflang="{lang}" href="{e(site["url"] + ("" if lang == ROOT_LANG else lang + "/") + path)}">'
         for lang in page_langs(path)
-    )
+    ) + (f'<link rel="alternate" hreflang="x-default" href="{e(site["url"] + path)}">' if ROOT_LANG in page_langs(path) else "")
     flights_nav = f'<a href="{root}vols/">{p.t("nav_flights")}</a>'
     custom = p.lang == "fr"
     first_nav = f'<a class="nav-cta" href="{root}{CUSTOM_PATH}">Voyage sur mesure</a>' if custom else flights_nav
     late_nav = flights_nav + "\n    " if custom else ""
     switch = "".join(
-        f'<a href="{base}{"" if lang == "fr" else lang + "/"}{path}" lang="{lang}" hreflang="{lang}"'
+        f'<a href="{base}{"" if lang == ROOT_LANG else lang + "/"}{path}" lang="{lang}" hreflang="{lang}"'
         f'{" aria-current=\"true\"" if lang == p.lang else ""} title="{LANG_NAMES[lang]}">{LANG_NAMES[lang]}</a>'
         for lang in page_langs(path)
     )
@@ -304,6 +305,17 @@ def layout(p, title, description, path, body, noindex=False, extra="", photo=Non
          "photos": sorted(code for code in load_credits() if photo_exists(code))},
         ensure_ascii=False, separators=(",", ":"),
     ).replace("</", "<\\/")
+    detect = ""
+    if p.lang == ROOT_LANG and not noindex:  # redirige selon la langue du navigateur, sauf pour les robots et si le visiteur a déjà choisi
+        others = [lang for lang in page_langs(path) if lang != ROOT_LANG]
+        detect = ("<script>(function(){try{var L=" + json.dumps(others) + ",u=navigator.userAgent||'';"
+                  "if(/bot|crawl|spider|slurp|bing|google|facebookexternalhit|preview/i.test(u))return;"
+                  "var c=localStorage.getItem('eunodia-lang'),t=null;"
+                  "if(c){t=L.indexOf(c)>=0?c:null}else{var n=navigator.languages||[navigator.language||''],f=0;"
+                  "for(var i=0;i<n.length&&!t&&!f;i++){var k=String(n[i]).toLowerCase().split('-')[0];"
+                  "if(k==='" + ROOT_LANG + "')f=1;else if(L.indexOf(k)>=0)t=k}"
+                  "if(!t&&!f&&n.length&&n[0]&&L.indexOf('en')>=0)t='en'}"
+                  "if(t)location.replace('" + base + "'+t+'/" + path + "'+location.search+location.hash)}catch(e){}})()</script>")
     version = site["version"]
     analytics = ""
     if site.get("analytics_token"):
@@ -318,6 +330,7 @@ def layout(p, title, description, path, body, noindex=False, extra="", photo=Non
 <meta name="description" content="{e(description)}">
 <link rel="canonical" href="{e(site['url'] + p.prefix + path)}">
 {links}
+{detect}
 {'<meta name="robots" content="noindex, nofollow">' if noindex else ''}
 <meta property="og:title" content="{e(title)}">
 <meta property="og:description" content="{e(description)}">
@@ -2040,7 +2053,7 @@ def build_language(p, data, cities, updated_at, groups, origins=()):
         {**offer, "city": p.city(offer["code"], offer["city"]), "region": p.region(offer["region"]), "region_key": offer["region"]}
         for offer in offers
     ]
-    if lang != "fr":
+    if lang != ROOT_LANG:
         write(folder / "prices.json", json.dumps({**data, "offers": translated}, ensure_ascii=False, separators=(",", ":")) + "\n")
     home_html = home(p, cities, offers, updated, origins)
     tabs, hotels = hotel_search(p, cities)  # onglets Vols / Hôtels au-dessus de la recherche
@@ -2148,7 +2161,7 @@ def build(data, site, catalog=None):
         page = Page(site, lang, names.get(lang) or names.get("en"))  # hindi : noms anglais tant que la liste n'est pas récupérée
         page.zones, page.countries, page.geo = zones, countries, geo
         build_language(page, data, cities, updated_at, groups, origins)
-    write(DOCS / "404.html", missing_page(Page(site, "fr", names.get("fr"))))
+    write(DOCS / "404.html", missing_page(Page(site, ROOT_LANG, names.get(ROOT_LANG))))
     route_pages = [route_path(origin, route) for origin in origins for route in origin["pages"]]
     pages = ["", "vols/", "vols-pas-chers/", "destinations/", "a-propos/", WHO_PATH, LEGAL_PATH] + [f"destinations/{c['slug']}/" for c in cities]
     pages += [f"vols-pas-chers/{g['slug']}/" for g in groups]
@@ -2158,7 +2171,7 @@ def build(data, site, catalog=None):
         pages.append(f"depuis/{origin['slug']}/")
     pages += [f"vers/{place['slug']}/" for place in world_destinations(origins)]
     urls = "".join(
-        f"<url><loc>{e(site['url'] + ('' if lang == 'fr' else lang + '/') + page)}</loc></url>"
+        f"<url><loc>{e(site['url'] + ('' if lang == ROOT_LANG else lang + '/') + page)}</loc></url>"
         for lang in LANGS for page in pages + (route_pages if lang in FULL_LANGS else [])
     )
     urls += f"<url><loc>{e(site['url'] + CUSTOM_PATH)}</loc></url>"
@@ -2237,7 +2250,7 @@ def moved_target(page, pages):
 def renamed_page(page):
     """Nouvelle adresse d'une page dont la ville a changé d'adresse (« vers/odz/ » -> « vers/lodz/ »)."""
     parts = page.strip("/").split("/")
-    start = 1 if parts[0] in LANGS and parts[0] != "fr" else 0
+    start = 1 if parts[0] in LANGS and parts[0] != ROOT_LANG else 0
     table = {"depuis": WORLD_RENAMES, "vers": WORLD_RENAMES, "destinations": DEST_RENAMES}.get(parts[start] if len(parts) > start else "")
     if not table:
         return page
