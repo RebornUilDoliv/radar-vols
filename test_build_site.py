@@ -80,19 +80,26 @@ class BuildTests(unittest.TestCase):
         html = build_site.world_row(page, origin, route)
         self.assertIn('<h3><a href="https://tp.media/r?x=1" rel="nofollow sponsored noopener" target="_blank">Pise</a></h3>', html)
 
-    def build(self, offers):
+    def build(self, offers, root_lang="fr"):
         folder = tempfile.TemporaryDirectory()
         self.addCleanup(folder.cleanup)
         docs = Path(folder.name)
         (docs / "destinations" / "ancienne-ville").mkdir(parents=True)
         data = {"updated": "2026-11-04T14:40+00:00", "offers": offers}
-        with mock.patch.object(build_site, "DOCS", docs):
+        with mock.patch.object(build_site, "DOCS", docs), mock.patch.object(build_site, "ROOT_LANG", root_lang):
             places = {"PAR": {"name": "Paris", "country": "FR", "airports": ["CDG"]},
                       "BCN": {"name": "Barcelone", "country": "ES", "airports": ["BCN"]},
                       "ZZZ": {"name": "Sans vol", "country": "FR", "airports": []}}
             english = dict(places, BCN={"name": "Barcelona", "country": "ES", "airports": ["BCN"]})
             build_site.build(data, SITE, {"fr": (places, {"FR": "France"}), "en": (english, {"FR": "France"}), "es": (places, {"FR": "Francia"})})
         return docs
+
+    def test_home_detects_browser_language_but_other_languages_do_not(self):
+        docs = self.build([offer("BCN", "Barcelone", "Europe", 43, 30)])
+        home = (docs / "index.html").read_text()
+        self.assertIn("navigator.languages", home)  # détection de la langue du navigateur sur la racine
+        self.assertIn("location.replace", home)
+        self.assertNotIn("navigator.languages", (docs / "en" / "index.html").read_text())  # pas de redirection depuis les autres langues
 
     def test_home_pages_offer_hotel_search_in_every_language(self):
         docs = self.build([offer("BCN", "Barcelone", "Europe", 43, 30)])
