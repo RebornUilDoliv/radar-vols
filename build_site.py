@@ -356,7 +356,7 @@ def layout(p, title, description, path, body, noindex=False, extra="", photo=Non
     <a href="{root}depuis/">{p.t('nav_world')}</a>
     <a href="{root}destinations/">{p.t('nav_places')}</a>
     <a href="{root}vols-pas-chers/">{p.t('nav_deals')}</a>
-    {late_nav}<a href="{root}{WHO_PATH}">{e(WHO.get(p.lang, WHO["en"])["nav"])}</a><a href="{root}a-propos/">{p.t('nav_info')}</a>
+    {late_nav}<a href="{root}a-propos/">{p.t('nav_info')}</a>
   </nav>
   <details class="langs"><summary aria-label="Langue">{p.lang.upper()}</summary><div class="langs-list">{switch}</div></details>
   <button class="menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="menu" aria-label="{p.t('menu')}"><span></span><span></span><span></span></button>
@@ -371,7 +371,7 @@ def layout(p, title, description, path, body, noindex=False, extra="", photo=Non
       <p>{p.t('foot_1')}</p>
       <p>{p.t('foot_2', name=name)}</p>
     </div>
-    <p class="foot-links"><a href="{root}depuis/">{p.t('nav_world')}</a><a href="{root}vols/">{p.t('nav_flights')}</a><a href="{root}vols-pas-chers/">{p.t('nav_deals')}</a><a href="{root}barometre/">{e(BAROMETER[p.lang][0])}</a><a href="{root}destinations/">{p.t('nav_places')}</a><a href="{root}{WHO_PATH}">{e(WHO.get(p.lang, WHO["en"])["nav"])}</a><a href="{root}a-propos/">{p.t('nav_info')}</a><a href="{root}credits/">{p.t('credits')}</a><a href="{root}{LEGAL_PATH}">{e(legal_text(p.lang)["nav"])}</a><a href="mailto:contact@eunodia.com">contact@eunodia.com</a></p>
+    <p class="foot-links"><a href="{root}depuis/">{p.t('nav_world')}</a><a href="{root}vols/">{p.t('nav_flights')}</a><a href="{root}vols-pas-chers/">{p.t('nav_deals')}</a><a href="{root}barometre/">{e(BAROMETER[p.lang][0])}</a><a href="{root}destinations/">{p.t('nav_places')}</a><a href="{root}a-propos/">{p.t('nav_info')}</a><a href="{root}credits/">{p.t('credits')}</a><a href="{root}{LEGAL_PATH}">{e(legal_text(p.lang)["nav"])}</a><a href="mailto:contact@eunodia.com">contact@eunodia.com</a></p>
   </div>
 </footer>
 </body>
@@ -2080,7 +2080,6 @@ def build_language(p, data, cities, updated_at, groups, origins=()):
     for origin in origins:
         write(DOCS / "assets" / "routes" / lang / f"{origin['code']}.json", json.dumps(route_rows(p, origin), ensure_ascii=False, separators=(",", ":")))
     write(folder / "a-propos" / "index.html", about_page(p))
-    write(folder / WHO_PATH / "index.html", who_page(p))
     if lang == "fr":
         write(folder / "voyage-sur-mesure" / "index.html", custom_page(p))
     if origins:
@@ -2163,7 +2162,7 @@ def build(data, site, catalog=None):
         build_language(page, data, cities, updated_at, groups, origins)
     write(DOCS / "404.html", missing_page(Page(site, ROOT_LANG, names.get(ROOT_LANG))))
     route_pages = [route_path(origin, route) for origin in origins for route in origin["pages"]]
-    pages = ["", "vols/", "vols-pas-chers/", "destinations/", "a-propos/", WHO_PATH, LEGAL_PATH] + [f"destinations/{c['slug']}/" for c in cities]
+    pages = ["", "vols/", "vols-pas-chers/", "destinations/", "a-propos/", LEGAL_PATH] + [f"destinations/{c['slug']}/" for c in cities]
     pages += [f"vols-pas-chers/{g['slug']}/" for g in groups]
     if origins:
         pages += ["depuis/", "barometre/"]
