@@ -408,8 +408,18 @@ def photo_card(p, city, big=False):
 </a>"""
 
 
+def newsletter_url(p):
+    """Formulaire Brevo de la langue du visiteur. Les langues sans formulaire propre vont vers l'anglais, le français garde le formulaire d'origine."""
+    urls = p.site.get("newsletter_urls") or {}
+    if p.lang in urls:
+        return urls[p.lang]
+    if p.lang != ROOT_LANG and "en" in urls:
+        return urls["en"]
+    return p.site.get("newsletter_url")
+
+
 def newsletter_block(p):
-    url = p.site.get("newsletter_url")
+    url = newsletter_url(p)
     if not url:
         return ""
     return f"""<section class="news"><div class="wrap news-in">
