@@ -142,5 +142,12 @@ min_days = 14
 max_days = 35
 
 [newsletter]
-list_id = 2                      # liste Brevo des abonnés
+list_id = 2                      # liste Brevo des abonnés (français)
 sender = "contact@eunodia.com"
+
+# Une liste Brevo par langue. Tant qu'une langue n'est pas ici, aucun numéro n'est envoyé dans cette langue.
+# Exemple, une fois la liste et son formulaire créés dans Brevo :
+# [newsletter.lists]
+# fr = 2
+# en = 3
+# es = 4
