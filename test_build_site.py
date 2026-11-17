@@ -219,13 +219,21 @@ class BuildTests(unittest.TestCase):
         self.assertNotIn("figcaption", (docs / "destinations/barcelone/index.html").read_text())
 
     def test_newsletter_appears_once_configured(self):
-        p = build_site.Page(dict(SITE, root="/", version="1", newsletter_url=""), "fr")
+        p = build_site.Page(dict(SITE, root="/", version="1", newsletter_url="", newsletter_urls={}), "fr")
         self.assertEqual(build_site.newsletter_block(p), "")
-        p = build_site.Page(dict(SITE, root="/", version="1", newsletter_url="https://form.test/x"), "es")
+        p = build_site.Page(dict(SITE, root="/", version="1", newsletter_url="https://form.test/x", newsletter_urls={}), "es")
         block = build_site.newsletter_block(p)
         self.assertIn('action="https://form.test/x"', block)
         self.assertIn("required", block)
         self.assertIn("darme de baja", block)
+
+    def test_newsletter_form_follows_the_visitor_language(self):
+        site = dict(SITE, root="/", version="1", newsletter_url="https://form.test/fr", newsletter_urls={"en": "https://form.test/en", "es": "https://form.test/es"})
+        urls = {lang: build_site.newsletter_url(build_site.Page(site, lang)) for lang in ("fr", "en", "es", "de", "zh")}
+        self.assertEqual(urls, {"fr": "https://form.test/fr", "en": "https://form.test/en", "es": "https://form.test/es",
+                                "de": "https://form.test/en", "zh": "https://form.test/en"})
+        only_default = dict(site, newsletter_urls={})
+        self.assertEqual(build_site.newsletter_url(build_site.Page(only_default, "de")), "https://form.test/fr")
 
     def test_guide_uses_measured_prices(self):
         docs = self.build([offer("BCN", "Barcelone", "Europe", 43, 30), offer("BCN", "Barcelone", "Europe", 90, 90)])
