@@ -16,6 +16,7 @@ ROOT = Path(__file__).parent
 PARIS = ZoneInfo("Europe/Paris")
 BREVO = "https://api.brevo.com/v3"
 ORIGINS = {"fr": "PAR", "en": "LON", "es": "MAD"}   # ville de départ mise en avant pour chaque langue
+START_NAMES = {("es", "MAD"): "Madrid"}   # le nom de la liste des villes dit « Ciudad de Madrid », trop lourd dans une phrase
 FALLBACK_LANG = "en"              # un inscrit dont la langue n'a pas de numéro reçoit l'anglais
 SEND_HOUR = 8
 FAR, NEAR = 3, 3
@@ -157,7 +158,7 @@ def build_email(page, origin, geo, today):
         return None
     best = (far or near)[0]
     city = page.city(best["to"], best["to"])
-    start = page.city(origin["code"], origin["code"])
+    start = START_NAMES.get((page.lang, origin["code"])) or page.city(origin["code"], origin["code"])
     price = page.euro(best["price"])
     url = page.site["url"]
     photo = best["to"] if build_site.photo_exists(best["to"]) else "BKK"
