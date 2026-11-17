@@ -2230,6 +2230,19 @@ GONE_PAGES = [  # pages signalées en 404 par Google avant la mise en place des 
     "it/vers/st-domingue/", "de/depuis/miami/baltimore/", "nl/depuis/new-york/punta-cana/", "nl/depuis/madrid/edinbourg/",
     "nl/depuis/miami/nassau/", "nl/depuis/buenos-aires/quito/", "de/depuis/barcelone/palma-de-mallorca/",
     "ar/depuis/paris/bucarest/", "zh/depuis/dubai/makhatchkala/", "nl/depuis/dubai/makhatchkala/",
+    # signalées en 404 le 17 nov. 2026 (Search Console, validation échouée)
+    "ar/depuis/istanbul/tirana/", "ar/depuis/los-angeles/houston/", "ar/depuis/santiago/recife/",
+    "ar/depuis/tokyo/ho-chi-minh-ville/", "ar/destinations/belfast/", "de/depuis/los-angeles/baltimore/",
+    "de/depuis/santiago/florianopolis/", "depuis/berlin/palerme/", "depuis/lisbonne/agadir/",
+    "depuis/washington/saint-domingue/", "es/depuis/mexico/montego-bay/", "es/depuis/seoul/vladivostok/",
+    "es/depuis/stockholm/antalya/", "it/depuis/buenos-aires/punta-cana/", "it/vers/mahe-ile/",
+    "ko/depuis/amsterdam/manchester/", "ko/depuis/lima/brasilia/", "ko/destinations/hue/",
+    "nl/depuis/rome/marrakech/", "pt/depuis/amsterdam/manchester/", "pt/depuis/casablanca/verone/",
+    "pt/depuis/santiago/francfort/", "pt/depuis/singapour/bali/", "tr/depuis/hong-kong/jakarta/",
+    "tr/depuis/londres/paris/", "tr/depuis/los-angeles/philadelphie/", "tr/depuis/mexico/newburgh/",
+    "tr/depuis/santiago/francfort/", "tr/depuis/seoul/kuala-lumpur/", "tr/depuis/seoul/singapour/",
+    "tr/vers/panama-ville/", "zh/depuis/bangkok/sanya/", "zh/depuis/madrid/edinbourg/",
+    "zh/depuis/paris/seville/",
 ]
 
 
