@@ -146,8 +146,13 @@ list_id = 2                      # liste Brevo des abonnés (français)
 sender = "contact@eunodia.com"
 
 # Une liste Brevo par langue. Tant qu'une langue n'est pas ici, aucun numéro n'est envoyé dans cette langue.
-# Exemple, une fois la liste et son formulaire créés dans Brevo :
-# [newsletter.lists]
-# fr = 2
-# en = 3
-# es = 4
+# Les langues sans liste (allemand, italien...) s'inscrivent à la liste anglaise.
+[newsletter.lists]
+fr = 2
+en = 5
+es = 6
+
+# Formulaire d'inscription Brevo de chaque langue (le français garde newsletter_url).
+[site.newsletter_urls]
+en = "https://ab67ba27.sibforms.com/serve/MUIFACk1jFNZ0RkLLosUFGJPb3tedGwf3RxKguGhR0xidM-qbsoCN7lVPqYEo4DQWh9NvVoaaEeKcaQjvgPTOFHJXZKdL6wkecEng2RGRXdUSofCXrRbhcJ1eIFvrEuCMCuOgmvg08TvehOsP5OmA_A_WXqKRfipkR1latXRTW6YO1jGLxD1JXcBuEwTa6119UCJ_5mWDQ7_rVNbGw=="
+es = "https://ab67ba27.sibforms.com/serve/MUIFAOHmFLnECWeeC8BSjmvJmyVCyVxGg5TBZlj6AZoQqcJlQ70CUw7yOZe_nZQvNQDaMBRZzO1ItUhMOnOB5UjmW6nCpz719iQPt89HGO59HoToQPkk73a6zSX7scbbNaJQJrd6c0vJaTI1jLFsXalwV691sVJ0P1QHkw7l_JqvABU-E3X_jqeRvkjQQSNliO7zeLr0W6P76gJO5Q=="
