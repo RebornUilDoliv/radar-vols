@@ -49,6 +49,9 @@ class NewsletterTests(unittest.TestCase):
         self.assertEqual({lang: set(text) for lang, text in newsletter.TEXT.items()},
                          {lang: set(newsletter.TEXT["fr"]) for lang in newsletter.TEXT})
 
+    def test_madrid_is_named_plainly_in_spanish(self):
+        self.assertEqual(newsletter.START_NAMES[("es", "MAD")], "Madrid")
+
 
 if __name__ == "__main__":
     unittest.main()
