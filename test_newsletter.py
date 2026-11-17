@@ -31,6 +31,24 @@ class NewsletterTests(unittest.TestCase):
         self.assertEqual([r["to"] for r in far], ["TYO"])
         self.assertEqual([r["to"] for r in near], ["LIS"])
 
+    def test_each_language_has_its_own_sending_state(self):
+        now = datetime(2026, 11, 11, 19, tzinfo=newsletter.PARIS)
+        state = {"newsletters": {"fr": "2026-46"}}
+        self.assertFalse(newsletter.is_due(state, now, "fr"))
+        self.assertTrue(newsletter.is_due(state, now, "es"))
+
+    def test_only_french_is_sent_until_other_lists_exist(self):
+        self.assertEqual(newsletter.mailing_lists({"list_id": 2}), {"fr": 2})
+        self.assertEqual(newsletter.mailing_lists({"list_id": 2, "lists": {"fr": 2, "en": 3, "xx": 9}}), {"fr": 2, "en": 3})
+
+    def test_unknown_language_falls_back_to_english(self):
+        self.assertIs(newsletter.text_for("de"), newsletter.TEXT["en"])
+        self.assertIs(newsletter.text_for("es"), newsletter.TEXT["es"])
+
+    def test_every_language_has_the_same_texts(self):
+        self.assertEqual({lang: set(text) for lang, text in newsletter.TEXT.items()},
+                         {lang: set(newsletter.TEXT["fr"]) for lang in newsletter.TEXT})
+
 
 if __name__ == "__main__":
     unittest.main()
