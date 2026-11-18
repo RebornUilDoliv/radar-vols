@@ -53,6 +53,12 @@ class NewsletterTests(unittest.TestCase):
         self.assertEqual(set(newsletter.TEXT), set(newsletter.build_site.LANGS))
         self.assertEqual(set(newsletter.ORIGINS), set(newsletter.build_site.LANGS))
 
+    def test_empty_list_is_not_a_failure(self):
+        refusal = '{"code":"invalid_parameter","message":"There are no contacts associated with the given recipients info"}'
+        self.assertTrue(newsletter.no_subscribers(400, refusal))
+        self.assertFalse(newsletter.no_subscribers(401, refusal))
+        self.assertFalse(newsletter.no_subscribers(400, '{"code":"invalid_parameter","message":"sender is invalid"}'))
+
     def test_madrid_is_named_plainly_in_spanish(self):
         self.assertEqual(newsletter.START_NAMES[("es", "MAD")], "Madrid")
 

@@ -146,13 +146,33 @@ list_id = 2                      # liste Brevo des abonnés (français)
 sender = "contact@eunodia.com"
 
 # Une liste Brevo par langue. Tant qu'une langue n'est pas ici, aucun numéro n'est envoyé dans cette langue.
-# Les langues sans liste (allemand, italien...) s'inscrivent à la liste anglaise.
+# Une langue sans liste s'inscrit à la liste anglaise.
 [newsletter.lists]
 fr = 2
 en = 5
 es = 6
+de = 7
+it = 8
+pt = 9
+nl = 10
+tr = 11
+ar = 12
+zh = 13
+ko = 14
+hi = 15
+ru = 16
 
 # Formulaire d'inscription Brevo de chaque langue (le français garde newsletter_url).
 [site.newsletter_urls]
 en = "https://ab67ba27.sibforms.com/serve/MUIFACk1jFNZ0RkLLosUFGJPb3tedGwf3RxKguGhR0xidM-qbsoCN7lVPqYEo4DQWh9NvVoaaEeKcaQjvgPTOFHJXZKdL6wkecEng2RGRXdUSofCXrRbhcJ1eIFvrEuCMCuOgmvg08TvehOsP5OmA_A_WXqKRfipkR1latXRTW6YO1jGLxD1JXcBuEwTa6119UCJ_5mWDQ7_rVNbGw=="
 es = "https://ab67ba27.sibforms.com/serve/MUIFAOHmFLnECWeeC8BSjmvJmyVCyVxGg5TBZlj6AZoQqcJlQ70CUw7yOZe_nZQvNQDaMBRZzO1ItUhMOnOB5UjmW6nCpz719iQPt89HGO59HoToQPkk73a6zSX7scbbNaJQJrd6c0vJaTI1jLFsXalwV691sVJ0P1QHkw7l_JqvABU-E3X_jqeRvkjQQSNliO7zeLr0W6P76gJO5Q=="
+de = "https://ab67ba27.sibforms.com/serve/MUIFAHnM9fqo1kjfmEAkrAZp1Jnk3-JgTuiSC60NJRDbB_t-Lz9P-AHBxA26rSb2srbHCRfaEqQSjoVeX4-FE2DPPf55YXrzhaVlEBNby5fs2WFe6gcdbxX25Hggqghd9Hbxgjhzf_toffMaQYU5W-haFlpJDQ9dVxz0yPbWfFhptmYMEDHx37VbDzh3J-5s_Txh9JBhL8LasXMhUg=="
+it = "https://ab67ba27.sibforms.com/serve/MUIFAF7zQ4T1VGK3vTAlOOPTo-Vv3wLmJu85oQfrZ9-sXW2X0fU-jjX7epP7ZkxpLZBoH3e3JCHNtjiyx9JgjPyCj_R6NZ-v2-jf3lcP-O72V4wV24kZUZM_RukovJq2KQZ7M_JkOGVMmtyzOcaOLFhanWTy4na40NYt-9TS7jT8zDX-rgVZzYvmNIyj8MbtG71oxIe42ALEBosLzg=="
+pt = "https://ab67ba27.sibforms.com/serve/MUIFAM23Hww_NSYcJsfPu6HEG4YtSM_tf9K_m4j-FmN7X7ZXij4lTMrGshtUDXUovHA_7lc4gjIeO0wiJW7dP13EX4kbe9oJNcfexjlqiE2XFaVVT9veRtJOwyK1YigLnTJU8G22_7m5n0Pzbmchmnz7V4eh88COH-v80vir9cPd3HflW9Hs0FVFw-yK-sdO8aR2PNPPjDNCkCi8-Q=="
+nl = "https://ab67ba27.sibforms.com/serve/MUIFAF0gDJflXS9ohHNT9UO0dnTEwqww5fUym4SNJbccsau735wNXgBiUWEWHR6Nv18pBJdmHESAtJhQwrVLH1CIazM-iPgZwWcbIJruIZxrsF2GvpiXhAEACOOhn7qiOW-V0vJZIDY71PV7nFJe514Gemw6gkGEQR2jWSeP_Z_bauikkzms178TSLiBy0AU4BUULPyogadM3LDvDw=="
+tr = "https://ab67ba27.sibforms.com/serve/MUIFAP-SalgBKZHcwk0YJK55PXopPTRz4uwZsH76-ZIG9jjzSaDTwIkrOsGz55uwLc3aKQC3xRoslyDOVghjGMbj9tO-_2b6lKSQ7kqTnCaxZvELnOaIu3LilBf_H69R3cHNDMkEetlexJLgsg4mHXVFKsWWC_oPkzrT1JkZhuy2DV45m7CtKrm3CqrcDmpyduU5mUlT3ytj6iTu8g=="
+ar = "https://ab67ba27.sibforms.com/serve/MUIFAH8E5QaCY9KHM8esndwXr62_oAyeStnwd6D3B2pqegk-r3UUhyEy4PRilICQ-0q8wQpGLoVow6jGrxSBpdqf0aGtXEH-GoJXGlAF2pQjpmseK52wVKfgfvwllHQsg6p0EQFzacTdPMd4leuGathK5u0KfvufuFflDiWF9RUBQ2ufDgb5EAc3WQzDrKTYDekNSTSU-aZLIH8oHQ=="
+zh = "https://ab67ba27.sibforms.com/serve/MUIFAM-EKeOS9m-eb-jZ08ktn1vw6At6HrS-N73CHHIEWMy5tA5TfB8DqFxglJVsUM_ZglEY-MpF_kXaR-ad-pCz_CaYmHfGJv3gHZ4utdXg7Jqk6nzZCO0W-qdiYJlzp_XvurZlGSSrSo-Ug5WIe5X8vZD_BTVeC6GDfwylRH5uyNixvSZU5xnez9prVYVKWpbugtPT8jLI1cxCJg=="
+ko = "https://ab67ba27.sibforms.com/serve/MUIFALq-0eBmHFlBu4qyT_zwRoVZ27FICpE2o7k7DDjiQ24nl407JbcerYAHk9DniQ-M5w_Rzry4rANCrB61kUkoKCSTrS9Rnrjh4gORWw8MPFpRzeAQJ-WDMg5imqHU0fwX1hswXz5117aivy30G2HUjj2q3wemRoi6yv4cEWxg7rEaJYgh3DcFWMXEOy5Ekk6GcLDlGXJ7DisEfw=="
+hi = "https://ab67ba27.sibforms.com/serve/MUIFAJ3foXfW73St9_qoiTtfEfDsCgiyFpCbcs_X0KXGJJO0FKWk1byZjgoLhKssb4OJ0UG4Rjtx2xqddANBmX4KnwtQj34Nz1dUWEYC7dOk4HZbEJRAXbGuY4wLDxX85OCZRxJr6gEzhQa8reaYqZFTVWPF4XXavE5XlNlRlFuJz1N5YOnVeGoohF7y2jQgj-lj-Q-w8n6tzyPaMA=="
+ru = "https://ab67ba27.sibforms.com/serve/MUIFAFL19-H0lpezkZz6zDmu9t0QnG1fYX3e4E1aGFZq2Ywtt2j6VrDXYbKT1preO-itteVBstLM1qe0zAwIJTTJuNoSFKeBus3pjpDINH8tOm-zdDbSDk8b50IdTLKTAOkNlE5ooKh5-y6tEKn0aYo3lSQIGTXTntaG5uJUopVdVkU2I7lvqL42rBvbIg54LgdbJO9EIOSGavM9eQ=="

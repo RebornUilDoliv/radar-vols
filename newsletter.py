@@ -362,6 +362,11 @@ def build_email(page, origin, geo, today):
             "preview": text["preview"].format(city=city, price=price, origin=start, from_origin=from_start), "html": body}
 
 
+def no_subscribers(code, detail):
+    """Brevo refuse une campagne vers une liste vide : ce n'est pas une panne, la langue attend ses premiers abonnés."""
+    return code == 400 and "no contacts" in detail.lower()
+
+
 def brevo(path, key, body):
     request = urllib.request.Request(f"{BREVO}{path}", data=json.dumps(body).encode(), method="POST",
                                      headers={"api-key": key, "content-type": "application/json", "accept": "application/json"})
@@ -429,7 +434,11 @@ def main():
                 "recipients": {"listIds": [list_id]}, "scheduledAt": moment.isoformat(),
             })
         except urllib.error.HTTPError as error:
-            print(f"Newsletter {lang} : Brevo a refusé ({error.code}) : {error.read()[:300].decode(errors='replace')}", file=sys.stderr)
+            detail = error.read()[:300].decode(errors="replace")
+            if no_subscribers(error.code, detail):
+                print(f"Newsletter {lang} : pas encore d'abonnés, rien à envoyer.")
+                continue
+            print(f"Newsletter {lang} : Brevo a refusé ({error.code}) : {detail}", file=sys.stderr)
             failed = True
             continue
         week = moment.strftime("%G-%V")
