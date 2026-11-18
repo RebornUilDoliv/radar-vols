@@ -16,7 +16,7 @@ from zoneinfo import ZoneInfo
 from pathlib import Path
 
 import radar
-from site_text import (BAROMETER, BOOKING_LOCALES, CONTINENTS, DATA_LANGS, DATE_MONTHS, FULL_LANGS, LANG_NAMES, LANGS, LOCALES, MONTHS, NEAR_TITLES, NEWS_DONE, REGIONS,
+from site_text import (BAROMETER, BOOKING_LOCALES, CONTINENTS, DATA_LANGS, DATE_MONTHS, DAY_FORMAT, MONTH_FORMAT, YEAR_FORMAT, FULL_LANGS, LANG_NAMES, LANGS, LOCALES, MONTHS, NEAR_TITLES, NEWS_DONE, REGIONS,
                        RTL_LANGS, SCRIPT_TEXT, SHORT_MONTHS, TEXT)
 
 ROOT = Path(__file__).parent
@@ -31,8 +31,8 @@ POPULAR_ORIGINS = 10             # une destination doit être desservie depuis a
 ALWAYS_LISTED = {"YQB"}          # destinations affichées même desservies depuis moins de villes
 MAX_ROUTE_PRICE = 3000           # écarte les prix aberrants
 HUB_ROWS = 60
-DEFAULT_ORIGIN = {"fr": "PAR", "en": "LON", "es": "MAD", "de": "BER", "it": "ROM", "pt": "LIS", "nl": "AMS", "tr": "IST", "ar": "RUH", "zh": "HKG", "ko": "SEL", "hi": "DEL", "ru": "MOW"}
-BACKUP_ORIGIN = {"ar": "DXB", "hi": "BOM", "ru": "IST"}
+DEFAULT_ORIGIN = {"fr": "PAR", "en": "LON", "es": "MAD", "de": "BER", "it": "ROM", "pt": "LIS", "nl": "AMS", "tr": "IST", "ar": "RUH", "zh": "HKG", "ko": "SEL", "hi": "DEL", "ru": "MOW", "ja": "TYO"}
+BACKUP_ORIGIN = {"ar": "DXB", "hi": "BOM", "ru": "IST", "ja": "OSA"}
 ROOT_LANG = "fr"  # langue servie à la racine du site ; les autres vivent sous /<langue>/
 PARTNER_LANGS = ("fr", "en", "es", "de", "it", "pt")
 SOUTH_AMERICA = {"AR", "BO", "BR", "CL", "CO", "EC", "GF", "GY", "PE", "PY", "SR", "UY", "VE"}
@@ -94,19 +94,19 @@ class Page:
 
     def euro(self, value):
         number = f"{value:,.0f}"
-        if self.lang == "en":
+        if self.lang in ("en", "ja"):
             return f"€{number}"
         return number.replace(",", " ") + " €"
 
     def day(self, iso, year=True):
         value = date.fromisoformat(iso)
         month = SHORT_MONTHS[self.lang][value.month - 1]
-        label = f"{value.day} {month}"
-        return f"{label} {value.year}" if year else label
+        label = DAY_FORMAT.get(self.lang, "{day} {month}").format(day=value.day, month=month)
+        return YEAR_FORMAT.get(self.lang, "{date} {year}").format(date=label, year=value.year) if year else label
 
     def month(self, key):
         year, month = key.split("-")
-        return f"{MONTHS[self.lang][int(month) - 1]} {year}"
+        return MONTH_FORMAT.get(self.lang, "{month} {year}").format(month=MONTHS[self.lang][int(month) - 1], year=year)
 
     def city(self, code, fallback):
         return self.names.get(code, fallback)
@@ -492,8 +492,10 @@ HOTEL_WORDS = {
            "सूची से कोई शहर चुनें।", "आप Klook पर दिखाई गई कीमत पर बुक करते हैं। जल्द और शहर जुड़ेंगे।"),
     "ru": ("Авиабилеты", "Отели", "Город", "Лиссабон, Токио, Марракеш…", "Заезд", "Выезд", "Гости", "Найти",
            "Выберите город из списка.", "Бронирование на Klook по указанной цене. Скоро добавим больше городов."),
+    "ja": ("航空券", "ホテル", "都市", "リスボン、東京、マラケシュ…", "チェックイン", "チェックアウト", "人数", "検索",
+           "リストから都市を選んでください。", "Klookで表示価格のまま予約できます。対応都市は順次追加予定です。"),
 }
-KLOOK_LANG = {"fr": "fr", "en": "en-US", "es": "es", "de": "de", "it": "it", "pt": "pt-BR", "nl": "nl", "ko": "ko", "zh": "zh-CN"}
+KLOOK_LANG = {"fr": "fr", "en": "en-US", "es": "es", "de": "de", "it": "it", "pt": "pt-BR", "nl": "nl", "ko": "ko", "zh": "zh-CN", "ja": "ja"}
 
 
 def klook_cities():
@@ -540,7 +542,7 @@ TRAIN_KEYS = ("tab", "note", "from", "from_place", "to", "to_place", "go", "pric
 TRAIN_DATES = {"fr": ("Aller", "Retour"), "en": ("Depart", "Return"), "es": ("Ida", "Vuelta"), "de": ("Hinfahrt", "Rückfahrt"),
                "it": ("Andata", "Ritorno"), "pt": ("Ida", "Volta"), "nl": ("Heen", "Terug"), "tr": ("Gidiş", "Dönüş"),
                "ar": ("الذهاب", "العودة"), "zh": ("去程", "返程"), "ko": ("가는 날", "오는 날"),
-               "hi": ("जाने की तारीख़", "वापसी"), "ru": ("Туда", "Обратно")}
+               "hi": ("जाने की तारीख़", "वापसी"), "ru": ("Туда", "Обратно"), "ja": ("往路", "復路")}
 TRAIN_WORDS = {
     "fr": ("Train & bus", "Prix « dès » relevés chaque jour par Omio. Tu réserves chez Omio, au prix affiché.",
            "Départ", "Paris, Lyon, Madrid…", "Arrivée", "Partout", "Rechercher", "dès", "Voir les horaires",
@@ -594,6 +596,10 @@ TRAIN_WORDS = {
            "Откуда", "Лондон, Париж, Мадрид…", "Куда", "Куда угодно", "Найти", "от", "Расписание",
            "Цены на этот маршрут пока нет: посмотрите расписание прямо на Omio.", "Выберите город отправления из списка.",
            "Искать на Omio", "Загружаем маршруты…"),
+    "ja": ("電車・バス", "最安価格はOmioが毎日更新しています。表示価格のままOmioで予約できます。",
+           "出発地", "ロンドン、パリ、マドリード…", "目的地", "どこでも", "検索", "最安", "時刻表を見る",
+           "この区間の価格はまだありません。Omioで直接時刻表をご確認ください。", "リストから出発都市を選んでください。",
+           "Omioで検索", "ルートを読み込み中…"),
 }
 
 
@@ -1146,7 +1152,7 @@ def clean_names(names):
         if cleaned[lang].get("BUD") == "Buda":  # la source appelle Budapest « Buda » en français, allemand...
             cleaned[lang]["BUD"] = "Budapest"
         # le hindi reprend les noms anglais (la source n'a pas de noms en hindi) : mêmes corrections que l'anglais
-        source = "en" if lang == "hi" else lang
+        source = "en" if DATA_LANGS.get(lang) == "en" else lang
         fixes = {**(SHARED_NAME_FIXES if source in LATIN_LANGS else {}), **NAME_FIXES.get(source, {})}
         cleaned[lang].update({code: name for code, name in fixes.items() if code in cleaned[lang]})
     return cleaned
@@ -1432,6 +1438,8 @@ MUSTS_WORDS = {
            "देखें", "छिपाएँ", "{city} की सभी गतिविधियाँ", "संग्रहालय और स्मारकों के टिकट"),
     "ru": ("Чем заняться", "{city}: что обязательно посмотреть", "Экскурсии, музеи, шоу: любимые развлечения путешественников",
            "Смотреть", "Скрыть", "Все развлечения: {city}", "Билеты в музеи и к достопримечательностям"),
+    "ja": ("現地で楽しむ", "{city}の定番スポット", "ツアー、美術館、ショー：旅行者に人気のアクティビティ",
+           "見る", "閉じる", "{city}のすべてのアクティビティ", "美術館・観光名所のチケット"),
 }
 # Photos choisies à la main quand celle d'Omio montre le même monument que la photo du haut
 MUSTS_PHOTOS = {"PAR": "assets/photos/extra/PAR-arc.jpg"}
@@ -1496,6 +1504,7 @@ MUSTS_EMPTY = {
     "ko": "액티비티가 보이지 않나요? 광고 차단기가 숨겼을 수 있어요. 아래 버튼을 이용하세요.",
     "hi": "गतिविधियाँ नहीं दिख रहीं? हो सकता है आपका ऐड ब्लॉकर उन्हें छिपा रहा हो: नीचे दिए बटन इस्तेमाल करें।",
     "ru": "Не видите развлечения? Возможно, их скрывает блокировщик рекламы: воспользуйтесь кнопками ниже.",
+    "ja": "アクティビティが表示されませんか？広告ブロッカーが非表示にしている可能性があります。下のボタンをご利用ください。",
 }
 _TIQETS = None
 
@@ -1881,6 +1890,19 @@ WHO.update({
            ],
            "contact": "Есть вопрос или мечтаете о поездке? Напишите мне на {mail} или найдите меня в Instagram и TikTok: {handle}.",
            "go": "Спланировать поездку с Хосе"},
+    "ja": {"nav": "運営者について", "title": "運営者について",
+           "lead": "こんにちは、パリ出身のホセです。Eunodiaを立ち上げました。",
+           "meta": "パリ出身、観光・ホテル経営を学んだEunodia創設者のホセが、このサイトを作った理由。",
+           "alt": "ホセ（Eunodia創設者）", "job": "Eunodia創設者",
+           "paras": [
+               "旅は私の情熱です。パリ第1大学（ソルボンヌ）のIRESTで、観光・ホテル経営の修士課程まで学びました。フランス語、英語、スペイン語を話し、イタリア語も少しできます。",
+               "働きながら学ぶ中で、旅行業界の裏側を知りました。大規模な国際イベントの宿泊手配、団体旅行の企画、直前の宿泊先の振り替え、そして世界中のホテルやオンライン旅行会社との日々のやり取り。そこで、価格がどう決まるのか…そして本当のお得がどこに隠れているのかを学びました。",
+               "**なぜEunodia？** 最初は、航空券の最安値を表示する小さなツールを作りたかっただけでした。そのうち、本格的なサイトを作って、航空券・ホテル・アクティビティなど今いちばんお得な情報をみんなと共有できたら素敵だと思うようになりました。こうしてEunodiaが生まれました。",
+               "いちばん好きなのは**オーダーメイドの旅を考えること**です。旅程を組み、ちょうどいい価格のフライトとホテルを見つけ…そして誰かが笑顔で旅立つのを見ること。いい旅は幸せをくれる。だから私はこの仕事をしています。",
+               "Eunodiaは独立したプロジェクトです。**私は個人事業主**として、ひとりでサイトを運営しています。ご利用は無料です。ご予約時にパートナーから小さな手数料を受け取りますが、お客様の追加負担はありません。",
+           ],
+           "contact": "ご質問や旅のご相談は、{mail}までメールいただくか、InstagramとTikTok {handle} でどうぞ。",
+           "go": "ホセと旅を計画する"},
 })
 
 
@@ -2039,7 +2061,7 @@ def missing_page(p):
 
 RESULTS_PATH = "recherche/"
 WHITE_LABEL_ID = "24366"
-WHITE_LABEL_CURRENCY = {"en": "usd", "ar": "usd", "ko": "usd", "zh": "usd", "hi": "inr", "ru": "rub"}
+WHITE_LABEL_CURRENCY = {"en": "usd", "ar": "usd", "ko": "usd", "zh": "usd", "hi": "inr", "ru": "rub", "ja": "jpy"}
 
 
 RESULTS_TEXT = {  # titre, phrase d'accroche, trois avantages de la page de résultats de vols
@@ -2095,6 +2117,10 @@ RESULTS_TEXT = {  # titre, phrase d'accroche, trois avantages de la page de rés
            (("Цена с багажом", "Выберите багаж: указанная цена станет итоговой."),
             ("Покупка напрямую", "Кнопка ведёт к авиакомпании или агентству, которое продаёт билет."),
             ("Без комиссии Eunodia", "Вы платите только цену продавца, ничего больше."))),
+    "ja": ("フライトを探す", "航空会社と旅行会社を手荷物込みで比較。表示価格のまま販売元で直接予約できます。",
+           (("手荷物込みの価格", "手荷物を選ぶと、表示価格がそのまま最終価格になります。"),
+            ("直接購入", "ボタンから、航空券を販売する航空会社または旅行会社へ移動します。"),
+            ("Eunodiaの手数料なし", "お支払いは販売元の価格のみです。"))),
 }
 
 
@@ -2142,7 +2168,7 @@ def city_index(places, countries):
 
 def build_language(p, data, cities, updated_at, groups, origins=()):
     lang, folder = p.lang, p.folder
-    updated = f"{updated_at.day} {DATE_MONTHS[lang][updated_at.month - 1]}, {updated_at:%H:%M} UTC"
+    updated = DAY_FORMAT.get(lang, "{day} {month}").format(day=updated_at.day, month=DATE_MONTHS[lang][updated_at.month - 1]) + f", {updated_at:%H:%M} UTC"
     offers = data["offers"]
     translated = [
         {**offer, "city": p.city(offer["code"], offer["city"]), "region": p.region(offer["region"]), "region_key": offer["region"]}
@@ -2382,8 +2408,9 @@ def keep_moved_pages(state, url="/"):
     for page in moved:
         new = renamed_page(page)
         target = e(url + (new if new in pages else moved_target(new, pages)))
+        # simple redirection (pas de « noindex » : Google le déconseille avec une redirection et une balise canonique)
         write(DOCS / page / "index.html", f'<!doctype html>{MOVED_MARK}<html><head><meta charset="utf-8"><title>Eunodia</title>'
-              f'<link rel="canonical" href="{target}"><meta name="robots" content="noindex">'
+              f'<link rel="canonical" href="{target}">'
               f'<meta http-equiv="refresh" content="0; url={target}"></head>'
               f'<body><a href="{target}">Eunodia</a></body></html>\n')
     write(state, json.dumps(sorted(known), ensure_ascii=False, separators=(",", ":")) + "\n")

@@ -259,6 +259,14 @@ class BuildTests(unittest.TestCase):
         self.assertEqual(p.from_city("MOW", "Moscow"), "из города Moscow")  # nom affiché différent : pas de forme déclinée
         self.assertEqual(p.to_city("XXX", "Тест"), "— Тест")
 
+    def test_japanese_dates_and_prices_read_naturally(self):
+        p = build_site.Page(dict(SITE, root="/", version="1"), "ja")
+        self.assertEqual((p.day("2026-12-03"), p.day("2026-12-03", False), p.month("2027-01"), p.euro(1234)),
+                         ("2026年12月3日", "12月3日", "2027年1月", "€1,234"))
+        self.assertEqual(build_site.Page(dict(SITE, root="/", version="1"), "ko").day("2026-12-03", False), "12월 3일")
+        self.assertEqual(build_site.Page(dict(SITE, root="/", version="1"), "fr").day("2026-12-03"), "3 déc. 2026")
+        self.assertIn("フライトを探す", build_site.results_page(p))
+
     def test_budapest_keeps_its_name_in_each_script(self):
         names = build_site.clean_names({"fr": {"BUD": "Buda"}, "ru": {"BUD": "Будапешт"}, "zh": {"BUD": "布达佩斯"}})
         self.assertEqual((names["fr"]["BUD"], names["ru"]["BUD"], names["zh"]["BUD"]), ("Budapest", "Будапешт", "布达佩斯"))
@@ -446,7 +454,8 @@ class BuildTests(unittest.TestCase):
                 self.assertEqual(moved, ["de/depuis/miami/oslo/", "it/vers/rome/"])
                 stub = (docs / "de/depuis/miami/oslo/index.html").read_text()
                 self.assertIn('url=https://eunodia.com/de/depuis/miami/"', stub)
-                self.assertIn("noindex", stub)
+                self.assertNotIn("noindex", stub)  # une redirection, pas une page exclue
+                self.assertIn('rel="canonical" href="https://eunodia.com/de/depuis/miami/"', stub)
                 self.assertIn('url=https://eunodia.com/"', (docs / "it/vers/rome/index.html").read_text())
                 build_site.write(docs / "de/depuis/miami/oslo/index.html", "<html>retour</html>")
                 self.assertEqual(build_site.keep_moved_pages(state, "https://eunodia.com/"), ["it/vers/rome/"])
