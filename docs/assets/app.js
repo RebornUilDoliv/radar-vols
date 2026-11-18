@@ -202,10 +202,27 @@
           singular(root);
           new MutationObserver(function () { singular(root); }).observe(root, { childList: true, subtree: true, characterData: true });
           setInterval(function () { singular(root); }, 400);
+          if (id === "tpwl-tickets") followResults(host, root);
         }
       });
       if (tries > 100) clearInterval(timer);
     }, 300);
+  }
+
+  /* Les vols s'affichent sous le formulaire : on fait défiler jusqu'à eux une fois par recherche,
+     sinon on croit sur mobile que la recherche n'a rien donné. */
+  function followResults(host, root) {
+    var shown = false;
+    var still = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    new MutationObserver(function () {
+      var card = root.querySelector('[class*="FlightCard-module__card"]');
+      if (!card) { shown = false; return; }
+      if (shown) return;
+      shown = true;
+      if (host.getBoundingClientRect().top > window.innerHeight * 0.6) {
+        host.scrollIntoView({ behavior: still ? "auto" : "smooth", block: "start" });
+      }
+    }).observe(root, { childList: true, subtree: true });
   }
 
   /* Recherche d'hôtels Klook (onglet à côté des vols) */
