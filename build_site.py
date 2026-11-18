@@ -284,7 +284,8 @@ def layout(p, title, description, path, body, noindex=False, extra="", photo=Non
     site, base, root = p.site, p.base, p.root
     body = page_hero(p, path, body, photo)
     name = e(site["name"])
-    links = "".join(
+    missing = path == "404.html"  # la page d'erreur n'existe qu'à la racine : ses liens de langue vont vers les accueils
+    links = "" if missing else "".join(
         f'<link rel="alternate" hreflang="{lang}" href="{e(site["url"] + ("" if lang == ROOT_LANG else lang + "/") + path)}">'
         for lang in page_langs(path)
     ) + (f'<link rel="alternate" hreflang="x-default" href="{e(site["url"] + path)}">' if ROOT_LANG in page_langs(path) else "")
@@ -293,7 +294,7 @@ def layout(p, title, description, path, body, noindex=False, extra="", photo=Non
     first_nav = f'<a class="nav-cta" href="{root}{CUSTOM_PATH}">Voyage sur mesure</a>' if custom else flights_nav
     late_nav = flights_nav + "\n    " if custom else ""
     switch = "".join(
-        f'<a href="{base}{"" if lang == ROOT_LANG else lang + "/"}{path}" lang="{lang}" hreflang="{lang}"'
+        f'<a href="{base}{"" if lang == ROOT_LANG else lang + "/"}{"" if missing else path}" lang="{lang}" hreflang="{lang}"'
         f'{" aria-current=\"true\"" if lang == p.lang else ""} title="{LANG_NAMES[lang]}">{LANG_NAMES[lang]}</a>'
         for lang in page_langs(path)
     )
@@ -396,7 +397,8 @@ def flight_row(p, offer, city):
 def photo_credit(p, credit):
     license_name = e(credit["license"])
     if credit.get("license_url"):
-        license_name = f'<a href="{e(credit["license_url"])}" rel="noopener">{license_name}</a>'
+        license_url = credit["license_url"].replace("http://creativecommons.org", "https://creativecommons.org")
+        license_name = f'<a href="{e(license_url)}" rel="noopener">{license_name}</a>'
     return f'{p.t("photo")} : <a href="{e(credit["source"])}" rel="noopener">{e(credit["artist"])}</a>, {license_name}, {p.t("resized")}'
 
 
@@ -2004,19 +2006,62 @@ WHITE_LABEL_ID = "24366"
 WHITE_LABEL_CURRENCY = {"en": "usd", "ar": "usd", "ko": "usd", "zh": "usd", "hi": "inr"}
 
 
+RESULTS_TEXT = {  # titre, phrase d'accroche, trois avantages de la page de résultats de vols
+    "fr": ("Trouve ton vol", "Compare les compagnies et les agences, bagages compris. Tu réserves directement chez le vendeur, au prix affiché.",
+           (("Prix bagages compris", "Choisis tes bagages : le prix affiché devient le prix final."),
+            ("Achat direct", "Le bouton t'envoie chez la compagnie ou l'agence qui vend le billet."),
+            ("Aucuns frais Eunodia", "Tu paies le prix du vendeur, rien de plus."))),
+    "en": ("Find your flight", "Compare airlines and agencies, bags included. You book directly with the seller, at the price shown.",
+           (("Bags included", "Pick your bags: the price shown becomes the final price."),
+            ("Book direct", "The button takes you to the airline or agency selling the ticket."),
+            ("No Eunodia fees", "You pay the seller's price, nothing more."))),
+    "es": ("Encuentra tu vuelo", "Compara aerolíneas y agencias, con equipaje incluido. Reservas directamente con el vendedor, al precio indicado.",
+           (("Precio con equipaje", "Elige tu equipaje: el precio indicado se convierte en el precio final."),
+            ("Compra directa", "El botón te lleva a la aerolínea o agencia que vende el billete."),
+            ("Sin gastos de Eunodia", "Pagas el precio del vendedor, nada más."))),
+    "de": ("Finde deinen Flug", "Vergleiche Airlines und Agenturen, inklusive Gepäck. Du buchst direkt beim Anbieter, zum angezeigten Preis.",
+           (("Preis inklusive Gepäck", "Wähle dein Gepäck: Der angezeigte Preis wird zum Endpreis."),
+            ("Direkt buchen", "Der Button führt dich zur Airline oder Agentur, die das Ticket verkauft."),
+            ("Keine Eunodia-Gebühren", "Du zahlst den Preis des Anbieters, sonst nichts."))),
+    "it": ("Trova il tuo volo", "Confronta compagnie aeree e agenzie, bagagli inclusi. Prenoti direttamente dal venditore, al prezzo indicato.",
+           (("Prezzo con bagagli", "Scegli i bagagli: il prezzo indicato diventa il prezzo finale."),
+            ("Acquisto diretto", "Il pulsante ti porta alla compagnia o all'agenzia che vende il biglietto."),
+            ("Nessun costo Eunodia", "Paghi il prezzo del venditore, niente di più."))),
+    "pt": ("Encontre o seu voo", "Compare companhias aéreas e agências, com bagagem incluída. Reserva diretamente com o vendedor, ao preço indicado.",
+           (("Preço com bagagem", "Escolha a sua bagagem: o preço indicado passa a ser o preço final."),
+            ("Compra direta", "O botão leva-o à companhia ou agência que vende o bilhete."),
+            ("Sem taxas Eunodia", "Paga o preço do vendedor, nada mais."))),
+    "nl": ("Vind je vlucht", "Vergelijk luchtvaartmaatschappijen en bureaus, inclusief bagage. Je boekt rechtstreeks bij de verkoper, tegen de getoonde prijs.",
+           (("Prijs met bagage", "Kies je bagage: de getoonde prijs wordt de eindprijs."),
+            ("Direct boeken", "De knop brengt je naar de maatschappij of het bureau dat het ticket verkoopt."),
+            ("Geen Eunodia-kosten", "Je betaalt de prijs van de verkoper, meer niet."))),
+    "tr": ("Uçuşunu bul", "Havayollarını ve acenteleri bagaj dahil karşılaştır. Biletini doğrudan satıcıdan, gösterilen fiyata alırsın.",
+           (("Bagaj dahil fiyat", "Bagajını seç: gösterilen fiyat son fiyat olur."),
+            ("Doğrudan satın al", "Düğme seni bileti satan havayoluna veya acenteye götürür."),
+            ("Eunodia ücreti yok", "Yalnızca satıcının fiyatını ödersin."))),
+    "ar": ("ابحث عن رحلتك", "قارن بين شركات الطيران والوكالات مع الأمتعة. تحجز مباشرة لدى البائع بالسعر المعروض.",
+           (("السعر مع الأمتعة", "اختر أمتعتك: يصبح السعر المعروض هو السعر النهائي."),
+            ("شراء مباشر", "ينقلك الزر إلى شركة الطيران أو الوكالة التي تبيع التذكرة."),
+            ("بلا رسوم من Eunodia", "تدفع سعر البائع فقط، لا أكثر."))),
+    "ko": ("항공편 찾기", "항공사와 여행사를 수하물 포함 가격으로 비교하세요. 표시된 가격으로 판매처에서 직접 예약합니다.",
+           (("수하물 포함 가격", "수하물을 선택하면 표시된 가격이 최종 가격이 됩니다."),
+            ("직접 구매", "버튼을 누르면 항공권을 판매하는 항공사나 여행사로 이동합니다."),
+            ("Eunodia 수수료 없음", "판매처의 가격만 내면 됩니다."))),
+    "zh": ("查找航班", "比较航空公司和代理商的含行李价格，按显示的价格直接向卖家预订。",
+           (("含行李价格", "选择行李后，显示的价格即为最终价格。"),
+            ("直接购买", "点击按钮即可前往出售机票的航空公司或代理商。"),
+            ("Eunodia 不收费", "您只需支付卖家的价格。"))),
+    "hi": ("अपनी उड़ान खोजें", "सामान सहित एयरलाइनों और एजेंसियों की तुलना करें। आप दिखाई गई कीमत पर सीधे विक्रेता से बुक करते हैं।",
+           (("सामान सहित कीमत", "अपना सामान चुनें: दिखाई गई कीमत ही अंतिम कीमत बन जाती है।"),
+            ("सीधी खरीद", "बटन आपको टिकट बेचने वाली एयरलाइन या एजेंसी तक ले जाता है।"),
+            ("Eunodia का कोई शुल्क नहीं", "आप केवल विक्रेता की कीमत चुकाते हैं।"))),
+}
+
+
 def results_page(p):
     """Résultats de recherche de vols : moteur Travelpayouts intégré au site (non indexé, comme toute page de résultats)."""
-    fr = p.lang == "fr"
     currency = WHITE_LABEL_CURRENCY.get(p.lang, "eur").upper()
-    title = "Trouve ton vol" if fr else "Find your flight"
-    lead = ("Compare les compagnies et les agences, bagages compris. Tu réserves directement chez le vendeur, au prix affiché."
-            if fr else "Compare airlines and agencies, bags included. You book directly with the seller, at the price shown.")
-    perks = (("Prix bagages compris", "Choisis tes bagages : le prix affiché devient le prix final."),
-             ("Achat direct", "Le bouton t'envoie chez la compagnie ou l'agence qui vend le billet."),
-             ("Aucuns frais Eunodia", "Tu paies le prix du vendeur, rien de plus.")) if fr else (
-             ("Bags included", "Pick your bags: the price shown becomes the final price."),
-             ("Book direct", "The button takes you to the airline or agency selling the ticket."),
-             ("No Eunodia fees", "You pay the seller's price, nothing more."))
+    title, lead, perks = RESULTS_TEXT.get(p.lang, RESULTS_TEXT["en"])
     items = "".join(f"<li><strong>{e(a)}</strong><span>{e(b)}</span></li>" for a, b in perks)
     body = f"""<section class="page wrap">
   <h1>{e(title)}</h1>
