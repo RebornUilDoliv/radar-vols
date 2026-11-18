@@ -78,6 +78,7 @@ class Page:
 
     def __init__(self, site, lang, names=None):
         self.site, self.lang, self.names = site, lang, names or {}
+        self.cases = {}  # formes déclinées des villes (russe), par code
         self.base = site["root"]
         self.root = self.base if lang == ROOT_LANG else f"{self.base}{lang}/"
         self.folder = DOCS if lang == ROOT_LANG else DOCS / lang
@@ -109,6 +110,16 @@ class Page:
 
     def city(self, code, fallback):
         return self.names.get(code, fallback)
+
+    def from_city(self, code, name):
+        """« из Москвы » : forme déclinée de la source si elle correspond au nom affiché, sinon une tournure sans déclinaison."""
+        forms = self.cases.get(code) or {}
+        return f"из {forms['ro']}" if forms.get("ro") and forms.get("su") == name else f"из города {name}"
+
+    def to_city(self, code, name):
+        """« в Москву » : même principe que from_city."""
+        forms = self.cases.get(code) or {}
+        return forms["vi"] if forms.get("vi") and forms.get("su") == name else f"— {name}"
 
     def region(self, name):
         return REGIONS.get(self.lang, {}).get(name, name)
@@ -383,7 +394,7 @@ def layout(p, title, description, path, body, noindex=False, extra="", photo=Non
 def flight_row(p, offer, city):
     page = f'{p.root}destinations/{city["slug"]}/'
     name = e(p.city(offer["code"], offer["city"]))
-    label = e(p.t("see_flight", city=p.city(offer["code"], offer["city"])))
+    label = e(p.t("see_flight", city=p.city(offer["code"], offer["city"]), to_city=p.to_city(offer["code"], p.city(offer["code"], offer["city"]))))
     return f"""<li class="row">
   <div class="row-info">
     <h3><a href="{page}">{name}</a></h3>
@@ -668,11 +679,11 @@ def home(p, cities, offers, updated, origins=()):
     )
     nothing = f'<li class="empty">{p.t("nothing")}</li>'
     near_titles = NEAR_TITLES[p.lang]
-    near_city = p.city("PAR", "Paris")
+    near_code, near_city = "PAR", p.city("PAR", "Paris")
     near_script = ""
     local = default_origin(p, origins)
     if local:
-        near_city = p.city(local["code"], local["code"])
+        near_code, near_city = local["code"], p.city(local["code"], local["code"])
 
         def pick(rule):
             seen, kept = set(), []
@@ -687,6 +698,7 @@ def home(p, cities, offers, updated, origins=()):
         ahead = "".join(world_row(p, local, r) for r in pick(lambda gap: gap >= AHEAD_DAYS))
         near_data = {"soon": SOON_DAYS, "ahead": AHEAD_DAYS, "default": local["code"], "titles": near_titles,
                      "origins": [[o["code"], p.city(o["code"], o["code"]), (p.geo.get(o["code"]) or [0, 0, ""])[2]]
+                                 + ([p.from_city(o["code"], p.city(o["code"], o["code"]))] if "{from_city}" in near_titles[0] else [])
                                  # les villes les plus desservies d'abord : c'est elle que le script retient pour un fuseau horaire
                                  for o in sorted(origins, key=lambda o: -len(o["routes"]))]}
         near_script = f'<script>window.RFNEAR={json.dumps(near_data, ensure_ascii=False).replace("</", "<\\/")}</script>'
@@ -743,8 +755,8 @@ def home(p, cities, offers, updated, origins=()):
   <div class="budgets">{budgets}</div>
 </section>
 <section class="band wrap two">
-  <div><h2 id="soon-title">{e(near_titles[0].format(city=near_city))}</h2><p class="sub">{p.t('soon_sub', days=SOON_DAYS)}</p><ul class="rows" id="soon-list">{soon or nothing}</ul></div>
-  <div><h2 id="ahead-title">{e(near_titles[1].format(city=near_city))}</h2><p class="sub">{p.t('ahead_sub')}</p><ul class="rows" id="ahead-list">{ahead or nothing}</ul></div>
+  <div><h2 id="soon-title">{e(near_titles[0].format(city=near_city, from_city=p.from_city(near_code, near_city)))}</h2><p class="sub">{p.t('soon_sub', days=SOON_DAYS)}</p><ul class="rows" id="soon-list">{soon or nothing}</ul></div>
+  <div><h2 id="ahead-title">{e(near_titles[1].format(city=near_city, from_city=p.from_city(near_code, near_city)))}</h2><p class="sub">{p.t('ahead_sub')}</p><ul class="rows" id="ahead-list">{ahead or nothing}</ul></div>
 </section>
 {ticker_block(p, origins)}
 <section class="band wrap"{' hidden' if origins else ''}>
@@ -932,7 +944,7 @@ def place_facts(p, place, now=None):
 
 def world_place_page(p, place):
     city = p.city(place["code"], place["code"])
-    values = {"count": len(place["routes"]), "price": p.euro(place["routes"][0][1]["price"])}
+    values = {"count": len(place["routes"]), "price": p.euro(place["routes"][0][1]["price"]), "to_city": p.to_city(place["code"], city)}
     rows = "".join(world_row(p, origin, route, p.city(origin["code"], origin["code"])) for origin, route in place["routes"])
     cover = ""
     if place["code"] in load_credits() and photo_exists(place["code"]):
@@ -940,7 +952,7 @@ def world_place_page(p, place):
     facts, faq_schema = place_facts(p, place)
     body = f"""<section class="page wrap">
   <p class="crumb"><a href="{p.root}destinations/">{p.t('nav_places')}</a></p>
-  <h1>{e(p.t('to_title', city=city))}</h1>
+  <h1>{e(p.t('to_title', city=city, to_city=values['to_city']))}</h1>
   {cover}
   <p class="lead">{p.t('to_lead', **values)}</p>
   <p><a class="go" href="{e(place['routes'][0][1]['link'])}" rel="nofollow sponsored noopener" target="_blank">{p.t('check')}</a></p>
@@ -950,7 +962,7 @@ def world_place_page(p, place):
   {facts}
   <section class="panel"><h2>{e(p.t('stay_title', city=city))}</h2><p class="sub">{p.t('stay_lead')}</p><div class="stays">{stay_links(p, city, place['code'])}</div></section>
 </section>"""
-    return layout(p, f"{p.t('to_title', city=city)} | {p.site['name']}", p.t("to_meta", city=city, **values), f"vers/{place['slug']}/", body,
+    return layout(p, f"{p.t('to_title', city=city, to_city=values['to_city'])} | {p.site['name']}", p.t("to_meta", city=city, **values), f"vers/{place['slug']}/", body,
                   extra=breadcrumbs(p, [(p.t("nav_places"), "destinations/"), (city, f"vers/{place['slug']}/")]) + faq_schema)
 
 
@@ -1070,8 +1082,10 @@ def deals_picker(p, origins):
     if not origins:
         return ""
     chosen = default_origin(p, origins)
+    declined = "{from_city}" in p.t("hub_title")  # russe : « из Москвы » fourni au script pour chaque ville
+    from_attr = lambda o: f' data-from="{e(p.from_city(o["code"], p.city(o["code"], o["code"])))}"' if declined else ""
     options = "".join(
-        f'<option value="{o["code"]}"{" selected" if chosen and o["code"] == chosen["code"] else ""}>{e(p.city(o["code"], o["code"]))}</option>'
+        f'<option value="{o["code"]}"{from_attr(o)}{" selected" if chosen and o["code"] == chosen["code"] else ""}>{e(p.city(o["code"], o["code"]))}</option>'
         for o in sorted(origins, key=lambda o: p.city(o["code"], o["code"]))
     )
     text = {"title": p.t("hub_title"), "months": p.t("deals_months"), "regions": p.t("deals_regions"), "budgets": p.t("deals_budgets"),
@@ -1129,7 +1143,7 @@ def clean_names(names):
             code: english.get(code, name) if name == code or name.startswith("Ville de ") or name.endswith("机场") else name
             for code, name in rows.items()
         }
-        if "BUD" in cleaned[lang]:
+        if cleaned[lang].get("BUD") == "Buda":  # la source appelle Budapest « Buda » en français, allemand...
             cleaned[lang]["BUD"] = "Budapest"
         # le hindi reprend les noms anglais (la source n'a pas de noms en hindi) : mêmes corrections que l'anglais
         source = "en" if lang == "hi" else lang
@@ -1269,17 +1283,17 @@ def world_index(p, origins):
 
 def origin_page(p, origin):
     city = p.city(origin["code"], origin["code"])
-    values = {"count": len(origin["routes"]), "price": p.euro(origin["routes"][0]["price"])}
+    values = {"count": len(origin["routes"]), "price": p.euro(origin["routes"][0]["price"]), "from_city": p.from_city(origin["code"], city)}
     rows = "".join(world_row(p, origin, r) for r in origin["routes"][:HUB_ROWS])
     body = f"""<section class="page wrap">
   <p class="crumb"><a href="{p.root}depuis/">{p.t('nav_world')}</a></p>
-  <h1>{e(p.t('hub_title', city=city))}</h1>
+  <h1>{e(p.t('hub_title', city=city, from_city=values['from_city']))}</h1>
   <p class="lead">{p.t('hub_lead', **values)}</p>
   <p><a class="go" href="{e(origin['routes'][0]['link'])}" rel="nofollow sponsored noopener" target="_blank">{p.t('check')}</a></p>
   <h2>{p.t('hub_all')}</h2>
   <ul class="rows">{rows}</ul>
 </section>"""
-    return layout(p, f"{p.t('hub_title', city=city)} | {p.site['name']}", p.t("hub_meta", city=city, **values), f"depuis/{origin['slug']}/", body,
+    return layout(p, f"{p.t('hub_title', city=city, from_city=values['from_city'])} | {p.site['name']}", p.t("hub_meta", city=city, **values), f"depuis/{origin['slug']}/", body,
                   extra=breadcrumbs(p, [(p.t("nav_world"), "depuis/"), (city, f"depuis/{origin['slug']}/")]),
                   photo=origin["code"] if photo_exists(origin["code"]) else "")
 
@@ -2206,8 +2220,16 @@ def build(data, site, catalog=None):
     offers = data["offers"]
     names_path = DOCS / "assets" / "names.json"
     names = json.loads(names_path.read_text()) if names_path.exists() else {}
+    cases_path = DOCS / "assets" / "cases.json"
+    cases = json.loads(cases_path.read_text()) if cases_path.exists() else {}
     for lang, (places, countries) in (catalog or {}).items():
         names[lang] = {code: place["name"] for code, place in places.items() if place["airports"]}
+        declined = {code: {k: place["cases"][k] for k in ("su", "ro", "vi") if place["cases"].get(k)}
+                    for code, place in places.items() if place["airports"] and place.get("cases")}
+        if declined:
+            cases[lang] = declined
+    if catalog:
+        write(cases_path, json.dumps(cases, ensure_ascii=False, separators=(",", ":")))
     names = clean_names(names)
     cities = destinations(offers, names.get("fr"))
     slugs = {c["code"]: c["slug"] for c in cities}
@@ -2240,6 +2262,7 @@ def build(data, site, catalog=None):
     for lang in LANGS:
         page = Page(site, lang, names.get(lang) or names.get("en"))  # hindi : noms anglais tant que la liste n'est pas récupérée
         page.zones, page.countries, page.geo = zones, countries, geo
+        page.cases = cases.get(lang, {})
         build_language(page, data, cities, updated_at, groups, origins)
     write(DOCS / "404.html", missing_page(Page(site, ROOT_LANG, names.get(ROOT_LANG))))
     route_pages = [route_path(origin, route) for origin in origins for route in origin["pages"]]

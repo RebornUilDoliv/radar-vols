@@ -151,6 +151,7 @@ def load_places(lang="fr"):
             "country": city.get("country_code"),
             "name": city.get("name") or city["code"],
             "airports": by_city.get(city["code"], []),
+            **({"cases": city["cases"]} if city.get("cases") else {}),  # formes déclinées (russe : « из Москвы »)
         }
         for city in cities
     }

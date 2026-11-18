@@ -632,7 +632,7 @@
           if (!list.length) return;
           box.textContent = "";
           list.forEach(function (o) { box.appendChild(flightCard(o)); });
-          title.textContent = text.replace("{city}", picked[1]);
+          title.textContent = text.replace("{city}", picked[1]).replace("{from_city}", picked[3] || picked[1]);
         };
         fill(soon, $("soon-title"), data.titles[0], pick(function (g) { return g <= data.soon; }));
         fill(ahead, $("ahead-title"), data.titles[1], pick(function (g) { return g >= data.ahead; }));
@@ -843,7 +843,7 @@
       return section;
     }
     function show() {
-      var code = pick.value, city = pick.options[pick.selectedIndex].text;
+      var code = pick.value, city = pick.options[pick.selectedIndex].text, from = pick.options[pick.selectedIndex].getAttribute("data-from") || city;
       fetch(BASE + "assets/routes/" + RF.lang + "/" + code + ".json")
         .then(function (r) { if (!r.ok) throw new Error(); return r.json(); })
         .then(function (rows) {
@@ -877,7 +877,7 @@
           list.appendChild(block(text.regions, regionItems));
           if (budgetItems.length) list.appendChild(block(text.budgets, budgetItems));
           var title = document.querySelector(".page-hero h1") || document.querySelector("h1");
-          if (title) title.textContent = text.title.replace("{city}", city);
+          if (title) title.textContent = text.title.replace("{city}", city).replace("{from_city}", from);
           var hero = document.querySelector(".page-hero .hero-img");
           if (hero) { hero.srcset = BASE + "assets/photos/" + code + "-m.jpg 640w, " + BASE + "assets/photos/" + code + ".jpg 1600w"; hero.src = BASE + "assets/photos/" + code + ".jpg"; }
         })

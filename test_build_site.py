@@ -250,6 +250,19 @@ class BuildTests(unittest.TestCase):
         self.assertEqual(build_site.DATE_MONTHS["ru"][10], "ноября")
         self.assertEqual(build_site.DATE_MONTHS["fr"], build_site.MONTHS["fr"])
 
+    def test_russian_titles_decline_city_names(self):
+        p = build_site.Page(dict(SITE, root="/", version="1"), "ru")
+        p.cases = {"MOW": {"su": "Москва", "ro": "Москвы", "vi": "в Москву"}}
+        self.assertEqual(p.t("hub_title", city="Москва", from_city=p.from_city("MOW", "Москва")), "Дешёвые авиабилеты из Москвы")
+        self.assertEqual(p.t("to_title", city="Москва", to_city=p.to_city("MOW", "Москва")), "Авиабилеты в Москву")
+        self.assertEqual(p.from_city("XXX", "Тест"), "из города Тест")
+        self.assertEqual(p.from_city("MOW", "Moscow"), "из города Moscow")  # nom affiché différent : pas de forme déclinée
+        self.assertEqual(p.to_city("XXX", "Тест"), "— Тест")
+
+    def test_budapest_keeps_its_name_in_each_script(self):
+        names = build_site.clean_names({"fr": {"BUD": "Buda"}, "ru": {"BUD": "Будапешт"}, "zh": {"BUD": "布达佩斯"}})
+        self.assertEqual((names["fr"]["BUD"], names["ru"]["BUD"], names["zh"]["BUD"]), ("Budapest", "Будапешт", "布达佩斯"))
+
     def test_404_language_links_go_to_each_home(self):
         html = build_site.missing_page(build_site.Page(dict(SITE, root="/", version="1"), "fr"))
         self.assertNotIn("/en/404.html", html)
