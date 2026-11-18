@@ -42,12 +42,16 @@ class NewsletterTests(unittest.TestCase):
         self.assertEqual(newsletter.mailing_lists({"list_id": 2, "lists": {"fr": 2, "en": 3, "xx": 9}}), {"fr": 2, "en": 3})
 
     def test_unknown_language_falls_back_to_english(self):
-        self.assertIs(newsletter.text_for("de"), newsletter.TEXT["en"])
+        self.assertIs(newsletter.text_for("xx"), newsletter.TEXT["en"])
         self.assertIs(newsletter.text_for("es"), newsletter.TEXT["es"])
 
     def test_every_language_has_the_same_texts(self):
         self.assertEqual({lang: set(text) for lang, text in newsletter.TEXT.items()},
                          {lang: set(newsletter.TEXT["fr"]) for lang in newsletter.TEXT})
+
+    def test_every_site_language_has_a_newsletter(self):
+        self.assertEqual(set(newsletter.TEXT), set(newsletter.build_site.LANGS))
+        self.assertEqual(set(newsletter.ORIGINS), set(newsletter.build_site.LANGS))
 
     def test_madrid_is_named_plainly_in_spanish(self):
         self.assertEqual(newsletter.START_NAMES[("es", "MAD")], "Madrid")

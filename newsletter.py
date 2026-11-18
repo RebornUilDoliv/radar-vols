@@ -15,7 +15,7 @@ import build_site
 ROOT = Path(__file__).parent
 PARIS = ZoneInfo("Europe/Paris")
 BREVO = "https://api.brevo.com/v3"
-ORIGINS = {"fr": "PAR", "en": "LON", "es": "MAD"}   # ville de départ mise en avant pour chaque langue
+ORIGINS = dict(build_site.DEFAULT_ORIGIN)   # ville de départ mise en avant pour chaque langue : la même que sur le site
 START_NAMES = {("es", "MAD"): "Madrid"}   # le nom de la liste des villes dit « Ciudad de Madrid », trop lourd dans une phrase
 FALLBACK_LANG = "en"              # un inscrit dont la langue n'a pas de numéro reçoit l'anglais
 SEND_HOUR = 8
@@ -76,6 +76,176 @@ TEXT = {
         "why": "Recibes este correo porque te suscribiste en",
         "contact": "Contacto:",
         "unsubscribe": "Darte de baja",
+    },
+    "de": {
+        "title": 'Die Eunodia-Angebote',
+        "subject": '{city} ab {price}: die besten Angebote der Woche',
+        "preview": '{city} ab {price}, Abflug ab {origin}',
+        "hidden": '{city} ab {price} und weitere Flüge, die wir diese Woche entdeckt haben.',
+        "headline": '{city} ab {price}',
+        "intro": 'Hier sind die besten Preise für Hin- und Rückflug, die wir diese Woche ab {origin} gefunden haben.',
+        "far": 'Die großen Reisen',
+        "near": 'Kurztrips',
+        "prepare": 'Plane deine Reise',
+        "prepare_text": 'Hotel, Aktivitäten, Internet oder Transfer: alles bereit für deinen Aufenthalt.',
+        "button": 'Sehen, wohin ich reisen kann',
+        "legal": 'Kürzlich gefundene Preise, pro Person und ohne Extras: Sie können sich schnell ändern, prüfe vor der Buchung immer den Endpreis. Einige Links sind Partnerlinks: Eunodia kann eine Provision erhalten, ohne Kosten für dich.',
+        "why": 'Du erhältst diese E-Mail, weil du dich angemeldet hast auf',
+        "contact": 'Kontakt:',
+        "unsubscribe": 'Abmelden',
+    },
+    "it": {
+        "title": 'Le offerte di Eunodia',
+        "subject": '{city} da {price}: le migliori offerte della settimana',
+        "preview": '{city} da {price}, in partenza da {origin}',
+        "hidden": '{city} da {price} e altri voli trovati questa settimana.',
+        "headline": '{city} da {price}',
+        "intro": 'Ecco i migliori prezzi andata e ritorno trovati questa settimana in partenza da {origin}.',
+        "far": 'I grandi viaggi',
+        "near": 'Le fughe brevi',
+        "prepare": 'Prepara il tuo viaggio',
+        "prepare_text": 'Hotel, attività, internet o transfer: tutto pronto per il tuo soggiorno.',
+        "button": 'Vedi dove posso andare',
+        "legal": 'Prezzi trovati di recente, a persona e senza extra: possono cambiare in fretta, controlla sempre il prezzo finale prima di prenotare. Alcuni link sono di partner: Eunodia può ricevere una commissione, senza costi per te.',
+        "why": "Ricevi questa email perché hai effettuato l'iscrizione su",
+        "contact": 'Contatto:',
+        "unsubscribe": "Annulla l'iscrizione",
+    },
+    "pt": {
+        "title": 'As ofertas da Eunodia',
+        "subject": '{city} desde {price}: as melhores ofertas da semana',
+        "preview": '{city} desde {price}, com partida de {origin}',
+        "hidden": '{city} desde {price} e outros voos encontrados esta semana.',
+        "headline": '{city} desde {price}',
+        "intro": 'Estes são os melhores preços de ida e volta encontrados esta semana com partida de {origin}.',
+        "far": 'As grandes viagens',
+        "near": 'Escapadinhas',
+        "prepare": 'Prepara a tua viagem',
+        "prepare_text": 'Hotel, atividades, internet ou transfer: tudo pronto para a tua estadia.',
+        "button": 'Ver para onde posso ir',
+        "legal": 'Preços encontrados recentemente, por pessoa e sem extras: podem mudar depressa, confirma sempre o preço final antes de reservar. Alguns links são de parceiros: a Eunodia pode receber uma comissão, sem custos para ti.',
+        "why": 'Recebes este e-mail porque te inscreveste em',
+        "contact": 'Contacto:',
+        "unsubscribe": 'Cancelar a subscrição',
+    },
+    "nl": {
+        "title": 'De deals van Eunodia',
+        "subject": '{city} vanaf {price}: de beste deals van de week',
+        "preview": '{city} vanaf {price}, vertrek vanuit {origin}',
+        "hidden": '{city} vanaf {price} en meer vluchten die we deze week vonden.',
+        "headline": '{city} vanaf {price}',
+        "intro": 'Dit zijn de beste retourprijzen die we deze week vonden vanuit {origin}.',
+        "far": 'De grote reizen',
+        "near": 'Korte tripjes',
+        "prepare": 'Plan je reis',
+        "prepare_text": 'Hotel, activiteiten, internet of transfer: alles klaar voor je verblijf.',
+        "button": 'Bekijk waar ik heen kan',
+        "legal": "Recent gevonden prijzen, per persoon en zonder extra's: ze kunnen snel veranderen, controleer altijd de eindprijs voordat je boekt. Sommige links zijn partnerlinks: Eunodia kan een commissie ontvangen, zonder kosten voor jou.",
+        "why": 'Je ontvangt deze e-mail omdat je je hebt ingeschreven op',
+        "contact": 'Contact:',
+        "unsubscribe": 'Uitschrijven',
+    },
+    "tr": {
+        "title": 'Eunodia fırsatları',
+        "subject": '{city}, en düşük {price}: haftanın en iyi fırsatları',
+        "preview": '{city}, en düşük {price}, kalkış: {origin}',
+        "hidden": '{city}, en düşük {price} ve bu hafta bulduğumuz diğer uçuşlar.',
+        "headline": '{city}, en düşük {price}',
+        "intro": 'Bu hafta {origin} kalkışlı bulduğumuz en iyi gidiş-dönüş fiyatlar.',
+        "far": 'Büyük seyahatler',
+        "near": 'Kısa kaçamaklar',
+        "prepare": 'Seyahatinizi planlayın',
+        "prepare_text": 'Otel, aktiviteler, internet veya transfer: konaklamanız için her şey hazır.',
+        "button": 'Nereye gidebileceğimi gör',
+        "legal": 'Yakın zamanda bulunan fiyatlar, kişi başı ve ekstralar hariç: hızla değişebilir, rezervasyondan önce her zaman son fiyatı kontrol edin. Bazı bağlantılar iş ortağı bağlantılarıdır: Eunodia, sizin için ek ücret olmadan komisyon alabilir.',
+        "why": 'Bu e-postayı, şu sitede kaydolduğunuz için alıyorsunuz:',
+        "contact": 'İletişim:',
+        "unsubscribe": 'Abonelikten çık',
+    },
+    "ar": {
+        "title": 'عروض Eunodia',
+        "subject": '{city} ابتداءً من {price}: أفضل عروض الأسبوع',
+        "preview": '{city} ابتداءً من {price}، انطلاقًا من {origin}',
+        "hidden": '{city} ابتداءً من {price} ورحلات أخرى رصدناها هذا الأسبوع.',
+        "headline": '{city} ابتداءً من {price}',
+        "intro": 'إليك أفضل أسعار الذهاب والعودة التي رصدناها هذا الأسبوع انطلاقًا من {origin}.',
+        "far": 'الرحلات الكبرى',
+        "near": 'رحلات قصيرة',
+        "prepare": 'خطط لرحلتك',
+        "prepare_text": 'فندق، أنشطة، إنترنت أو توصيل: كل شيء جاهز لإقامتك.',
+        "button": 'اعرف إلى أين يمكنني الذهاب',
+        "legal": 'أسعار رُصدت مؤخرًا، للشخص الواحد ودون إضافات: قد تتغير بسرعة، لذا تحقق دائمًا من السعر النهائي قبل الحجز. بعض الروابط روابط شركاء: قد يحصل Eunodia على عمولة دون أي تكلفة عليك.',
+        "why": 'تصلك هذه الرسالة لأنك اشتركت في',
+        "contact": 'للتواصل:',
+        "unsubscribe": 'إلغاء الاشتراك',
+    },
+    "zh": {
+        "title": 'Eunodia 特惠',
+        "subject": '{city} {price} 起：本周最佳特惠',
+        "preview": '{city} {price} 起，从{origin}出发',
+        "hidden": '{city} {price} 起，以及本周发现的更多航班。',
+        "headline": '{city} {price} 起',
+        "intro": '以下是本周从{origin}出发的最佳往返价格。',
+        "far": '远途旅行',
+        "near": '短途出游',
+        "prepare": '规划您的旅行',
+        "prepare_text": '酒店、活动、上网或接送：为您的旅程准备好一切。',
+        "button": '看看我能去哪里',
+        "legal": '以上为近期发现的价格，每人往返，不含附加服务。价格可能很快变化，预订前请务必核实最终价格。部分链接为合作伙伴链接：Eunodia 可能获得佣金，您无需支付额外费用。',
+        "why": '您收到此邮件，是因为您订阅了',
+        "contact": '联系方式：',
+        "unsubscribe": '退订',
+    },
+    "ko": {
+        "title": 'Eunodia 특가',
+        "subject": '{city} {price}부터: 이번 주 최고의 특가',
+        "preview": '{city} {price}부터, {origin} 출발',
+        "hidden": '{city} {price}부터, 이번 주에 찾은 다른 항공편도 있어요.',
+        "headline": '{city} {price}부터',
+        "intro": '이번 주 {origin} 출발 최저 왕복 가격을 모았습니다.',
+        "far": '장거리 여행',
+        "near": '짧은 여행',
+        "prepare": '여행 준비하기',
+        "prepare_text": '호텔, 액티비티, 인터넷, 공항 이동까지 여행에 필요한 모든 것.',
+        "button": '어디로 갈 수 있는지 보기',
+        "legal": '최근 확인된 1인 왕복 가격이며 부가 서비스는 포함되지 않습니다. 가격은 빠르게 바뀔 수 있으니 예약 전에 최종 가격을 꼭 확인하세요. 일부 링크는 제휴 링크로, Eunodia가 수수료를 받을 수 있지만 추가 비용은 없습니다.',
+        "why": '이 이메일은 다음 사이트에서 구독하셨기 때문에 발송되었습니다:',
+        "contact": '문의:',
+        "unsubscribe": '구독 취소',
+    },
+    "hi": {
+        "title": 'Eunodia ऑफ़र',
+        "subject": '{city} {price} से: इस हफ़्ते के सबसे अच्छे ऑफ़र',
+        "preview": '{city} {price} से, {origin} से रवाना',
+        "hidden": '{city} {price} से, और इस हफ़्ते मिली दूसरी उड़ानें।',
+        "headline": '{city} {price} से',
+        "intro": 'इस हफ़्ते {origin} से आने-जाने की सबसे अच्छी कीमतें ये रहीं।',
+        "far": 'लंबी यात्राएँ',
+        "near": 'छोटी सैर',
+        "prepare": 'अपनी यात्रा की योजना बनाएँ',
+        "prepare_text": 'होटल, गतिविधियाँ, इंटरनेट या ट्रांसफ़र: आपके ठहरने के लिए सब कुछ तैयार।',
+        "button": 'देखें मैं कहाँ जा सकता हूँ',
+        "legal": 'हाल में मिली कीमतें, प्रति व्यक्ति और अतिरिक्त शुल्क के बिना: ये तेज़ी से बदल सकती हैं, बुक करने से पहले हमेशा अंतिम कीमत जाँचें। कुछ लिंक पार्टनर लिंक हैं: Eunodia को कमीशन मिल सकता है, आपको कोई अतिरिक्त ख़र्च नहीं।',
+        "why": 'आपको यह ईमेल इसलिए मिला है क्योंकि आपने यहाँ सदस्यता ली थी:',
+        "contact": 'संपर्क:',
+        "unsubscribe": 'सदस्यता छोड़ें',
+    },
+    "ru": {
+        "title": 'Выгодные предложения Eunodia',
+        "subject": '{city} от {price}: лучшие предложения недели',
+        "preview": '{city} от {price}, вылет {from_origin}',
+        "hidden": '{city} от {price} и другие рейсы, найденные на этой неделе.',
+        "headline": '{city} от {price}',
+        "intro": 'Лучшие цены туда и обратно {from_origin}, которые мы нашли на этой неделе.',
+        "far": 'Большие путешествия',
+        "near": 'Короткие поездки',
+        "prepare": 'Спланируйте поездку',
+        "prepare_text": 'Отель, экскурсии, интернет или трансфер: всё готово для вашей поездки.',
+        "button": 'Куда можно полететь',
+        "legal": 'Цены найдены недавно, за человека и без дополнительных услуг: они могут быстро меняться, поэтому перед бронированием всегда проверяйте итоговую цену. Некоторые ссылки партнёрские: Eunodia может получить комиссию, для вас это бесплатно.',
+        "why": 'Вы получили это письмо, потому что подписались на',
+        "contact": 'Контакты:',
+        "unsubscribe": 'Отписаться',
     },
 }
 
@@ -159,6 +329,7 @@ def build_email(page, origin, geo, today):
     best = (far or near)[0]
     city = page.city(best["to"], best["to"])
     start = START_NAMES.get((page.lang, origin["code"])) or page.city(origin["code"], origin["code"])
+    from_start = page.from_city(origin["code"], start)  # russe : « из Москвы »
     price = page.euro(best["price"])
     url = page.site["url"]
     photo = best["to"] if build_site.photo_exists(best["to"]) else "BKK"
@@ -167,7 +338,7 @@ def build_email(page, origin, geo, today):
     grid = "".join(f"<tr>{cells[n]}{cells[n + 1]}</tr>" for n in range(0, len(cells) - 1, 2))
     far_block = heading(text["far"]) + f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0">{"".join(route_row(origin, r, page) for r in far)}</table>' if far else ""
     near_block = heading(text["near"]) + f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0">{"".join(route_row(origin, r, page) for r in near)}</table>' if near else ""
-    body = f"""<!doctype html><html lang="{page.lang}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>{esc(text["title"])}</title></head>
+    body = f"""<!doctype html><html lang="{page.lang}"{' dir="rtl"' if page.lang in build_site.RTL_LANGS else ''}><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>{esc(text["title"])}</title></head>
 <body style="margin:0;padding:0;background:#f4f4f4;">
 <div style="display:none;max-height:0;overflow:hidden;">{esc(text["hidden"].format(city=city, price=price))}</div>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f4;"><tr><td align="center" style="padding:24px 12px;">
@@ -176,7 +347,7 @@ def build_email(page, origin, geo, today):
 <tr><td><img src="{url}assets/photos/{photo}.jpg" width="600" alt="{esc(city)}" style="display:block;width:100%;height:auto;"></td></tr>
 <tr><td style="padding:30px 30px 34px;">
 <h1 style="margin:0 0 10px;font-family:Helvetica,Arial,sans-serif;font-size:30px;line-height:1.2;color:#0b0b0b;">{esc(text["headline"].format(city=city, price=price))}</h1>
-<p style="margin:0;font-family:Helvetica,Arial,sans-serif;font-size:16px;line-height:1.5;color:#3f3f3f;">{esc(text["intro"].format(origin=start))}</p>
+<p style="margin:0;font-family:Helvetica,Arial,sans-serif;font-size:16px;line-height:1.5;color:#3f3f3f;">{esc(text["intro"].format(origin=start, from_origin=from_start))}</p>
 {far_block}{near_block}
 {heading(text["prepare"])}
 <p style="margin:0 0 10px;font-family:Helvetica,Arial,sans-serif;font-size:15px;color:#3f3f3f;">{esc(text["prepare_text"])}</p>
@@ -188,7 +359,7 @@ def build_email(page, origin, geo, today):
 {esc(text["why"])} <a href="{url}{page.prefix}" style="color:#0b0b0b;">eunodia.com</a>. {esc(text["contact"])} <a href="mailto:contact@eunodia.com" style="color:#0b0b0b;">contact@eunodia.com</a>. <a href="{{{{ unsubscribe }}}}" style="color:#0b0b0b;">{esc(text["unsubscribe"])}</a>.
 </td></tr></table></td></tr></table></body></html>"""
     return {"subject": text["subject"].format(city=city, price=price),
-            "preview": text["preview"].format(city=city, price=price, origin=start), "html": body}
+            "preview": text["preview"].format(city=city, price=price, origin=start, from_origin=from_start), "html": body}
 
 
 def brevo(path, key, body):
@@ -204,14 +375,19 @@ def load_page(config, lang):
     after = site["url"].split("//", 1)[1]
     site["root"] = "/" + after.split("/", 1)[1] if "/" in after else "/"
     names = build_site.clean_names(json.loads((ROOT / "docs/assets/names.json").read_text()))
-    return build_site.Page(site, lang, names.get(lang) or names[FALLBACK_LANG]), names["fr"]
+    page = build_site.Page(site, lang, names.get(lang) or names[FALLBACK_LANG])
+    cases = ROOT / "docs/assets/cases.json"
+    page.cases = (json.loads(cases.read_text()) if cases.exists() else {}).get(lang, {})
+    return page, names["fr"]
 
 
 def prepare(config, today, lang):
     page, world_names = load_page(config, lang)
     geo = json.loads((ROOT / "docs/assets/geo.json").read_text())
-    code = ORIGINS.get(lang, ORIGINS[FALLBACK_LANG])
-    origin = next((o for o in build_site.load_world(world_names) if o["code"] == code), None)
+    world = {o["code"]: o for o in build_site.load_world(world_names) if o["routes"]}
+    # ville de la langue, puis sa ville de secours (comme sur le site), puis Paris
+    codes = (ORIGINS.get(lang, ORIGINS[FALLBACK_LANG]), build_site.BACKUP_ORIGIN.get(lang), "PAR")
+    origin = next((world[code] for code in codes if code in world), None)
     return build_email(page, origin, geo, today) if origin else None
 
 
