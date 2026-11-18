@@ -45,7 +45,7 @@ origins = ["LON", "PAR", "MAD", "BCN", "ROM", "BER", "AMS", "LIS", "IST", "DXB",
            "DAR", "EBB", "KGL", "CPT", "MRU", "RUN", "TNR", "COO", "BKO", "OUA", "BOM", "BLR", "MAA", "CCU", "HYD", "CMB", "KTM", "MLE", "SGN", "PNH",
            "RGN", "HKT", "DPS", "CEB", "SHA", "CAN", "SZX", "CTU", "OSA", "PUS", "MFM", "KHI", "LHE", "CHI", "SFO", "SEA", "LAS", "ORL", "BOS", "ATL",
            "DFW", "HOU", "DEN", "YMQ", "YVR", "YYC", "GDL", "CUN", "MTY", "HAV", "SJU", "GUA", "RIO", "BSB", "REC", "SSA", "ASU", "LPB", "MDE", "CTG",
-           "GYE", "MEL", "BNE", "PER", "CHC", "NAN", "PPT", "NOU", "HNL", "PTP", "FDF", "CAY"]
+           "GYE", "MEL", "BNE", "PER", "CHC", "NAN", "PPT", "NOU", "HNL", "PTP", "FDF", "CAY", "MOW"]
 
 [schedule]
 min_hours = 0.75                 # le radar relève les prix une fois par heure

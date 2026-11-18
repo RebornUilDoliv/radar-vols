@@ -236,10 +236,19 @@ class BuildTests(unittest.TestCase):
         self.assertEqual(build_site.newsletter_url(build_site.Page(only_default, "de")), "https://form.test/fr")
 
     def test_results_page_speaks_the_visitor_language(self):
-        for lang, word in (("es", "Encuentra tu vuelo"), ("de", "Finde deinen Flug"), ("fr", "Trouve ton vol"), ("ko", "항공편 찾기")):
+        for lang, word in (("es", "Encuentra tu vuelo"), ("de", "Finde deinen Flug"), ("fr", "Trouve ton vol"), ("ko", "항공편 찾기"), ("ru", "Найдите свой рейс")):
             html = build_site.results_page(build_site.Page(dict(SITE, root="/", version="1"), lang))
             self.assertIn(word, html)
             self.assertNotIn("Find your flight", html)
+
+    def test_russian_site_is_built(self):
+        docs = self.build([offer("BCN", "Barcelone", "Europe", 43, 30)])
+        page = (docs / "ru/index.html").read_text()
+        self.assertIn('<html lang="ru"', page)
+        self.assertIn("Ваше следующее путешествие", page)
+        self.assertIn(">Русский<", (docs / "index.html").read_text())
+        self.assertEqual(build_site.DATE_MONTHS["ru"][10], "ноября")
+        self.assertEqual(build_site.DATE_MONTHS["fr"], build_site.MONTHS["fr"])
 
     def test_404_language_links_go_to_each_home(self):
         html = build_site.missing_page(build_site.Page(dict(SITE, root="/", version="1"), "fr"))

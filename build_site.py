@@ -16,7 +16,7 @@ from zoneinfo import ZoneInfo
 from pathlib import Path
 
 import radar
-from site_text import (BAROMETER, BOOKING_LOCALES, CONTINENTS, DATA_LANGS, FULL_LANGS, LANG_NAMES, LANGS, LOCALES, MONTHS, NEAR_TITLES, NEWS_DONE, REGIONS,
+from site_text import (BAROMETER, BOOKING_LOCALES, CONTINENTS, DATA_LANGS, DATE_MONTHS, FULL_LANGS, LANG_NAMES, LANGS, LOCALES, MONTHS, NEAR_TITLES, NEWS_DONE, REGIONS,
                        RTL_LANGS, SCRIPT_TEXT, SHORT_MONTHS, TEXT)
 
 ROOT = Path(__file__).parent
@@ -31,8 +31,8 @@ POPULAR_ORIGINS = 10             # une destination doit être desservie depuis a
 ALWAYS_LISTED = {"YQB"}          # destinations affichées même desservies depuis moins de villes
 MAX_ROUTE_PRICE = 3000           # écarte les prix aberrants
 HUB_ROWS = 60
-DEFAULT_ORIGIN = {"fr": "PAR", "en": "LON", "es": "MAD", "de": "BER", "it": "ROM", "pt": "LIS", "nl": "AMS", "tr": "IST", "ar": "RUH", "zh": "HKG", "ko": "SEL", "hi": "DEL"}
-BACKUP_ORIGIN = {"ar": "DXB", "hi": "BOM"}
+DEFAULT_ORIGIN = {"fr": "PAR", "en": "LON", "es": "MAD", "de": "BER", "it": "ROM", "pt": "LIS", "nl": "AMS", "tr": "IST", "ar": "RUH", "zh": "HKG", "ko": "SEL", "hi": "DEL", "ru": "MOW"}
+BACKUP_ORIGIN = {"ar": "DXB", "hi": "BOM", "ru": "IST"}
 ROOT_LANG = "fr"  # langue servie à la racine du site ; les autres vivent sous /<langue>/
 PARTNER_LANGS = ("fr", "en", "es", "de", "it", "pt")
 SOUTH_AMERICA = {"AR", "BO", "BR", "CL", "CO", "EC", "GF", "GY", "PE", "PY", "SR", "UY", "VE"}
@@ -479,6 +479,8 @@ HOTEL_WORDS = {
            "목록에서 도시를 선택하세요.", "Klook에서 표시된 가격으로 예약합니다. 곧 더 많은 도시가 추가됩니다."),
     "hi": ("उड़ानें", "होटल", "शहर", "लिस्बन, टोक्यो, माराकेश…", "चेक-इन", "चेक-आउट", "मेहमान", "खोजें",
            "सूची से कोई शहर चुनें।", "आप Klook पर दिखाई गई कीमत पर बुक करते हैं। जल्द और शहर जुड़ेंगे।"),
+    "ru": ("Авиабилеты", "Отели", "Город", "Лиссабон, Токио, Марракеш…", "Заезд", "Выезд", "Гости", "Найти",
+           "Выберите город из списка.", "Бронирование на Klook по указанной цене. Скоро добавим больше городов."),
 }
 KLOOK_LANG = {"fr": "fr", "en": "en-US", "es": "es", "de": "de", "it": "it", "pt": "pt-BR", "nl": "nl", "ko": "ko", "zh": "zh-CN"}
 
@@ -527,7 +529,7 @@ TRAIN_KEYS = ("tab", "note", "from", "from_place", "to", "to_place", "go", "pric
 TRAIN_DATES = {"fr": ("Aller", "Retour"), "en": ("Depart", "Return"), "es": ("Ida", "Vuelta"), "de": ("Hinfahrt", "Rückfahrt"),
                "it": ("Andata", "Ritorno"), "pt": ("Ida", "Volta"), "nl": ("Heen", "Terug"), "tr": ("Gidiş", "Dönüş"),
                "ar": ("الذهاب", "العودة"), "zh": ("去程", "返程"), "ko": ("가는 날", "오는 날"),
-               "hi": ("जाने की तारीख़", "वापसी")}
+               "hi": ("जाने की तारीख़", "वापसी"), "ru": ("Туда", "Обратно")}
 TRAIN_WORDS = {
     "fr": ("Train & bus", "Prix « dès » relevés chaque jour par Omio. Tu réserves chez Omio, au prix affiché.",
            "Départ", "Paris, Lyon, Madrid…", "Arrivée", "Partout", "Rechercher", "dès", "Voir les horaires",
@@ -577,6 +579,10 @@ TRAIN_WORDS = {
            "कहाँ से", "लंदन, पेरिस, मैड्रिड…", "कहाँ तक", "कहीं भी", "खोजें", "से", "समय देखें",
            "इस रूट की कीमत अभी यहाँ नहीं है: सीधे Omio पर समय देखें।", "सूची से प्रस्थान का शहर चुनें।",
            "Omio पर खोजें", "रूट लोड हो रहे हैं…"),
+    "ru": ("Поезда и автобусы", "Цены «от» каждый день обновляет Omio. Бронирование на Omio по указанной цене.",
+           "Откуда", "Лондон, Париж, Мадрид…", "Куда", "Куда угодно", "Найти", "от", "Расписание",
+           "Цены на этот маршрут пока нет: посмотрите расписание прямо на Omio.", "Выберите город отправления из списка.",
+           "Искать на Omio", "Загружаем маршруты…"),
 }
 
 
@@ -1410,6 +1416,8 @@ MUSTS_WORDS = {
     "ko": ("현지 즐길 거리", "{city} 필수 코스", "투어, 박물관, 공연: 여행자들이 사랑하는 액티비티", "보기", "접기", "{city}의 모든 액티비티", "박물관·명소 입장권"),
     "hi": ("घूमने-फिरने की चीज़ें", "{city} में ज़रूर करने लायक़", "टूर, संग्रहालय, शो: यात्रियों की पसंदीदा गतिविधियाँ",
            "देखें", "छिपाएँ", "{city} की सभी गतिविधियाँ", "संग्रहालय और स्मारकों के टिकट"),
+    "ru": ("Чем заняться", "{city}: что обязательно посмотреть", "Экскурсии, музеи, шоу: любимые развлечения путешественников",
+           "Смотреть", "Скрыть", "Все развлечения: {city}", "Билеты в музеи и к достопримечательностям"),
 }
 # Photos choisies à la main quand celle d'Omio montre le même monument que la photo du haut
 MUSTS_PHOTOS = {"PAR": "assets/photos/extra/PAR-arc.jpg"}
@@ -1473,6 +1481,7 @@ MUSTS_EMPTY = {
     "zh": "看不到活动？可能被广告拦截器隐藏了：请使用下方按钮。",
     "ko": "액티비티가 보이지 않나요? 광고 차단기가 숨겼을 수 있어요. 아래 버튼을 이용하세요.",
     "hi": "गतिविधियाँ नहीं दिख रहीं? हो सकता है आपका ऐड ब्लॉकर उन्हें छिपा रहा हो: नीचे दिए बटन इस्तेमाल करें।",
+    "ru": "Не видите развлечения? Возможно, их скрывает блокировщик рекламы: воспользуйтесь кнопками ниже.",
 }
 _TIQETS = None
 
@@ -1845,6 +1854,19 @@ WHO.update({
            ],
            "contact": "कोई सवाल, कोई यात्रा का इरादा? मुझे {mail} पर लिखें या Instagram और TikTok पर {handle} पर मिलें।",
            "go": "José के साथ अपनी यात्रा की योजना बनाएँ"},
+    "ru": {"nav": "Обо мне", "title": "Обо мне",
+           "lead": "Здравствуйте! Меня зовут Хосе, я из Парижа и основал Eunodia.",
+           "meta": "Хосе из Парижа, выпускник программы по туризму и гостиничному делу, основатель Eunodia: зачем я создал сайт.",
+           "alt": "Хосе, основатель Eunodia", "job": "Основатель Eunodia",
+           "paras": [
+               "Путешествия — моя страсть. Я изучал туризм вплоть до магистратуры по управлению туризмом и гостиничным бизнесом в IREST (Сорбонна, Париж 1). Говорю на французском, английском и испанском, немного знаю итальянский.",
+               "Во время учёбы с практикой я увидел мир путешествий изнутри: бронировал жильё для крупных международных мероприятий, организовывал групповые поездки, в последний момент переселял путешественников и каждый день работал с отелями и онлайн-турагентствами по всему миру. Там я понял, как складываются цены… и где прячутся настоящие выгодные предложения.",
+               "**Почему Eunodia?** Сначала я хотел сделать небольшой инструмент с лучшими ценами на авиабилеты. Потом подумал, что было бы здорово создать настоящий сайт и делиться со всеми лучшими предложениями момента: авиабилеты, отели, развлечения. Так появилась Eunodia.",
+               "Больше всего я люблю **подбирать индивидуальные путешествия**: продумывать маршрут, находить подходящий рейс и отель по хорошей цене… и видеть, как человек уезжает счастливым. Хорошее путешествие приносит счастье, поэтому я этим и занимаюсь.",
+               "Eunodia — независимый проект: **я работаю на себя** и веду сайт сам. Для вас это бесплатно: сайт получает небольшие комиссии от партнёров, когда вы бронируете, без дополнительных затрат для вас.",
+           ],
+           "contact": "Есть вопрос или мечтаете о поездке? Напишите мне на {mail} или найдите меня в Instagram и TikTok: {handle}.",
+           "go": "Спланировать поездку с Хосе"},
 })
 
 
@@ -2003,7 +2025,7 @@ def missing_page(p):
 
 RESULTS_PATH = "recherche/"
 WHITE_LABEL_ID = "24366"
-WHITE_LABEL_CURRENCY = {"en": "usd", "ar": "usd", "ko": "usd", "zh": "usd", "hi": "inr"}
+WHITE_LABEL_CURRENCY = {"en": "usd", "ar": "usd", "ko": "usd", "zh": "usd", "hi": "inr", "ru": "rub"}
 
 
 RESULTS_TEXT = {  # titre, phrase d'accroche, trois avantages de la page de résultats de vols
@@ -2055,6 +2077,10 @@ RESULTS_TEXT = {  # titre, phrase d'accroche, trois avantages de la page de rés
            (("सामान सहित कीमत", "अपना सामान चुनें: दिखाई गई कीमत ही अंतिम कीमत बन जाती है।"),
             ("सीधी खरीद", "बटन आपको टिकट बेचने वाली एयरलाइन या एजेंसी तक ले जाता है।"),
             ("Eunodia का कोई शुल्क नहीं", "आप केवल विक्रेता की कीमत चुकाते हैं।"))),
+    "ru": ("Найдите свой рейс", "Сравнивайте авиакомпании и агентства с учётом багажа. Бронирование напрямую у продавца по указанной цене.",
+           (("Цена с багажом", "Выберите багаж: указанная цена станет итоговой."),
+            ("Покупка напрямую", "Кнопка ведёт к авиакомпании или агентству, которое продаёт билет."),
+            ("Без комиссии Eunodia", "Вы платите только цену продавца, ничего больше."))),
 }
 
 
@@ -2102,7 +2128,7 @@ def city_index(places, countries):
 
 def build_language(p, data, cities, updated_at, groups, origins=()):
     lang, folder = p.lang, p.folder
-    updated = f"{updated_at.day} {MONTHS[lang][updated_at.month - 1]}, {updated_at:%H:%M} UTC"
+    updated = f"{updated_at.day} {DATE_MONTHS[lang][updated_at.month - 1]}, {updated_at:%H:%M} UTC"
     offers = data["offers"]
     translated = [
         {**offer, "city": p.city(offer["code"], offer["city"]), "region": p.region(offer["region"]), "region_key": offer["region"]}
