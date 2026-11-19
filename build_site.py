@@ -347,6 +347,14 @@ def layout(p, title, description, path, body, noindex=False, extra="", photo=Non
 <meta property="og:title" content="{e(title)}">
 <meta property="og:description" content="{e(description)}">
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="eunodia">
+<meta property="og:url" content="{e(site['url'] + p.prefix + path)}">
+<meta property="og:image" content="{e(site['url'])}assets/og-eunodia.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="eunodia">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="{e(site['url'])}assets/og-eunodia.png">
 <meta name="theme-color" content="#0b0b0b">
 <link rel="icon" href="{base}assets/icon.svg?v=3" type="image/svg+xml">
 <link rel="apple-touch-icon" href="{base}assets/icon-180.png">
