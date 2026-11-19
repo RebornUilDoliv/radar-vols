@@ -267,6 +267,12 @@ class BuildTests(unittest.TestCase):
         self.assertEqual(build_site.Page(dict(SITE, root="/", version="1"), "fr").day("2026-12-03"), "3 déc. 2026")
         self.assertIn("フライトを探す", build_site.results_page(p))
 
+    def test_chinese_pages_speak_to_baidu(self):
+        zh = build_site.results_page(build_site.Page(dict(SITE, root="/", version="1"), "zh"))
+        self.assertIn('content="no-transform"', zh)
+        self.assertIn("特价机票", zh)
+        self.assertNotIn("no-transform", build_site.results_page(build_site.Page(dict(SITE, root="/", version="1"), "fr")))
+
     def test_budapest_keeps_its_name_in_each_script(self):
         names = build_site.clean_names({"fr": {"BUD": "Buda"}, "ru": {"BUD": "Будапешт"}, "zh": {"BUD": "布达佩斯"}})
         self.assertEqual((names["fr"]["BUD"], names["ru"]["BUD"], names["zh"]["BUD"]), ("Budapest", "Будапешт", "布达佩斯"))

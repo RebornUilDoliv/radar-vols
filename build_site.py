@@ -339,7 +339,7 @@ def layout(p, title, description, path, body, noindex=False, extra="", photo=Non
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{e(title)}</title>
-<meta name="description" content="{e(description)}">
+<meta name="description" content="{e(description)}">{BAIDU_HEAD if p.lang == "zh" else ""}
 <link rel="canonical" href="{e(site['url'] + p.prefix + path)}">
 {links}
 {detect}
@@ -2059,6 +2059,9 @@ def missing_page(p):
     return layout(p, f"{p.t('missing')} | {p.site['name']}", p.t("missing_lead"), "404.html", body)
 
 
+# Baidu : page déjà adaptée au mobile (pas de transcodage) et mots-clés que les internautes chinois tapent
+BAIDU_HEAD = ('\n<meta name="applicable-device" content="pc,mobile">\n<meta http-equiv="Cache-Control" content="no-transform">'
+              '\n<meta http-equiv="Cache-Control" content="no-siteapp">\n<meta name="keywords" content="特价机票,便宜机票,机票查询,国际机票,廉价航空">')
 RESULTS_PATH = "recherche/"
 WHITE_LABEL_ID = "24366"
 WHITE_LABEL_CURRENCY = {"en": "usd", "ar": "usd", "ko": "usd", "zh": "usd", "hi": "inr", "ru": "rub", "ja": "jpy"}
