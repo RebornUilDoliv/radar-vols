@@ -196,15 +196,15 @@ function ensureTable(db) {
   return tableReady;
 }
 
-async function recordVisit(request, env) {
+async function recordVisit(body, request, env) {
   if (!env.DB) return;
-  await ensureTable(env.DB);
   let data;
   try {
-    data = JSON.parse((await request.text()).slice(0, 2000));
+    data = JSON.parse(body.slice(0, 2000));
   } catch {
     return;
   }
+  await ensureTable(env.DB);
   if (!VISIT_ID.test(data.id || "")) return;
   if (data.e === "load") {
     const cf = request.cf || {};
@@ -232,7 +232,9 @@ export default {
   async fetch(request, env, ctx) {
     const origin = env.ALLOWED_ORIGIN || "";
     if (request.method === "POST" && new URL(request.url).pathname === "/v") {
-      if (request.headers.get("Origin") === origin) ctx.waitUntil(recordVisit(request, env).catch(() => {}));
+      // Le corps doit être lu avant de répondre : après la réponse, Cloudflare ne le donne plus.
+      const body = await request.text().catch(() => "");
+      if (request.headers.get("Origin") === origin) ctx.waitUntil(recordVisit(body, request, env).catch(() => {}));
       return new Response(null, { status: 204, headers: { "Access-Control-Allow-Origin": origin } });
     }
     if (request.method === "OPTIONS") return respond({}, 204, origin);
