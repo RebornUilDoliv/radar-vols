@@ -187,25 +187,26 @@ const VISIT_ID = /^[a-z0-9]{8,20}$/;
 const short = (value, max) => String(value ?? "").slice(0, max);
 const number = (value, max) => Math.max(0, Math.min(max, Math.round(Number(value) || 0)));
 
-let tableReady = null;
-function ensureTable(db) {
-  tableReady ||= db.batch([
+let tableChecked = false;
+async function ensureTable(db) {
+  if (tableChecked) return;
+  await db.batch([
     db.prepare("CREATE TABLE IF NOT EXISTS visites (id TEXT PRIMARY KEY, ts INTEGER, path TEXT, lang TEXT, country TEXT, asn INTEGER, org TEXT, ua TEXT, wd INTEGER DEFAULT 0, sw INTEGER, sh INTEGER, touch INTEGER, tz TEXT, ref TEXT, human INTEGER DEFAULT 0, gesture TEXT, ms INTEGER DEFAULT 0)"),
     db.prepare("CREATE INDEX IF NOT EXISTS visites_ts ON visites (ts)"),
-  ]).catch((error) => { tableReady = null; throw error; });
-  return tableReady;
+  ]);
+  tableChecked = true;
 }
 
 async function recordVisit(body, request, env) {
-  if (!env.DB) return;
+  if (!env.DB) throw new Error("base DB absente");
   let data;
   try {
     data = JSON.parse(body.slice(0, 2000));
   } catch {
-    return;
+    throw new Error("signal illisible");
   }
+  if (!VISIT_ID.test(data.id || "")) throw new Error("identifiant invalide");
   await ensureTable(env.DB);
-  if (!VISIT_ID.test(data.id || "")) return;
   if (data.e === "load") {
     const cf = request.cf || {};
     await env.DB.prepare(
@@ -225,16 +226,28 @@ async function recordVisit(body, request, env) {
 
 export default {
   async scheduled(event, env) {
-    if (env.DB) await ensureTable(env.DB).then(() => env.DB.prepare("DELETE FROM visites WHERE ts < ?").bind(Date.now() - 30 * 864e5).run()).catch(() => {});
+    if (env.DB) {
+      try {
+        await ensureTable(env.DB);
+        await env.DB.prepare("DELETE FROM visites WHERE ts < ?").bind(Date.now() - 30 * 864e5).run();
+      } catch (error) {
+        console.error("nettoyage des visites impossible :", error?.message || String(error));
+      }
+    }
     await startRadar(env.GITHUB_DISPATCH_TOKEN);
   },
 
   async fetch(request, env, ctx) {
     const origin = env.ALLOWED_ORIGIN || "";
     if (request.method === "POST" && new URL(request.url).pathname === "/v") {
-      // Le corps doit être lu avant de répondre : après la réponse, Cloudflare ne le donne plus.
-      const body = await request.text().catch(() => "");
-      if (request.headers.get("Origin") === origin) ctx.waitUntil(recordVisit(body, request, env).catch(() => {}));
+      // Le signal est enregistré avant de répondre ; une erreur est notée dans les journaux sans jamais gêner le visiteur.
+      if (request.headers.get("Origin") === origin) {
+        try {
+          await recordVisit(await request.text(), request, env);
+        } catch (error) {
+          console.error("visite non enregistrée :", error?.message || String(error));
+        }
+      }
       return new Response(null, { status: 204, headers: { "Access-Control-Allow-Origin": origin } });
     }
     if (request.method === "OPTIONS") return respond({}, 204, origin);
