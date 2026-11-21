@@ -333,6 +333,17 @@ def layout(p, title, description, path, body, noindex=False, extra="", photo=Non
     if site.get("analytics_token"):
         beacon = e(json.dumps({"token": site["analytics_token"]}))
         analytics = f'<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon="{beacon}"></script>'
+    if site.get("visit_api"):  # détection discrète des robots : un signal à l'ouverture, un autre au premier vrai geste ; rien d'affiché
+        analytics += ("<script>(function(){try{var A=" + json.dumps(site["visit_api"].rstrip("/") + "/v") + ",n=navigator,t0=Date.now(),h=0,"
+                      "id=Math.random().toString(36).slice(2,10)+t0.toString(36),E=['pointermove','pointerdown','touchstart','wheel','keydown'];"
+                      "function s(o){o.id=id;try{n.sendBeacon(A,JSON.stringify(o))}catch(e){}}"
+                      "var r='';try{r=document.referrer?new URL(document.referrer).hostname:''}catch(e){}"
+                      "s({e:'load',p:location.pathname,l:document.documentElement.lang,wd:n.webdriver?1:0,sw:screen.width,sh:screen.height,"
+                      "t:('ontouchstart' in window)?1:0,tz:(Intl.DateTimeFormat().resolvedOptions().timeZone||''),r:r});"
+                      "function g(v){if(h||!v.isTrusted)return;h=1;s({e:'human',g:v.type,ms:Date.now()-t0});"
+                      "E.forEach(function(k){removeEventListener(k,g,true)})}"
+                      "E.forEach(function(k){addEventListener(k,g,{capture:true,passive:true})});"
+                      "addEventListener('pagehide',function(){s({e:'leave',ms:Date.now()-t0})})}catch(e){}})()</script>")
     return f"""<!doctype html>
 <html lang="{p.lang}"{' dir="rtl"' if p.lang in RTL_LANGS else ''}>
 <head>

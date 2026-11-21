@@ -12,3 +12,9 @@ ALLOWED_ORIGIN = "https://eunodia.com"
 # Le jeton se configure comme secret, jamais dans ce fichier :
 # wrangler secret put DUFFEL_TEST_TOKEN
 # wrangler secret put GITHUB_DISPATCH_TOKEN
+
+# Base D1 qui garde les signaux robot / humain du site (tableau créé automatiquement par le serveur, voir aussi worker/visites.sql).
+[[d1_databases]]
+binding = "DB"
+database_name = "eunodia-visites"
+database_id = "f56aeb08-922c-4342-b5f4-8912c17045f6"

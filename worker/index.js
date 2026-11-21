@@ -181,13 +181,60 @@ async function startRadar(token) {
   if (!response.ok) throw new Error(`GitHub a refusé le lancement du radar (${response.status})`);
 }
 
+// Détection discrète des robots : le site envoie un signal à l'ouverture de la page, puis un second au premier geste réel
+// (toucher, défilement, souris, clavier). Aucun cookie, aucune adresse IP gardée ; les lignes sont effacées après 30 jours.
+const VISIT_ID = /^[a-z0-9]{8,20}$/;
+const short = (value, max) => String(value ?? "").slice(0, max);
+const number = (value, max) => Math.max(0, Math.min(max, Math.round(Number(value) || 0)));
+
+let tableReady = null;
+function ensureTable(db) {
+  tableReady ||= db.batch([
+    db.prepare("CREATE TABLE IF NOT EXISTS visites (id TEXT PRIMARY KEY, ts INTEGER, path TEXT, lang TEXT, country TEXT, asn INTEGER, org TEXT, ua TEXT, wd INTEGER DEFAULT 0, sw INTEGER, sh INTEGER, touch INTEGER, tz TEXT, ref TEXT, human INTEGER DEFAULT 0, gesture TEXT, ms INTEGER DEFAULT 0)"),
+    db.prepare("CREATE INDEX IF NOT EXISTS visites_ts ON visites (ts)"),
+  ]).catch((error) => { tableReady = null; throw error; });
+  return tableReady;
+}
+
+async function recordVisit(request, env) {
+  if (!env.DB) return;
+  await ensureTable(env.DB);
+  let data;
+  try {
+    data = JSON.parse((await request.text()).slice(0, 2000));
+  } catch {
+    return;
+  }
+  if (!VISIT_ID.test(data.id || "")) return;
+  if (data.e === "load") {
+    const cf = request.cf || {};
+    await env.DB.prepare(
+      "INSERT OR IGNORE INTO visites (id, ts, path, lang, country, asn, org, ua, wd, sw, sh, touch, tz, ref) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
+    ).bind(
+      data.id, Date.now(), short(data.p, 200), short(data.l, 8), short(cf.country, 2), number(cf.asn, 1e7),
+      short(cf.asOrganization, 80), short(request.headers.get("User-Agent"), 300), data.wd ? 1 : 0,
+      number(data.sw, 20000), number(data.sh, 20000), data.t ? 1 : 0, short(data.tz, 40), short(data.r, 120)
+    ).run();
+  } else if (data.e === "human") {
+    await env.DB.prepare("UPDATE visites SET human = 1, gesture = ?, ms = ? WHERE id = ?")
+      .bind(short(data.g, 12), number(data.ms, 36e5), data.id).run();
+  } else if (data.e === "leave") {
+    await env.DB.prepare("UPDATE visites SET ms = MAX(ms, ?) WHERE id = ?").bind(number(data.ms, 36e5), data.id).run();
+  }
+}
+
 export default {
   async scheduled(event, env) {
+    if (env.DB) await ensureTable(env.DB).then(() => env.DB.prepare("DELETE FROM visites WHERE ts < ?").bind(Date.now() - 30 * 864e5).run()).catch(() => {});
     await startRadar(env.GITHUB_DISPATCH_TOKEN);
   },
 
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const origin = env.ALLOWED_ORIGIN || "";
+    if (request.method === "POST" && new URL(request.url).pathname === "/v") {
+      if (request.headers.get("Origin") === origin) ctx.waitUntil(recordVisit(request, env).catch(() => {}));
+      return new Response(null, { status: 204, headers: { "Access-Control-Allow-Origin": origin } });
+    }
     if (request.method === "OPTIONS") return respond({}, 204, origin);
     if (request.method !== "POST") return respond({ error: "méthode refusée" }, 405, origin);
     if (request.headers.get("Origin") !== origin) return respond({ error: "origine refusée" }, 403, origin);

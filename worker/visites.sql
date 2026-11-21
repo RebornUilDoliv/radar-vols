@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS visites (
+  id TEXT PRIMARY KEY, ts INTEGER, path TEXT, lang TEXT, country TEXT, asn INTEGER, org TEXT, ua TEXT,
+  wd INTEGER DEFAULT 0, sw INTEGER, sh INTEGER, touch INTEGER, tz TEXT, ref TEXT,
+  human INTEGER DEFAULT 0, gesture TEXT, ms INTEGER DEFAULT 0
+);
+CREATE INDEX IF NOT EXISTS visites_ts ON visites (ts);
