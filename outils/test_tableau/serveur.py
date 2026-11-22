@@ -1,4 +1,4 @@
-"""Serveur de test local du tableau des visites : sert worker/tableau.html et de fausses données sur /stats (clé : test-tableau)."""
+"""Serveur de test local du tableau des visites : sert worker/tableau.html et de fausses données sur /stats (mot de passe créé sur la page au premier lancement)."""
 import json, os, random, time, http.server, pathlib
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 random.seed(4)
@@ -18,10 +18,21 @@ for i in range(400):
                          ua=random.choice([UA["iphone"], UA["tiktok"], UA["android"]]), sw=390, touch=1, human=1, wd=0, ref=random.choice(["", "", "www.tiktok.com", "eunodia.com"])))
 rows.sort(key=lambda r: r["ts"])
 
+KEY = {"cle": None}  # mot de passe créé sur la page, comme sur le vrai serveur
+
 class H(http.server.BaseHTTPRequestHandler):
+    def do_POST(self):
+        body = json.loads(self.rfile.read(int(self.headers.get("Content-Length", 0))) or b"{}")
+        ok = self.path == "/stats/cle" and KEY["cle"] is None and len(body.get("cle", "")) >= 8
+        if ok: KEY["cle"] = body["cle"]
+        self.send_response(200 if ok else 409); self.send_header("Content-Type", "application/json"); self.end_headers()
+        self.wfile.write(json.dumps({"ok": True} if ok else {"error": "mot de passe déjà défini"}).encode())
     def do_GET(self):
         if self.path.startswith("/stats"):
-            ok = self.headers.get("Authorization") == "Bearer test-tableau"
+            if KEY["cle"] is None:
+                self.send_response(401); self.send_header("Content-Type", "application/json"); self.end_headers()
+                self.wfile.write(json.dumps({"error": "aucun mot de passe", "premiere": True}).encode()); return
+            ok = self.headers.get("Authorization") == "Bearer " + KEY["cle"]
             days = int((self.path.split("jours=") + ["1"])[1][:2].strip("&") or 1)
             body = json.dumps({"jours": days, "maintenant": now, "visites": [r for r in rows if r["ts"] >= now - 2 * days * 864e5]} if ok else {"error": "clé incorrecte"})
             self.send_response(200 if ok else 401); self.send_header("Content-Type", "application/json"); self.end_headers(); self.wfile.write(body.encode()); return
