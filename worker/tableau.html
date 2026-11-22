@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>eunodia · visites</title>
+<style>
+:root{--bg:#f2f2f2;--card:#fff;--line:#e3e3e3;--txt:#1d1d1d;--mut:#6b6b6b;--blue:#0051c3;--blue2:#d6e4fa;--red:#c4362b;--green:#1e7b34}
+@media (prefers-color-scheme:dark){:root{--bg:#141414;--card:#1e1e1e;--line:#333;--txt:#eee;--mut:#9a9a9a;--blue:#6ea8ff;--blue2:#21324d;--red:#ff7a6e;--green:#5fd07a}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--txt);font:14px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+header{background:var(--card);border-bottom:1px solid var(--line);padding:14px 20px;display:flex;align-items:center;gap:10px}
+header b{font-size:16px}
+header span{color:var(--mut)}
+main{max-width:1180px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:22px;font-weight:600;margin:0 0 14px}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:16px}
+.chip{border:1px solid var(--line);background:var(--card);border-radius:6px;padding:6px 10px;color:var(--txt)}
+select,button{font:inherit;color:var(--txt);background:var(--card);border:1px solid var(--line);border-radius:6px;padding:6px 10px;cursor:pointer}
+button.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:16px 18px;margin-bottom:16px}
+.card h2{font-size:15px;font-weight:600;margin:0 0 4px}
+.card p.sub{color:var(--mut);margin:0 0 12px;font-size:13px}
+.kpis{display:flex;gap:28px;flex-wrap:wrap;margin-bottom:10px}
+.kpi small{display:block;color:var(--mut)}
+.kpi strong{font-size:26px;font-weight:600}
+.kpi em{font-style:normal;font-size:12px;margin-left:6px}
+.up{color:var(--green)}.down{color:var(--red)}
+svg{display:block;width:100%;height:auto}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:16px}
+.grid .card{margin:0}
+.row{position:relative;display:flex;justify-content:space-between;gap:10px;padding:6px 8px;margin:2px 0;border-radius:4px;overflow:hidden}
+.row i{position:absolute;inset:0 auto 0 0;background:var(--blue2);z-index:0}
+.row span,.row b{position:relative;z-index:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row b{font-weight:600}
+.empty{color:var(--mut);padding:8px}
+.tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px}
+.tabs button{padding:4px 9px;font-size:13px}
+#login{max-width:380px;margin:60px auto}
+#login input{width:100%;font:inherit;padding:8px 10px;border:1px solid var(--line);border-radius:6px;margin:10px 0;background:var(--card);color:var(--txt)}
+.err{color:var(--red)}
+.note{color:var(--mut);font-size:12px}
+</style>
+</head>
+<body>
+<header><svg viewBox="0 0 32 32" width="26" height="26" style="width:26px"><circle cx="16" cy="16" r="12.5" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M9.5 18a6.5 6.5 0 0 1 13 0z" fill="currentColor"/><rect x="6.5" y="19" width="19" height="1.8" rx=".9" fill="currentColor"/><rect x="10" y="22.3" width="12" height="1.5" rx=".75" fill="currentColor"/></svg><b>eunodia</b><span>· Visites humaines et robots</span></header>
+<main>
+<div id="login" class="card" hidden>
+  <h2>Accès au tableau</h2>
+  <p class="sub">Entre la clé que tu as enregistrée dans Cloudflare (STATS_KEY). Elle reste sur cet appareil.</p>
+  <form id="f"><input id="k" type="password" autocomplete="current-password" placeholder="Clé du tableau"><button class="on" type="submit">Ouvrir</button></form>
+  <p id="lerr" class="err"></p>
+</div>
+<div id="app" hidden>
+  <h1>Web Analytics pour eunodia.com</h1>
+  <div class="bar">
+    <span class="chip">Site : eunodia.com</span>
+    <span>Visiteurs :</span>
+    <button data-m="humains" class="on">Humains</button><button data-m="robots">Robots</button><button data-m="tout">Tout</button>
+    <select id="j"><option value="1">Dernières 24 heures</option><option value="7">7 derniers jours</option><option value="30">30 derniers jours</option></select>
+    <button id="r" title="Actualiser">↻</button>
+  </div>
+  <div class="card">
+    <h2>Résumé des visites</h2>
+    <p class="sub">Une visite commence quand quelqu'un arrive sur le site depuis l'extérieur. Une visite peut contenir plusieurs pages vues.</p>
+    <div class="kpis" id="kpis"></div>
+    <div id="chart"></div>
+  </div>
+  <div class="grid">
+    <div class="card"><h2>Visites par pays</h2><div id="p-pays"></div></div>
+    <div class="card"><h2>Visites par source</h2><div class="tabs" data-for="src"></div><div id="p-src"></div></div>
+    <div class="card"><h2>Appareils et logiciels</h2><div class="tabs" data-for="dev"></div><div id="p-dev"></div></div>
+    <div class="card"><h2>Réseaux d'origine</h2><p class="sub">Opérateur ou hébergeur d'où vient la visite. Un hébergeur (cloud) trahit souvent un robot.</p><div id="p-org"></div></div>
+  </div>
+  <p class="note" id="foot"></p>
+</div>
+</main>
+<script>
+(function () {
+  var KEY = "eunodia-tableau-cle", mode = "humains", data = null;
+  var tabs = { src: [["Sources", "ref"], ["Pages", "path"], ["Pages d'entrée", "entry"]], dev: [["Navigateurs", "browser"], ["Systèmes", "os"], ["Types d'appareil", "device"]] };
+  var cur = { src: "ref", dev: "browser" };
+  var names = (function () { try { return new Intl.DisplayNames(["fr"], { type: "region" }); } catch (e) { return null; } })();
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function getKey() { try { return localStorage.getItem(KEY) || ""; } catch (e) { return ""; } }
+  function setKey(v) { try { v ? localStorage.setItem(KEY, v) : localStorage.removeItem(KEY); } catch (e) {} }
+
+  function browser(ua) {
+    if (/bot|crawl|spider|headless/i.test(ua)) return "Robot déclaré";
+    if (/Instagram/i.test(ua)) return "Instagram (appli)";
+    if (/musical_ly|BytedanceWebview|TikTok/i.test(ua)) return "TikTok (appli)";
+    if (/FBAN|FBAV|FB_IAB/i.test(ua)) return "Facebook (appli)";
+    if (/Edg\//.test(ua)) return "Edge";
+    if (/OPR\/|Opera/.test(ua)) return "Opera";
+    if (/SamsungBrowser/.test(ua)) return "Samsung Internet";
+    if (/Firefox|FxiOS/.test(ua)) return "Firefox";
+    if (/CriOS|Chrome\//.test(ua)) return /Mobile/.test(ua) ? "Chrome Mobile" : "Chrome";
+    if (/Safari\//.test(ua) && /Version\//.test(ua)) return /Mobile/.test(ua) ? "Safari Mobile" : "Safari";
+    return "Inconnu";
+  }
+  function os(ua) {
+    if (/iPhone|iPad|iPod/.test(ua)) return "iOS";
+    if (/Android/.test(ua)) return "Android";
+    if (/Windows/.test(ua)) return "Windows";
+    if (/Mac OS X|Macintosh/.test(ua)) return "macOS";
+    if (/CrOS/.test(ua)) return "ChromeOS";
+    if (/Linux/.test(ua)) return "Linux";
+    return "Inconnu";
+  }
+  function device(r) { return r.touch ? (r.sw && r.sw < 900 ? "Mobile" : "Tablette") : "Ordinateur"; }
+  function isHuman(r) { return r.human === 1 && r.wd !== 1; }
+  function internal(r) { return /(^|\.)eunodia\.com$/.test(r.ref || ""); }
+  function keep(r) { return mode === "tout" || (mode === "humains" ? isHuman(r) : !isHuman(r)); }
+
+  function load() {
+    var k = getKey();
+    if (!k) { $("login").hidden = false; $("app").hidden = true; return; }
+    $("foot").textContent = "Chargement…";
+    fetch("/stats?jours=" + $("j").value, { headers: { Authorization: "Bearer " + k }, cache: "no-store" })
+      .then(function (res) { return res.json().then(function (b) { return { ok: res.ok, status: res.status, b: b }; }); })
+      .then(function (x) {
+        if (x.status === 401) { setKey(""); $("lerr").textContent = "Clé incorrecte."; $("login").hidden = false; $("app").hidden = true; return; }
+        if (!x.ok) throw new Error(x.b.error || "erreur");
+        data = x.b; $("login").hidden = true; $("app").hidden = false; render();
+      })
+      .catch(function (e) { $("foot").textContent = "Impossible de charger les données (" + e.message + ")."; $("app").hidden = false; });
+  }
+
+  function count(rows, fn) {
+    var m = {};
+    rows.forEach(function (r) { var k = fn(r) || "Inconnu"; m[k] = (m[k] || 0) + 1; });
+    return Object.keys(m).map(function (k) { return [k, m[k]]; }).sort(function (a, b) { return b[1] - a[1]; });
+  }
+  function list(id, items, label) {
+    var el = $(id), max = items.length ? items[0][1] : 0;
+    if (!items.length) { el.innerHTML = '<div class="empty">Aucune donnée pour cette période.</div>'; return; }
+    el.innerHTML = items.slice(0, 10).map(function (it) {
+      return '<div class="row"><i style="width:' + Math.max(2, Math.round(it[1] / max * 100)) + '%"></i><span>' + esc(label ? label(it[0]) : it[0]) + "</span><b>" + it[1] + "</b></div>";
+    }).join("");
+  }
+  function pct(a, b) {
+    if (!b) return "";
+    var p = Math.round((a - b) / b * 100);
+    return '<em class="' + (p >= 0 ? "up" : "down") + '">' + (p >= 0 ? "▲ " : "▼ ") + Math.abs(p) + " %</em>";
+  }
+  function chart(rows, days, now) {
+    var n = days === 1 ? 24 : days, step = days === 1 ? 36e5 : 864e5, start = now - n * step, b = [];
+    for (var i = 0; i < n; i++) b.push(0);
+    rows.forEach(function (r) { var i = Math.floor((r.ts - start) / step); if (i >= 0 && i < n && !internal(r)) b[i]++; });
+    var max = Math.max(1, Math.max.apply(null, b)), W = Math.max(300, $("chart").clientWidth || 1000), H = 220, L = 34, B = 26, w = (W - L) / n, out = "";
+    var steps = Math.min(4, max);
+    for (var g = 0; g <= steps; g++) {
+      var y = 10 + (H - B - 10) * (1 - g / steps), v = Math.round(max * g / steps);
+      out += '<line x1="' + L + '" x2="' + W + '" y1="' + y + '" y2="' + y + '" stroke="var(--line)"/><text x="' + (L - 6) + '" y="' + (y + 4) + '" text-anchor="end" font-size="11" fill="var(--mut)">' + v + "</text>";
+    }
+    var tf = new Intl.DateTimeFormat("fr-FR", days === 1 ? { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Paris" } : { day: "numeric", month: "short", timeZone: "Europe/Paris" });
+    b.forEach(function (v, i) {
+      var h = (H - B - 10) * v / max, x = L + i * w;
+      out += '<rect x="' + (x + w * 0.15) + '" y="' + (H - B - h) + '" width="' + (w * 0.7) + '" height="' + h + '" rx="2" fill="var(--blue)"><title>' + tf.format(new Date(start + i * step)) + " : " + v + " visite" + (v > 1 ? "s" : "") + "</title></rect>";
+      if (i % Math.ceil(n / (W < 600 ? 4 : 8)) === 0) out += '<text x="' + (x + w / 2) + '" y="' + (H - 8) + '" text-anchor="middle" font-size="11" fill="var(--mut)">' + tf.format(new Date(start + i * step)) + "</text>";
+    });
+    $("chart").innerHTML = '<svg viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="Visites dans le temps">' + out + "</svg>";
+  }
+  function render() {
+    var days = data.jours, now = data.maintenant, cut = now - days * 864e5;
+    var all = data.visites.filter(keep), rows = all.filter(function (r) { return r.ts >= cut; }), prev = all.filter(function (r) { return r.ts < cut; });
+    var visits = rows.filter(function (r) { return !internal(r); }), pvisits = prev.filter(function (r) { return !internal(r); });
+    var total = data.visites.filter(function (r) { return r.ts >= cut; }), humans = total.filter(isHuman).length;
+    $("kpis").innerHTML =
+      '<div class="kpi"><small>Visites</small><strong>' + visits.length + "</strong>" + pct(visits.length, pvisits.length) + "</div>" +
+      '<div class="kpi"><small>Pages vues</small><strong>' + rows.length + "</strong>" + pct(rows.length, prev.length) + "</div>" +
+      '<div class="kpi"><small>Humains / robots (pages vues)</small><strong>' + humans + " / " + (total.length - humans) + "</strong></div>";
+    chart(rows, days, now);
+    list("p-pays", count(visits, function (r) { return r.country; }), function (c) { return names && /^[A-Z]{2}$/.test(c) ? names.of(c) : c; });
+    var src = cur.src === "ref" ? count(visits, function (r) { return r.ref || "Aucune (direct)"; })
+      : cur.src === "entry" ? count(visits, function (r) { return r.path; }) : count(rows, function (r) { return r.path; });
+    list("p-src", src);
+    list("p-dev", count(visits, function (r) { return cur.dev === "browser" ? browser(r.ua || "") : cur.dev === "os" ? os(r.ua || "") : device(r); }));
+    list("p-org", count(visits, function (r) { return r.org; }));
+    $("foot").textContent = "Mis à jour à " + new Date(now).toLocaleTimeString("fr-FR", { timeZone: "Europe/Paris" }) +
+      ". Humain = un vrai geste (toucher, souris, clavier) et un navigateur non automatisé. Les robots qui n'exécutent aucun script n'apparaissent pas ici.";
+    Object.keys(tabs).forEach(function (t) {
+      document.querySelector('[data-for="' + t + '"]').innerHTML = tabs[t].map(function (x) { return '<button data-t="' + t + '" data-v="' + x[1] + '"' + (cur[t] === x[1] ? ' class="on"' : "") + ">" + x[0] + "</button>"; }).join("");
+    });
+  }
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest("button"); if (!b) return;
+    if (b.dataset.m) { mode = b.dataset.m; document.querySelectorAll("[data-m]").forEach(function (x) { x.classList.toggle("on", x === b); }); if (data) render(); }
+    if (b.dataset.t) { cur[b.dataset.t] = b.dataset.v; if (data) render(); }
+    if (b.id === "r") load();
+  });
+  $("j").addEventListener("change", load);
+  var resized; addEventListener("resize", function () { clearTimeout(resized); resized = setTimeout(function () { if (data) render(); }, 200); });
+  $("f").addEventListener("submit", function (e) { e.preventDefault(); var v = $("k").value.trim(); if (!v) { $("lerr").textContent = "Entre la clé d'abord."; return; } $("lerr").textContent = ""; setKey(v); load(); });
+  load();
+})();
+</script>
+</body>
+</html>
