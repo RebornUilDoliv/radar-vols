@@ -2385,6 +2385,23 @@ GONE_PAGES = [  # pages signalées en 404 par Google avant la mise en place des 
     "tr/depuis/santiago/francfort/", "tr/depuis/seoul/kuala-lumpur/", "tr/depuis/seoul/singapour/",
     "tr/vers/panama-ville/", "zh/depuis/bangkok/sanya/", "zh/depuis/madrid/edinbourg/",
     "zh/depuis/paris/seville/",
+    # signalées en 404 le 24 nov. 2026 (Search Console, adresses de langues sans page de trajet)
+    "ar/depuis/berlin/oslo/", "ar/depuis/bogota/los-angeles/", "ar/depuis/bogota/medellin/",
+    "ar/depuis/bogota/salvador/", "ar/depuis/johannesbourg/dublin/", "ar/depuis/lima/montevideo/",
+    "ar/depuis/lisbonne/cracovie/", "ar/depuis/madrid/edinbourg/", "ar/depuis/miami/punta-cana/",
+    "ar/depuis/new-york/las-vegas/", "ar/depuis/santiago/florianopolis/", "ar/depuis/santiago/montreal/",
+    "ar/depuis/santiago/panama-ville/", "ar/depuis/tokyo/pekin/", "de/depuis/berlin/oslo/",
+    "de/depuis/bogota/los-angeles/", "de/depuis/bogota/medellin/", "de/depuis/bogota/salvador/",
+    "de/depuis/istanbul/tirana/", "de/depuis/johannesbourg/dublin/", "de/depuis/le-caire/rome/",
+    "de/depuis/lima/montevideo/", "de/depuis/lisbonne/cracovie/", "de/depuis/madrid/edinbourg/",
+    "de/depuis/miami/punta-cana/", "de/depuis/santiago/panama-ville/", "de/depuis/santiago/recife/",
+    "de/depuis/tokyo/ho-chi-minh-ville/", "en/destinations/ushuaia/", "it/depuis/amsterdam/manchester/",
+    "it/depuis/barcelone/ibiza/", "it/depuis/dubai/makhatchkala/", "it/depuis/mexico/seattle/",
+    "it/depuis/miami/nassau/", "it/depuis/miami/punta-cana/", "it/depuis/new-york/punta-cana/",
+    "it/depuis/santiago/francfort/", "ko/depuis/santiago/francfort/", "nl/depuis/amsterdam/manchester/",
+    "nl/depuis/lima/brasilia/", "nl/depuis/santiago/francfort/", "pt/depuis/lima/brasilia/",
+    "tr/depuis/amsterdam/manchester/", "tr/depuis/lima/brasilia/", "zh/depuis/amsterdam/manchester/",
+    "zh/depuis/lima/brasilia/", "zh/depuis/santiago/francfort/",
 ]
 
 
