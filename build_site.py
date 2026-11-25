@@ -557,68 +557,26 @@ OMIO_FALLBACK = "en"
 OMIO_REDIRECT = "https://omio.sjv.io/c/8164987/4057579/7385?u="
 OMIO_LINKS = "https://www.omio.com/links/626fa8a9-f982-43d0-ace9-9a13f6b14612"
 OMIO_LOCALE = {"fr": "fr", "en": "en", "es": "es", "de": "de", "it": "it", "pt": "pt", "nl": "nl", "tr": "tr", "ar": "ar", "zh": "zh", "ko": "ko"}
-TRAIN_KEYS = ("tab", "note", "from", "from_place", "to", "to_place", "go", "price_from", "book", "none", "pick", "more", "loading")
+TRAIN_KEYS = ("tab", "note", "from", "from_place", "to", "to_place", "go", "price_from", "book", "none", "pick", "more", "loading", "rt", "ow")
 TRAIN_DATES = {"fr": ("Aller", "Retour"), "en": ("Depart", "Return"), "es": ("Ida", "Vuelta"), "de": ("Hinfahrt", "Rückfahrt"),
                "it": ("Andata", "Ritorno"), "pt": ("Ida", "Volta"), "nl": ("Heen", "Terug"), "tr": ("Gidiş", "Dönüş"),
                "ar": ("الذهاب", "العودة"), "zh": ("去程", "返程"), "ko": ("가는 날", "오는 날"),
                "hi": ("जाने की तारीख़", "वापसी"), "ru": ("Туда", "Обратно"), "ja": ("往路", "復路")}
 TRAIN_WORDS = {
-    "fr": ("Train & bus", "Prix « dès » relevés chaque jour par Omio. Tu réserves chez Omio, au prix affiché.",
-           "Départ", "Paris, Lyon, Madrid…", "Arrivée", "Partout", "Rechercher", "dès", "Voir les horaires",
-           "Pas encore de prix pour ce trajet ici : vois directement les horaires chez Omio.", "Choisis une ville de départ dans la liste.",
-           "Chercher sur Omio", "Chargement des trajets…"),
-    "en": ("Trains & buses", "“From” prices updated daily by Omio. You book with Omio at the price shown.",
-           "From", "London, Paris, Madrid…", "To", "Anywhere", "Search", "from", "See times",
-           "No price for this route here yet: check times directly on Omio.", "Pick a departure city from the list.",
-           "Search on Omio", "Loading routes…"),
-    "es": ("Tren y bus", "Precios «desde» actualizados cada día por Omio. Reservas en Omio al precio indicado.",
-           "Salida", "Madrid, Barcelona, París…", "Llegada", "Cualquier destino", "Buscar", "desde", "Ver horarios",
-           "Aún no hay precio para este trayecto aquí: consulta los horarios en Omio.", "Elige una ciudad de salida de la lista.",
-           "Buscar en Omio", "Cargando trayectos…"),
-    "de": ("Zug & Bus", "„Ab“-Preise, täglich von Omio aktualisiert. Du buchst bei Omio zum angezeigten Preis.",
-           "Abfahrt", "Berlin, München, Paris…", "Ziel", "Überallhin", "Suchen", "ab", "Verbindungen ansehen",
-           "Für diese Strecke gibt es hier noch keinen Preis: sieh dir die Verbindungen direkt bei Omio an.", "Wähle eine Abfahrtsstadt aus der Liste.",
-           "Bei Omio suchen", "Strecken werden geladen…"),
-    "it": ("Treno e bus", "Prezzi «da» aggiornati ogni giorno da Omio. Prenoti su Omio al prezzo indicato.",
-           "Partenza", "Roma, Milano, Parigi…", "Arrivo", "Ovunque", "Cerca", "da", "Vedi gli orari",
-           "Nessun prezzo per questa tratta qui: guarda gli orari direttamente su Omio.", "Scegli una città di partenza dall'elenco.",
-           "Cerca su Omio", "Caricamento tratte…"),
-    "pt": ("Trem e ônibus", "Preços «a partir de» atualizados todos os dias pela Omio. Você reserva na Omio pelo preço exibido.",
-           "Partida", "Lisboa, Porto, Madri…", "Chegada", "Qualquer lugar", "Buscar", "a partir de", "Ver horários",
-           "Ainda não há preço para este trajeto aqui: veja os horários diretamente na Omio.", "Escolha uma cidade de partida na lista.",
-           "Buscar na Omio", "Carregando trajetos…"),
-    "nl": ("Trein & bus", "Vanafprijzen, dagelijks bijgewerkt door Omio. Je boekt bij Omio, tegen de getoonde prijs.",
-           "Vertrek", "Amsterdam, Brussel, Parijs…", "Bestemming", "Overal", "Zoeken", "vanaf", "Bekijk tijden",
-           "Nog geen prijs voor deze route hier: bekijk de tijden direct bij Omio.", "Kies een vertrekstad uit de lijst.",
-           "Zoeken bij Omio", "Routes laden…"),
-    "tr": ("Tren ve otobüs", "Omio'nun her gün güncellediği başlangıç fiyatları. Omio'da gösterilen fiyattan rezervasyon yaparsın.",
-           "Kalkış", "Londra, Paris, Roma…", "Varış", "Her yer", "Ara", "başlangıç", "Saatleri gör",
-           "Bu güzergah için burada henüz fiyat yok: saatlere doğrudan Omio'dan bak.", "Listeden bir kalkış şehri seç.",
-           "Omio'da ara", "Güzergahlar yükleniyor…"),
-    "ar": ("قطار وحافلة", "أسعار تبدأ من، تحدّثها Omio يوميًا. تحجز على Omio بالسعر المعروض.",
-           "المغادرة", "لندن، باريس، روما…", "الوصول", "أي مكان", "بحث", "ابتداءً من", "عرض المواعيد",
-           "لا يوجد سعر لهذا المسار هنا بعد: اطّلع على المواعيد مباشرة في Omio.", "اختر مدينة المغادرة من القائمة.",
-           "البحث في Omio", "جارٍ تحميل المسارات…"),
-    "zh": ("火车和巴士", "Omio 每日更新的起价。在 Omio 按显示价格预订。",
-           "出发", "巴黎、伦敦、罗马…", "到达", "任意目的地", "搜索", "起", "查看时刻",
-           "这里暂时没有该线路的价格：请直接在 Omio 查看时刻。", "请从列表中选择出发城市。",
-           "在 Omio 搜索", "正在加载线路…"),
-    "ko": ("기차·버스", "Omio가 매일 업데이트하는 최저가입니다. Omio에서 표시된 가격으로 예약합니다.",
-           "출발", "런던, 파리, 로마…", "도착", "어디든", "검색", "부터", "시간표 보기",
-           "이 노선의 가격은 아직 없습니다. Omio에서 시간표를 확인하세요.", "목록에서 출발 도시를 선택하세요.",
-           "Omio에서 검색", "노선 불러오는 중…"),
-    "hi": ("ट्रेन और बस", "“से” कीमतें Omio हर दिन अपडेट करता है। आप Omio पर दिखाई गई कीमत पर बुक करते हैं।",
-           "कहाँ से", "लंदन, पेरिस, मैड्रिड…", "कहाँ तक", "कहीं भी", "खोजें", "से", "समय देखें",
-           "इस रूट की कीमत अभी यहाँ नहीं है: सीधे Omio पर समय देखें।", "सूची से प्रस्थान का शहर चुनें।",
-           "Omio पर खोजें", "रूट लोड हो रहे हैं…"),
-    "ru": ("Поезда и автобусы", "Цены «от» каждый день обновляет Omio. Бронирование на Omio по указанной цене.",
-           "Откуда", "Лондон, Париж, Мадрид…", "Куда", "Куда угодно", "Найти", "от", "Расписание",
-           "Цены на этот маршрут пока нет: посмотрите расписание прямо на Omio.", "Выберите город отправления из списка.",
-           "Искать на Omio", "Загружаем маршруты…"),
-    "ja": ("電車・バス", "最安価格はOmioが毎日更新しています。表示価格のままOmioで予約できます。",
-           "出発地", "ロンドン、パリ、マドリード…", "目的地", "どこでも", "検索", "最安", "時刻表を見る",
-           "この区間の価格はまだありません。Omioで直接時刻表をご確認ください。", "リストから出発都市を選んでください。",
-           "Omioで検索", "ルートを読み込み中…"),
+    "fr": ("Train & bus", "Prix « dès » indicatifs relevés par Omio : le prix exact selon tes dates s'affiche chez Omio, où tu réserves.", "Départ", "Paris, Lyon, Madrid…", "Arrivée", "Partout", "Rechercher", "dès", "Voir les horaires", "Pas encore de prix pour ce trajet ici : vois directement les horaires chez Omio.", "Choisis une ville de départ dans la liste.", "Chercher sur Omio", "Chargement des trajets…", "aller-retour", "aller simple"),
+    "en": ("Trains & buses", "Indicative “from” prices from Omio: the exact price for your dates is shown on Omio, where you book.", "From", "London, Paris, Madrid…", "To", "Anywhere", "Search", "from", "See times", "No price for this route here yet: check times directly on Omio.", "Pick a departure city from the list.", "Search on Omio", "Loading routes…", "return", "one way"),
+    "es": ("Tren y bus", "Precios «desde» orientativos de Omio: el precio exacto para tus fechas se muestra en Omio, donde reservas.", "Salida", "Madrid, Barcelona, París…", "Llegada", "Cualquier destino", "Buscar", "desde", "Ver horarios", "Aún no hay precio para este trayecto aquí: consulta los horarios en Omio.", "Elige una ciudad de salida de la lista.", "Buscar en Omio", "Cargando trayectos…", "ida y vuelta", "solo ida"),
+    "de": ("Zug & Bus", "Richtwerte („ab“-Preise) von Omio: Den genauen Preis für deine Daten siehst du bei Omio, wo du buchst.", "Abfahrt", "Berlin, München, Paris…", "Ziel", "Überallhin", "Suchen", "ab", "Verbindungen ansehen", "Für diese Strecke gibt es hier noch keinen Preis: sieh dir die Verbindungen direkt bei Omio an.", "Wähle eine Abfahrtsstadt aus der Liste.", "Bei Omio suchen", "Strecken werden geladen…", "hin und zurück", "einfach"),
+    "it": ("Treno e bus", "Prezzi «da» indicativi di Omio: il prezzo esatto per le tue date è su Omio, dove prenoti.", "Partenza", "Roma, Milano, Parigi…", "Arrivo", "Ovunque", "Cerca", "da", "Vedi gli orari", "Nessun prezzo per questa tratta qui: guarda gli orari direttamente su Omio.", "Scegli una città di partenza dall'elenco.", "Cerca su Omio", "Caricamento tratte…", "andata e ritorno", "solo andata"),
+    "pt": ("Trem e ônibus", "Preços «a partir de» indicativos da Omio: o preço exato para suas datas aparece na Omio, onde você reserva.", "Partida", "Lisboa, Porto, Madri…", "Chegada", "Qualquer lugar", "Buscar", "a partir de", "Ver horários", "Ainda não há preço para este trajeto aqui: veja os horários diretamente na Omio.", "Escolha uma cidade de partida na lista.", "Buscar na Omio", "Carregando trajetos…", "ida e volta", "só ida"),
+    "nl": ("Trein & bus", "Indicatieve vanafprijzen van Omio: de exacte prijs voor jouw data zie je bij Omio, waar je boekt.", "Vertrek", "Amsterdam, Brussel, Parijs…", "Bestemming", "Overal", "Zoeken", "vanaf", "Bekijk tijden", "Nog geen prijs voor deze route hier: bekijk de tijden direct bij Omio.", "Kies een vertrekstad uit de lijst.", "Zoeken bij Omio", "Routes laden…", "retour", "enkel"),
+    "tr": ("Tren ve otobüs", "Omio'dan gösterge niteliğinde başlangıç fiyatları: tarihlerine göre kesin fiyat, rezervasyon yaptığın Omio'da görünür.", "Kalkış", "Londra, Paris, Roma…", "Varış", "Her yer", "Ara", "başlangıç", "Saatleri gör", "Bu güzergah için burada henüz fiyat yok: saatlere doğrudan Omio'dan bak.", "Listeden bir kalkış şehri seç.", "Omio'da ara", "Güzergahlar yükleniyor…", "gidiş-dönüş", "tek yön"),
+    "ar": ("قطار وحافلة", "أسعار إرشادية «ابتداءً من» من Omio: يظهر السعر الدقيق لتواريخك على Omio حيث تحجز.", "المغادرة", "لندن، باريس، روما…", "الوصول", "أي مكان", "بحث", "ابتداءً من", "عرض المواعيد", "لا يوجد سعر لهذا المسار هنا بعد: اطّلع على المواعيد مباشرة في Omio.", "اختر مدينة المغادرة من القائمة.", "البحث في Omio", "جارٍ تحميل المسارات…", "ذهاب وعودة", "ذهاب فقط"),
+    "zh": ("火车和巴士", "Omio 提供的参考起价：所选日期的确切价格以 Omio 页面为准，并在 Omio 预订。", "出发", "巴黎、伦敦、罗马…", "到达", "任意目的地", "搜索", "起", "查看时刻", "这里暂时没有该线路的价格：请直接在 Omio 查看时刻。", "请从列表中选择出发城市。", "在 Omio 搜索", "正在加载线路…", "往返", "单程"),
+    "ko": ("기차·버스", "Omio의 참고용 최저가입니다. 선택한 날짜의 정확한 가격은 예약하는 Omio에서 확인하세요.", "출발", "런던, 파리, 로마…", "도착", "어디든", "검색", "부터", "시간표 보기", "이 노선의 가격은 아직 없습니다. Omio에서 시간표를 확인하세요.", "목록에서 출발 도시를 선택하세요.", "Omio에서 검색", "노선 불러오는 중…", "왕복", "편도"),
+    "hi": ("ट्रेन और बस", "Omio की सांकेतिक “से” कीमतें: आपकी तारीख़ों की सटीक कीमत Omio पर दिखती है, जहाँ आप बुक करते हैं।", "कहाँ से", "लंदन, पेरिस, मैड्रिड…", "कहाँ तक", "कहीं भी", "खोजें", "से", "समय देखें", "इस रूट की कीमत अभी यहाँ नहीं है: सीधे Omio पर समय देखें।", "सूची से प्रस्थान का शहर चुनें।", "Omio पर खोजें", "रूट लोड हो रहे हैं…", "आना-जाना", "एकतरफ़ा"),
+    "ru": ("Поезда и автобусы", "Ориентировочные цены «от» из Omio: точная цена на ваши даты показывается на Omio, где вы бронируете.", "Откуда", "Лондон, Париж, Мадрид…", "Куда", "Куда угодно", "Найти", "от", "Расписание", "Цены на этот маршрут пока нет: посмотрите расписание прямо на Omio.", "Выберите город отправления из списка.", "Искать на Omio", "Загружаем маршруты…", "туда и обратно", "в одну сторону"),
+    "ja": ("電車・バス", "Omioの目安となる最安価格です。ご希望日の正確な料金は、予約するOmioのページで表示されます。", "出発地", "ロンドン、パリ、マドリード…", "目的地", "どこでも", "検索", "最安", "時刻表を見る", "この区間の価格はまだありません。Omioで直接時刻表をご確認ください。", "リストから出発都市を選んでください。", "Omioで検索", "ルートを読み込み中…", "往復", "片道"),
 }
 
 
@@ -638,7 +596,7 @@ def train_search(p, cities=()):
         return ""
     w = dict(zip(TRAIN_KEYS, TRAIN_WORDS.get(p.lang, TRAIN_WORDS["en"])))
     dates = TRAIN_DATES.get(p.lang, TRAIN_DATES["en"])
-    texts = e(json.dumps({k: w[k] for k in ("price_from", "book", "none", "pick", "more", "loading")}, ensure_ascii=False))
+    texts = e(json.dumps({k: w[k] for k in ("price_from", "book", "none", "pick", "more", "loading", "rt", "ow")}, ensure_ascii=False))
     # photos du site pour les villes qu'Omio ne fournit pas (nom de la ville dans la langue -> code de la photo)
     photos = {}
     known = {c["code"]: c.get("city", c["code"]) for c in cities}

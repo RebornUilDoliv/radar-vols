@@ -304,15 +304,16 @@
   function prepareTrains(data) {
     var clean = function (text) { return text.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim(); };
     var names = data.cities.map(function (c) { return c[1]; });
-    var byOrigin = {}, priced = {};
+    var byOrigin = {}, priced = {}, pair = {};
     data.routes.forEach(function (r) {
       var o = names[r[0]];
       (byOrigin[o] = byOrigin[o] || []).push(r);
       if (r[2] || r[3]) priced[o] = (priced[o] || 0) + 1;
+      pair[r[0] + "|" + r[1]] = r;
     });
     /* villes de départ triées par nombre de trajets avec prix (les plus utiles d'abord) */
     var origins = Object.keys(byOrigin).sort(function (a, b) { return (priced[b] || 0) - (priced[a] || 0) || byOrigin[b].length - byOrigin[a].length; });
-    return { raw: data, names: names, byOrigin: byOrigin, origins: origins, clean: clean };
+    return { raw: data, names: names, byOrigin: byOrigin, origins: origins, clean: clean, pair: pair };
   }
 
   function trainLink(d, route) {
@@ -394,10 +395,40 @@
     /* trajets : [départ, arrivée, prix train, prix bus, minutes train, minutes bus, rang] */
     var best = function (r) { return Math.min(r[2] || 1e9, r[3] || 1e9); };
     var hours = function (m) { return m ? Math.floor(m / 60) + " h " + String(m % 60).padStart(2, "0") : ""; };
-    var modeText = function (icon, price, minutes) {
-      return price ? icon + " " + words.price_from + " " + money(price) + (minutes ? " · " + hours(minutes) : "") : "";
+    /* aller-retour : prix « dès » de l'aller + prix « dès » du trajet inverse du catalogue ; sans trajet inverse, aller simple.
+       Ce sont des prix indicatifs : le prix exact selon les dates s'affiche chez Omio. */
+    var backOf = function (r) { return d.pair[r[1] + "|" + r[0]]; };
+    var leg = function (route, i) {
+      var go = route[i], ret = (backOf(route) || [])[i];
+      return go ? { price: go + (ret || 0), rt: !!ret } : null;
     };
-    var priceText = function (route) { var b = best(route); return b < 1e9 ? words.price_from + " " + money(b) : ""; };
+    /* compact : dans les lignes, le prix de tête dit déjà « aller-retour » ; on n'ajoute la mention que pour un aller simple */
+    var legText = function (l, compact) {
+      var tag = l.rt ? (words.rt || "A/R") : (words.ow || "");
+      return words.price_from + " " + money(l.price) + (compact && l.rt ? "" : " · " + tag);
+    };
+    var modeText = function (icon, route, i, minutes, compact) {
+      var l = leg(route, i);
+      return l ? icon + " " + legText(l, compact) + (minutes ? " · " + hours(minutes) : "") : "";
+    };
+    /* « 🚆 dès 116 € · aller-retour · 2 h 39 » en morceaux qui ne se coupent pas : la ligne passe à la suivante entre deux morceaux */
+    var parts = function (text) {
+      var box = el("span", "train-parts"), pieces = text.split(" · ");
+      pieces.forEach(function (piece, i) {
+        if (i) box.appendChild(document.createTextNode(" "));
+        var chunk = el("span", null, piece + (i < pieces.length - 1 ? " ·" : ""));
+        chunk.style.whiteSpace = "nowrap";
+        box.appendChild(chunk);
+      });
+      return box;
+    };
+    var priceText = function (route) {
+      var legs = [leg(route, 2), leg(route, 3)].filter(Boolean);
+      var rts = legs.filter(function (l) { return l.rt; });
+      var pool = rts.length ? rts : legs;
+      if (!pool.length) return "";
+      return legText(pool.reduce(function (a, b) { return b.price < a.price ? b : a; }));
+    };
     /* ajoute les dates choisies à la page Omio (le trajet et les dates arrivent déjà remplis chez Omio) */
     var withDates = function (url) {
       var out = $("t-out").value, back = $("t-back").value;
@@ -443,8 +474,15 @@
       place.appendChild(el("span", null, d.names[route[0]]));
       item.appendChild(place);
       item.appendChild(el("span", "train-row-price", priceText(route)));
-      var modes = [modeText("🚆", route[2], route[4]), modeText("🚌", route[3], route[5])].filter(Boolean).join("   ");
-      if (modes) place.appendChild(el("span", "train-modes", modes));
+      var modes = [modeText("🚆", route, 2, route[4], true), modeText("🚌", route, 3, route[5], true)].filter(Boolean);
+      if (modes.length) {
+        var line = el("span", "train-modes");
+        modes.forEach(function (text, i) {
+          if (i) line.appendChild(document.createTextNode(" "));
+          line.appendChild(parts(text));
+        });
+        place.appendChild(line);
+      }
       item.appendChild(el("span", "train-row-go", "↗"));
       return item;
     };
@@ -461,8 +499,11 @@
       var label = el("span", "card-label");
       label.appendChild(el("strong", null, d.names[route[1]]));
       label.appendChild(el("span", null, d.names[route[0]]));
-      [modeText("🚆", route[2], route[4]), modeText("🚌", route[3], route[5])].forEach(function (text) {
-        if (text) label.appendChild(el("span", "train-mode", text));
+      [modeText("🚆", route, 2, route[4]), modeText("🚌", route, 3, route[5])].forEach(function (text) {
+        if (!text) return;
+        var mode = el("span", "train-mode");
+        mode.appendChild(parts(text));
+        label.appendChild(mode);
       });
       item.appendChild(label);
       return item;
