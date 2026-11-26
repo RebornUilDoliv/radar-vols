@@ -93,6 +93,10 @@ jobs:
             git pull --rebase --autostash origin main || exit 1
           done
           exit 1
+      - name: Garder le plan du site en ligne (pour IndexNow)
+        if: ${{ !inputs.test_email }}
+        continue-on-error: true
+        run: curl -sf --max-time 60 https://eunodia.com/sitemap.xml -o "$RUNNER_TEMP/ancien_sitemap.xml"
       - name: Préparer le site
         if: ${{ !inputs.test_email }}
         uses: actions/upload-pages-artifact@v3
@@ -111,3 +115,7 @@ jobs:
         uses: actions/deploy-pages@v4
         with:
           timeout: 1800000
+      - name: Signaler les nouvelles pages à Bing (IndexNow)
+        if: ${{ !inputs.test_email && (steps.deploy.outcome == 'success' || steps.deploy2.outcome == 'success') }}
+        continue-on-error: true
+        run: python indexnow.py --nouvelles "$RUNNER_TEMP/ancien_sitemap.xml"

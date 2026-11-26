@@ -35,6 +35,7 @@ newsletter_url = "https://ab67ba27.sibforms.com/serve/MUIFAM-kHU83B6EgUuJ_iQCwDI
 analytics_token = "71176418a1124737b274a50c21f6e2a5"  # identifiant public de Cloudflare Web Analytics ; vide = pas de mesure
 test_api = "https://radar-flight-test.joseluiscardozopintos.workers.dev"                    # adresse du serveur de test ; vide = mode démonstration
 visit_api = "https://radar-flight-test.joseluiscardozopintos.workers.dev"   # reçoit les signaux robot / humain ; vide = pas de détection
+indexnow_key = "ec2b9e3be895da36102cd2fcfb451cf5"   # clé IndexNow (Bing) ; publique par nature, servie à la racine du site
 
 [world]
 origins = ["LON", "PAR", "MAD", "BCN", "ROM", "BER", "AMS", "LIS", "IST", "DXB", "RUH", "DEL", "BKK", "SIN", "HKG", "TYO", "SEL", "SYD", "JNB", "CAI",

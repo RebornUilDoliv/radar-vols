@@ -2291,6 +2291,8 @@ def build(data, site, catalog=None):
         "icons": [{"src": f"{site['root']}assets/icon-{size}.png", "sizes": f"{size}x{size}", "type": "image/png"} for size in (192, 512)],
     }, ensure_ascii=False))
     write(DOCS / "robots.txt", f"User-agent: *\nAllow: /\nSitemap: {site['url']}sitemap.xml\n")
+    if site.get("indexnow_key"):  # preuve pour Bing que les envois IndexNow viennent bien du site
+        write(DOCS / f"{site['indexnow_key']}.txt", site["indexnow_key"])
     return len(cities)
 
 
