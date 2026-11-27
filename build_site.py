@@ -2362,6 +2362,26 @@ GONE_PAGES = [  # pages signalées en 404 par Google avant la mise en place des 
     "nl/depuis/lima/brasilia/", "nl/depuis/santiago/francfort/", "pt/depuis/lima/brasilia/",
     "tr/depuis/amsterdam/manchester/", "tr/depuis/lima/brasilia/", "zh/depuis/amsterdam/manchester/",
     "zh/depuis/lima/brasilia/", "zh/depuis/santiago/francfort/",
+    # signalées en 404 le 27 nov. 2026 (Search Console, validation échouée)
+    "ar/depuis/amsterdam/paris/", "ar/depuis/bangkok/sanya/", "ar/depuis/barcelone/chisinau/",
+    "ar/depuis/buenos-aires/mexico/", "ar/depuis/casablanca/agadir/", "ar/depuis/casablanca/madrid/",
+    "ar/depuis/dubai/entebbe/", "ar/depuis/istanbul/tbilissi/", "ar/depuis/lisbonne/naples-nap/",
+    "ar/depuis/new-york/orlando/", "ar/depuis/new-york/quito/", "ar/depuis/sao-paulo/malaga/",
+    "ar/depuis/sao-paulo/st-domingue/", "ar/depuis/singapour/manille/", "ar/depuis/sydney/bangkok/",
+    "ar/depuis/sydney/hong-kong/", "de/depuis/amsterdam/rabat/", "de/depuis/bangkok/hangzhou/",
+    "de/depuis/barcelone/manchester/", "de/depuis/buenos-aires/guadalajara/", "de/depuis/buenos-aires/puerto-plata/",
+    "de/depuis/hong-kong/macao/", "de/depuis/le-caire/tbilissi/", "de/depuis/los-angeles/chicago/",
+    "de/depuis/los-angeles/punta-cana/", "de/depuis/madrid/dublin/", "de/depuis/miami/san-francisco/",
+    "de/depuis/new-york/san-diego/", "de/depuis/new-york/tampa/", "de/depuis/paris/birmingham-bhx/",
+    "de/depuis/rome/cracovie/", "de/depuis/singapour/denpasar-bali/", "depuis/amsterdam/edinbourg/",
+    "depuis/istanbul/podgorica/", "depuis/kinshasa/mahe-seychelles/", "depuis/lima/denver/",
+    "depuis/new-york/madrid/", "destinations/ushuaia/", "en/depuis/mexico/st-domingue/",
+    "es/depuis/sao-paulo/le-cap/", "es/destinations/belfast/", "it/depuis/buenos-aires/asuncion/",
+    "it/depuis/johannesbourg/dar-es-salam/", "it/depuis/rome/ibiza/", "ko/depuis/barcelone/venise/",
+    "ko/depuis/rome/ibiza/", "nl/depuis/berlin/tirana/", "nl/destinations/iassy/",
+    "pt/depuis/berlin/tirana/", "pt/depuis/johannesbourg/dar-es-salam/", "pt/depuis/mexico/montego-bay/",
+    "pt/depuis/rome/ibiza/", "tr/depuis/berlin/tirana/", "tr/depuis/rome/ibiza/",
+    "zh/depuis/johannesbourg/dar-es-salam/",
 ]
 
 
